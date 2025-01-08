@@ -37,6 +37,6 @@ public class CommunityPost extends BaseEntity {
     @JoinColumn(name = "userId")
     private User user;
 
-    @OneToMany(mappedBy = "communityPost", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private Set<CommunityComment> communityComments;
 }
