@@ -23,6 +23,6 @@ public class CommunityPostImage extends BaseEntity {
     private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId")
+    @JoinColumn(name = "postId", nullable = false)
     private CommunityPost post;
 }

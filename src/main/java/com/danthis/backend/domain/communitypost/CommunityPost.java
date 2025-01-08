@@ -34,7 +34,7 @@ public class CommunityPost extends BaseEntity {
     private Integer views;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
