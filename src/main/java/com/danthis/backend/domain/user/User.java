@@ -1,6 +1,7 @@
 package com.danthis.backend.domain.user;
 
 import com.danthis.backend.domain.BaseEntity;
+import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.mapping.usergenre.UserGenre;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,4 +39,7 @@ public class User extends BaseEntity {
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   private Set<UserGenre> userGenres;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<UserDancer> userDancers;
 }
