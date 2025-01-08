@@ -1,4 +1,4 @@
-package com.danthis.backend.domain.wishlist;
+package com.danthis.backend.domain.mapping.wishlist;
 
 import com.danthis.backend.domain.BaseEntity;
 import com.danthis.backend.domain.danceclass.DanceClass;

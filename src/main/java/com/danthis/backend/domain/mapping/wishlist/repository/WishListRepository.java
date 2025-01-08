@@ -1,6 +1,6 @@
-package com.danthis.backend.domain.wishlist.repository;
+package com.danthis.backend.domain.mapping.wishlist.repository;
 
-import com.danthis.backend.domain.wishlist.WishList;
+import com.danthis.backend.domain.mapping.wishlist.WishList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
