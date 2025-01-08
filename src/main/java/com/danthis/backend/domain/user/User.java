@@ -1,16 +1,15 @@
 package com.danthis.backend.domain.user;
 
 import com.danthis.backend.domain.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.danthis.backend.domain.communitycomment.CommunityComment;
+import com.danthis.backend.domain.communitypost.CommunityPost;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -37,4 +36,10 @@ public class User extends BaseEntity {
   private String phoneNumber;
 
   private String profileImage;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<CommunityComment> communityComments;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<CommunityPost> communityPosts;
 }
