@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active:
+      local
+    group:
+      local-env:
+        - local
+      dev-env:
+        - dev
+    include:
+      - jwt
+      - oauth
