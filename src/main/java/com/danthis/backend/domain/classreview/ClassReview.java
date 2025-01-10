@@ -1,6 +1,7 @@
 package com.danthis.backend.domain.classreview;
 
 import com.danthis.backend.domain.BaseEntity;
+import com.danthis.backend.domain.classreviewimage.ClassReviewImage;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.user.User;
 import jakarta.persistence.Column;
@@ -11,6 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,4 +46,7 @@ public class ClassReview extends BaseEntity {
 
   @Column(nullable = false)
   private Integer rating;
+
+  @OneToMany(mappedBy = "classReview", fetch = FetchType.LAZY)
+  private Set<ClassReviewImage> classReviewImages;
 }
