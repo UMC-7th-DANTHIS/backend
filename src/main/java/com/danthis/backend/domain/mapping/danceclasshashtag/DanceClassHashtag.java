@@ -2,7 +2,7 @@ package com.danthis.backend.domain.mapping.danceclasshashtag;
 
 import com.danthis.backend.domain.BaseEntity;
 import com.danthis.backend.domain.danceclass.DanceClass;
-import com.danthis.backend.domain.hashtag.HashTag;
+import com.danthis.backend.domain.hashtag.Hashtag;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,5 +32,5 @@ public class DanceClassHashtag extends BaseEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "hashtag_id", nullable = false)
-  private HashTag hashtag;
+  private Hashtag hashtag;
 }
