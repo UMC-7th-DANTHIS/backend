@@ -14,7 +14,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -76,26 +75,6 @@ public class JwtFilter extends OncePerRequestFilter {
     )));
   }
 
-//  private static boolean isRequestSummaryURI(HttpServletRequest request) {
-//    // 요약하기
-//    if (request.getRequestURI().equals("/posts") && request.getMethod()
-//                                                           .equals(HttpMethod.POST.name())) {
-//      return true;
-//    }
-//    // 요약본 조회하기
-//    if (request.getRequestURI().matches("/posts/[0-9]+") && request.getMethod()
-//                                                                   .equals(HttpMethod.GET.name())) {
-//      return true;
-//    }
-//
-//    // 재요약하기
-//    if (request.getRequestURI().matches("/posts/[0-9]+/summary") && request.getMethod().equals(
-//        HttpMethod.PATCH.name())) {
-//      return true;
-//    }
-//    return false;
-//  }
-
   private static boolean isRequestPassURI(HttpServletRequest request) {
     if (request.getRequestURI().equals("/")) {
       return true;
@@ -112,14 +91,6 @@ public class JwtFilter extends OncePerRequestFilter {
     if (request.getRequestURI().startsWith("/exception")) {
       return true;
     }
-
-//    if (request.getRequestURI().startsWith("/swagger-ui")) {
-//      return true;
-//    }
-//
-//    if (request.getRequestURI().startsWith("/api-docs")) {
-//      return true;
-//    }
 
     return false;
   }
