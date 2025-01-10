@@ -27,13 +27,13 @@ public class User extends BaseEntity {
   @Column(nullable = false, unique = true, length = 50)
   private String nickname;
 
-  @Column(nullable = false, length = 10)
+  @Column(length = 10)
   private String gender;
 
   @Column(nullable = false, unique = true)
   private String email;
 
-  @Column(nullable = false, unique = true)
+  @Column(unique = true)
   private String phoneNumber;
 
   private String profileImage;
