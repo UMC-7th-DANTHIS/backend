@@ -21,17 +21,24 @@ public abstract class BaseEntity {
   private LocalDateTime updatedAt;
 
   @Column(nullable = false)
-  private Boolean isActive;
+  private Boolean isActive = true;
 
   @PrePersist
   protected void onCreate() {
-    this.createdAt = LocalDateTime.now();
-    this.updatedAt = LocalDateTime.now();
-    this.isActive = true;
+    LocalDateTime now = LocalDateTime.now();
+    this.createdAt = now;
+    this.updatedAt = now;
+    if (this.isActive == null) {
+      this.isActive = true;
+    }
   }
 
   @PreUpdate
   protected void onUpdate() {
     this.updatedAt = LocalDateTime.now();
+  }
+
+  public void deactivate() {
+    this.isActive = false;
   }
 }

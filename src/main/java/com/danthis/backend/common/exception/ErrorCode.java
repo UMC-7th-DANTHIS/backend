@@ -8,8 +8,14 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ErrorCode {
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
-  DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일입니다.");
+  DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일입니다."),
+  KAKAO_USER_IMPORT_FAILED(HttpStatus.BAD_REQUEST, "카카오 사용자 정보를 가져오는데 실패했습니다."),
+  NONE_AUTHENTICATED(HttpStatus.UNAUTHORIZED, "인증 정보가 없습니다."),
+  INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
+  INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 엑세스 토큰입니다."),
+  NOT_EXIST_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "존재하지 않는 리프레시 토큰입니다."),
+  ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
 
-  private final HttpStatus status;
+  private final HttpStatus httpStatus;
   private final String message;
 }

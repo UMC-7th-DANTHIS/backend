@@ -17,10 +17,18 @@ public class UserDancer extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+<<<<<<< HEAD
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dancer_id")
+=======
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dancerId", nullable = false)
+>>>>>>> efe4ff1 (feat: 외래키에 nullable = false 추가 (#2))
     private Dancer dancer;
 }
