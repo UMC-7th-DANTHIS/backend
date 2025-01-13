@@ -1,16 +1,25 @@
 package com.danthis.backend.domain.dancer;
 
 import com.danthis.backend.domain.BaseEntity;
+import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
+import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.user.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -22,7 +31,6 @@ public class Dancer extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
 
   @JoinColumn(name = "user_id")
   @OneToOne(fetch = FetchType.LAZY)
@@ -51,4 +59,10 @@ public class Dancer extends BaseEntity {
 
   @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
   private Set<DancerImage> dancerImages;
+
+  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
+  private Set<DanceClass> danceClasses;
+
+  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
+  private Set<UserDancer> userDancers;
 }
