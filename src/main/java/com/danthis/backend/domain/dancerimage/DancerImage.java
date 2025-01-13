@@ -22,10 +22,6 @@ public class DancerImage extends BaseEntity {
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-<<<<<<< HEAD
     @JoinColumn(name = "dancer_id")
-=======
-    @JoinColumn(name = "dancerId", nullable = false)
->>>>>>> efe4ff1 (feat: 외래키에 nullable = false 추가 (#2))
     private Dancer dancer;
 }
