@@ -36,10 +36,4 @@ public class User extends BaseEntity {
   private String phoneNumber;
 
   private String profileImage;
-
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-  private Set<UserGenre> userGenres;
-
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-  private Set<UserDancer> userDancers;
 }

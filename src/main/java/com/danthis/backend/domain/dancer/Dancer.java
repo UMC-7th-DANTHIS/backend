@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 @Entity
-@Table(name = "dancers")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,7 +24,7 @@ public class Dancer extends BaseEntity {
     private Long id;
 
 
-    @JoinColumn(name="userId")
+    @JoinColumn(name="user_id")
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
 

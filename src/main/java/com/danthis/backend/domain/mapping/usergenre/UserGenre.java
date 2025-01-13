@@ -17,11 +17,11 @@ public class UserGenre extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genreId")
+    @JoinColumn(name = "genre_id")
     private Genre genre;
 
 }

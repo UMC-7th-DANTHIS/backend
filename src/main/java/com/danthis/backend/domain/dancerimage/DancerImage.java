@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "dancerIamges")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -23,6 +22,6 @@ public class DancerImage extends BaseEntity {
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dancerId")
+    @JoinColumn(name = "dancer_id")
     private Dancer dancer;
 }

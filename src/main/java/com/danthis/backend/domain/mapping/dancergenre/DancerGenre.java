@@ -17,10 +17,10 @@ public class DancerGenre extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dancerId")
+    @JoinColumn(name = "dancer_id")
     private Dancer dancer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genreId")
+    @JoinColumn(name = "genre_id")
     private Genre genre;
 }
