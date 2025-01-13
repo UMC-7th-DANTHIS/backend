@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "communityPostImages")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -23,6 +22,6 @@ public class CommunityPostImage extends BaseEntity {
     private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false)
     private CommunityPost post;
 }

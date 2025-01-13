@@ -13,7 +13,6 @@ import org.hibernate.annotations.ColumnDefault;
 import java.util.Set;
 
 @Entity
-@Table(name = "communityPosts")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -34,7 +33,7 @@ public class CommunityPost extends BaseEntity {
     private Integer views;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)

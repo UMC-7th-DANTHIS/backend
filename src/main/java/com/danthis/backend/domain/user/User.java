@@ -36,10 +36,4 @@ public class User extends BaseEntity {
   private String phoneNumber;
 
   private String profileImage;
-
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-  private Set<CommunityComment> communityComments;
-
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-  private Set<CommunityPost> communityPosts;
 }
