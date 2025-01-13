@@ -1,4 +1,4 @@
-package com.danthis.backend.domain.classreviewimage.repository;
+package com.danthis.backend.domain.classreview.classreviewimage.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
