@@ -9,6 +9,6 @@ public class BusinessException extends RuntimeException {
 
   public BusinessException(ErrorCode errorCode) {
     super(errorCode.getMessage());
-    this.code = errorCode.getStatus().value();
+    this.code = errorCode.getHttpStatus().value();
   }
 }
