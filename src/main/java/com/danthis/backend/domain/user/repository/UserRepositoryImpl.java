@@ -18,9 +18,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
   @Override
   public Optional<User> findByEmail(String email) {
     User result = jpaQueryFactory.selectFrom(user)
-                                 .where(user.email.eq(email)
-                                                  .and(user.isActive.eq(true)))
-                                 .fetchOne();
+            .where(user.email.eq(email)
+                    .and(user.isActive.eq(true)))
+            .fetchOne();
     return Optional.ofNullable(result);
   }
 }
