@@ -1,6 +1,6 @@
-package com.danthis.backend.domain.classreviewimage.repository;
+package com.danthis.backend.domain.classreview.classreviewimage.repository;
 
-import com.danthis.backend.domain.classreviewimage.ClassReviewImage;
+import com.danthis.backend.domain.classreview.classreviewimage.ClassReviewImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

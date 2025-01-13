@@ -2,7 +2,7 @@ package com.danthis.backend.domain.danceclass;
 
 import com.danthis.backend.domain.BaseEntity;
 import com.danthis.backend.domain.classreview.ClassReview;
-import com.danthis.backend.domain.danceclassimage.DanceClassImage;
+import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;

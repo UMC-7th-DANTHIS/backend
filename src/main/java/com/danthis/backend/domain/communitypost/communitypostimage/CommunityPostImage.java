@@ -1,4 +1,4 @@
-package com.danthis.backend.domain.communitypostimage;
+package com.danthis.backend.domain.communitypost.communitypostimage;
 
 import com.danthis.backend.domain.BaseEntity;
 import com.danthis.backend.domain.communitypost.CommunityPost;
@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CommunityPostImage extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String url;
+  private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
-    private CommunityPost post;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "post_id", nullable = false)
+  private CommunityPost post;
 }
