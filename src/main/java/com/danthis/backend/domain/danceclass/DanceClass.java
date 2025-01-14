@@ -59,6 +59,9 @@ public class DanceClass extends BaseEntity {
   @Column(nullable = false)
   private Boolean isApproved;
 
+  @Column
+  private Double averageRating;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "dancer_id", nullable = false)
   private Dancer dancer;
