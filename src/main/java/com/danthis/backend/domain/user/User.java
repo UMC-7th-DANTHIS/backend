@@ -68,4 +68,34 @@ public class User extends BaseEntity {
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   private Set<WishList> wishLists;
+
+  public void updateNickname(String nickname) {
+    this.nickname = nickname;
+  }
+
+  public void updateGender(String gender) {
+    this.gender = gender;
+  }
+
+  public void updateEmail(String email) {
+    this.email = email;
+  }
+
+  public void updatePhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
+
+  public void updateProfileImage(String profileImage) {
+    this.profileImage = profileImage;
+  }
+
+  public void updatePreferredGenres(Set<UserGenre> genres) {
+    this.userGenres.clear();
+    this.userGenres.addAll(genres);
+  }
+
+  public void updatePreferredDancers(Set<UserDancer> dancers) {
+    this.userDancers.clear();
+    this.userDancers.addAll(dancers);
+  }
 }
