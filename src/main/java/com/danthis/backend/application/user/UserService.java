@@ -4,6 +4,7 @@ import com.danthis.backend.application.user.implement.UserManager;
 import com.danthis.backend.application.user.implement.UserPreferenceMapper;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
+import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
@@ -44,5 +45,29 @@ public class UserService {
     user.updatePreferredDancers(updatedDancers);
 
     userManager.saveUser(user);
+  }
+
+  @Transactional
+  public boolean isNicknameAvailable(String nickname) {
+    return userReader.isNicknameAvailable(nickname);
+  }
+
+  @Transactional
+  public UserInfoResponse getUserInfo(Long userId) {
+    User user = userReader.readUserById(userId);
+
+    return UserInfoResponse.builder()
+                           .nickname(user.getNickname())
+                           .gender(user.getGender())
+                           .email(user.getEmail())
+                           .phoneNumber(user.getPhoneNumber())
+                           .profileImage(user.getProfileImage())
+                           .preferredGenres(user.getUserGenres().stream()
+                                                .map(userGenre -> userGenre.getGenre().getId())
+                                                .toList())
+                           .preferredDancers(user.getUserDancers().stream()
+                                                 .map(userDancer -> userDancer.getDancer().getId())
+                                                 .toList())
+                           .build();
   }
 }

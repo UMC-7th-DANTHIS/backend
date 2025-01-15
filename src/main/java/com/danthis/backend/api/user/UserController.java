@@ -3,15 +3,18 @@ package com.danthis.backend.api.user;
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
 import com.danthis.backend.application.user.UserService;
+import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,6 +35,19 @@ public class UserController {
     return ApiResponse.OK(null);
   }
 
-  //TODO: 유저 정보 조회 API 추가
-  //TODO: 닉네임 중복 검사 API 추가
+  @Operation(summary = "닉네임 중복 검사 API", description = "사용 가능한 닉네임인지 확인합니다.")
+  @GetMapping("/check-nickname")
+  public ApiResponse<Boolean> checkNicknameAvailability(
+      @RequestParam String nickname) {
+    boolean isAvailable = userService.isNicknameAvailable(nickname);
+    return ApiResponse.OK(isAvailable);
+  }
+
+  @Operation(summary = "유저 정보 조회 API", description = "유저 정보를 조회합니다.")
+  @GetMapping("/me")
+  @AssignCurrentUserInfo
+  public ApiResponse<UserInfoResponse> getUserInfo(CurrentUserInfo userInfo) {
+    UserInfoResponse response = userService.getUserInfo(userInfo.getUserId());
+    return ApiResponse.OK(response);
+  }
 }
