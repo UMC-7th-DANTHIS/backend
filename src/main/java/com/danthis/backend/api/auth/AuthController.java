@@ -1,5 +1,6 @@
 package com.danthis.backend.api.auth;
 
+import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.auth.util.TokenCookieManager;
 import com.danthis.backend.api.auth.util.TokenExtractor;
 import com.danthis.backend.application.auth.AuthService;
@@ -13,14 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,56 +28,46 @@ public class AuthController {
 
   @Operation(summary = "카카오 로그인 API")
   @PostMapping("/login/kakao")
-  public ResponseEntity<TokenServiceResponse> loginKakao(
+  public ApiResponse<TokenServiceResponse> loginKakao(
       @RequestParam(name = "code") String code,
       HttpServletResponse response) throws JsonProcessingException {
     TokenServiceResponse tokenServiceResponse = authService.kakaoLogin(code);
-
     tokenCookieManager.addRefreshTokenCookie(response, tokenServiceResponse.getRefreshToken());
-
-    TokenServiceResponse tokenServiceResponseWithoutRefreshToken = tokenServiceResponse.withoutRefreshToken();
-    return new ResponseEntity<>(tokenServiceResponseWithoutRefreshToken, HttpStatus.OK);
+    return ApiResponse.OK(tokenServiceResponse.withoutRefreshToken());
   }
 
   @Operation(summary = "토큰 재발급 API")
   @GetMapping("/reissue")
-  public ResponseEntity<TokenServiceResponse> reissueToken(
+  public ApiResponse<TokenServiceResponse> reissueToken(
       HttpServletRequest request,
       HttpServletResponse response) {
     TokenServiceRequest tokenServiceRequest = tokenExtractor.extractTokenRequest(request);
     TokenServiceResponse tokenServiceResponse = authService.reissueAccessToken(tokenServiceRequest);
-
     tokenCookieManager.addRefreshTokenCookie(response, tokenServiceResponse.getRefreshToken());
-
-    TokenServiceResponse tokenServiceResponseWithoutRefreshToken = tokenServiceResponse.withoutRefreshToken();
-    return new ResponseEntity<>(tokenServiceResponseWithoutRefreshToken, HttpStatus.OK);
+    return ApiResponse.OK(tokenServiceResponse.withoutRefreshToken());
   }
 
   @Operation(summary = "로그아웃 API")
   @PostMapping("/logout")
-  public ResponseEntity<Void> logout(
+  public ApiResponse<Void> logout(
       HttpServletRequest request,
       HttpServletResponse response) {
     TokenServiceRequest tokenServiceRequest = tokenExtractor.extractTokenRequest(request);
     authService.logout(tokenServiceRequest);
-
     tokenCookieManager.removeRefreshTokenCookie(response);
-
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ApiResponse.OK(null);
   }
 
   @Operation(summary = "회원 탈퇴 API")
   @AssignCurrentUserInfo
   @DeleteMapping("/withdraw")
-  public ResponseEntity<Void> withdraw(
+  public ApiResponse<Void> withdraw(
       CurrentUserInfo userInfo,
       HttpServletRequest request,
       HttpServletResponse response) {
     TokenServiceRequest tokenServiceRequest = tokenExtractor.extractTokenRequest(request);
     authService.withdraw(userInfo.getUserId(), tokenServiceRequest);
-
     tokenCookieManager.removeRefreshTokenCookie(response);
-
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ApiResponse.OK(null);
   }
 }
