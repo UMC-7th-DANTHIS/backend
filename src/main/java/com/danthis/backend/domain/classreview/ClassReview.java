@@ -1,7 +1,7 @@
 package com.danthis.backend.domain.classreview;
 
 import com.danthis.backend.domain.BaseEntity;
-import com.danthis.backend.domain.classreviewimage.ClassReviewImage;
+import com.danthis.backend.domain.classreview.classreviewimage.ClassReviewImage;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.user.User;
 import jakarta.persistence.Column;

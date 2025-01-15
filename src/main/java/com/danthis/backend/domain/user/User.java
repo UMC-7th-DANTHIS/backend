@@ -1,12 +1,22 @@
 package com.danthis.backend.domain.user;
 
 import com.danthis.backend.domain.BaseEntity;
+import com.danthis.backend.domain.classreview.ClassReview;
+import com.danthis.backend.domain.communitycomment.CommunityComment;
+import com.danthis.backend.domain.communitypost.CommunityPost;
+import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
+import com.danthis.backend.domain.mapping.userdancer.UserDancer;
+import com.danthis.backend.domain.mapping.usergenre.UserGenre;
+import com.danthis.backend.domain.mapping.wishlist.WishList;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,4 +47,25 @@ public class User extends BaseEntity {
   private String phoneNumber;
 
   private String profileImage;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<ClassReview> classReviews;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<CommunityPost> communityPosts;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<CommunityComment> communityComments;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<DanceClassBooking> danceClassBookings;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<UserDancer> userDancers;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<UserGenre> userGenres;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<WishList> wishLists;
 }
