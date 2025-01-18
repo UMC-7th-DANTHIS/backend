@@ -15,4 +15,8 @@ public class UserManager {
     user.deactivate();
     userRepository.save(user);
   }
+
+  public void saveUser(User user) {
+    userRepository.save(user);
+  }
 }

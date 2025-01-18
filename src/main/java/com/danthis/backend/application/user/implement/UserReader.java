@@ -17,4 +17,8 @@ public class UserReader {
     return userRepository.findById(userId)
                          .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
   }
+
+  public boolean isNicknameAvailable(String nickname) {
+    return !userRepository.existsByNickname(nickname);
+  }
 }
