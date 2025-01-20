@@ -14,7 +14,9 @@ public enum ErrorCode {
   INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
   INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 엑세스 토큰입니다."),
   NOT_EXIST_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "존재하지 않는 리프레시 토큰입니다."),
-  ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
+  ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
+
+  USER_DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "찜이 돼있지 않은 댄서입니다.");
 
   private final HttpStatus httpStatus;
   private final String message;
