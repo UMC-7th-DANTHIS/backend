@@ -13,7 +13,7 @@ import lombok.Getter;
 public class DanceClassCreateRequest {
 
   @NotBlank(message = "수업 이름은 필수 입력값입니다.")
-  @Size(max = 50, message = "수업 이름은 최대 50자까지 가능합니다.")
+  @Size(max = 20, message = "수업 이름은 최대 20자까지 가능합니다.")
   private String className;
 
   @NotNull(message = "회당 가격은 필수 입력값입니다.")
@@ -28,11 +28,11 @@ public class DanceClassCreateRequest {
   private Long genre;
 
   @NotBlank(message = "수업 소개는 필수 입력값입니다.")
-  @Size(max = 1000, message = "수업 소개는 최대 500자까지 가능합니다")
+  @Size(max = 1000, message = "수업 소개는 최대 1000자까지 가능합니다")
   private String description;
 
   @NotBlank(message = "수업 추천 대상은 필수 입력값입니다.")
-  @Size(max = 1000, message = "수업 추천 대상은 최대 500자까지 가능합니다")
+  @Size(max = 1000, message = "수업 추천 대상은 최대 1000자까지 가능합니다")
   private String targetAudience;
 
   private Set<Long> hashtags;
@@ -41,6 +41,9 @@ public class DanceClassCreateRequest {
 
   @NotBlank(message = "수업 추천 대상은 필수 입력값입니다.")
   private String videoUrl;
+
+  @NotNull(message = "댄서 ID는 필수 입력값입니다.")
+  private Long dancerId;
 
   public DanceClassCreateServiceRequest toServiceRequest() {
     return DanceClassCreateServiceRequest.builder()
@@ -53,6 +56,7 @@ public class DanceClassCreateRequest {
                                          .hashtags(hashtags)
                                          .images(images)
                                          .videoUrl(videoUrl)
+                                         .dancerId(dancerId)
                                          .build();
   }
 }

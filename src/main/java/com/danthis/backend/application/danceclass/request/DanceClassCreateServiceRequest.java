@@ -17,4 +17,5 @@ public class DanceClassCreateServiceRequest {
   private Set<Long> hashtags;
   private Set<String> images;
   private String videoUrl;
+  private Long dancerId;
 }
