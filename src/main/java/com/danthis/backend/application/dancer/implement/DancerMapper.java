@@ -4,7 +4,6 @@ import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.dancer.dancerimage.repository.DancerImageRepository;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.genre.repository.GenreRepository;
-import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.mapping.dancergenre.repository.DancerGenreRepository;
 import java.util.Optional;
 import java.util.Set;
