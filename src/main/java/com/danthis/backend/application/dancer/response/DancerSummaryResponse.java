@@ -1,6 +1,5 @@
 package com.danthis.backend.application.dancer.response;
 
-import java.util.List;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
