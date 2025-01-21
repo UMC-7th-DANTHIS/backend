@@ -5,7 +5,6 @@ import com.danthis.backend.application.user.response.UserPostsResponse.Paginatio
 import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
 import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.communitypost.communitypostimage.CommunityPostImage;
-import com.danthis.backend.domain.communitypost.repository.CommunityPostRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
