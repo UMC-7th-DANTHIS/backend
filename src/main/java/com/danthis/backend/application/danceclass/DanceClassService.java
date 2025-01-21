@@ -37,7 +37,7 @@ public class DanceClassService {
 
     DanceClass danceClass = danceClassMapper.mapToEntity(request, genre, dancer);
     danceClassManager.saveDanceClass(danceClass);
-    
+
     Set<DanceClassHashtag> hashtagMappings = danceClassMapper.mapToHashtags(danceClass, hashtags);
     danceClassManager.saveDanceClassHashtags(hashtagMappings);
 
