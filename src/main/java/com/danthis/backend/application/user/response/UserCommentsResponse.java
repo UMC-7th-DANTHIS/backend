@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class UserCommentsResponse {
 
-  private List<CommentDto> posts;
+  private List<CommentDto> comments;
   private PaginationDto pagination;
 
   @Getter

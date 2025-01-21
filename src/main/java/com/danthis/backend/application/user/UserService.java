@@ -1,15 +1,20 @@
 package com.danthis.backend.application.user;
 
+import com.danthis.backend.application.comment.implement.CommentManager;
+import com.danthis.backend.application.comment.implement.CommentReader;
 import com.danthis.backend.application.post.implement.PostManager;
 import com.danthis.backend.application.post.implement.PostReader;
 import com.danthis.backend.application.user.implement.UserManager;
 import com.danthis.backend.application.user.implement.UserPreferenceMapper;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
+import com.danthis.backend.application.user.response.UserCommentsResponse;
+import com.danthis.backend.application.user.response.UserCommentsResponse.CommentDto;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse.PaginationDto;
 import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
+import com.danthis.backend.domain.communitycomment.CommunityComment;
 import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
@@ -36,6 +41,8 @@ public class UserService {
   private final UserPreferenceMapper userPreferenceMapper;
   private final PostReader postReader;
   private final PostManager postManager;
+  private final CommentReader commentReader;
+  private final CommentManager commentManager;
 
   @Transactional
   public void updateUserInfo(Long userId, UserUpdateServiceRequest request) {
@@ -94,5 +101,18 @@ public class UserService {
     );
 
     return postManager.createUserPostsResponse(postDtoList, pagination);
+  }
+
+  @Transactional
+  public UserCommentsResponse getUserComments(Long userId, Integer page, Integer size) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<CommunityComment> comments = commentReader.readCommentsByUserId(userId, pageable);
+    List<CommentDto> commentDtoList = commentManager.toCommentDtoList(comments.getContent());
+    UserCommentsResponse.PaginationDto pagination = commentManager.createPagination(
+        comments.getNumber(),
+        comments.getTotalPages()
+    );
+
+    return commentManager.createUserCommentsResponse(commentDtoList, pagination);
   }
 }
