@@ -17,6 +17,7 @@ public enum ErrorCode {
   ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
   DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "댄서를 찾을 수 없습니다."),
+  GENRE_NOT_FOUND(HttpStatus.NOT_FOUND, "댄스 장르를 찾을 수 없습니다."),
   USER_DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "찜이 되어있지 않은 댄서입니다."),
   USER_DANCER_EXIST(HttpStatus.BAD_REQUEST, "이미 찜이 되어있는 댄서입니다.");
 
