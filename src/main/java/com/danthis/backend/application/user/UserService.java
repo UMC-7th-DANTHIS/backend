@@ -95,12 +95,12 @@ public class UserService {
     Pageable pageable = PageRequest.of(page, size);
     Page<CommunityPost> posts = postReader.readPostsByUserId(userId, pageable);
     List<PostDto> postDtoList = postManager.toPostDtoList(posts.getContent());
-    PaginationDto pagination = postManager.createPagination(
+    PaginationDto pagination = postManager.toPagination(
         posts.getNumber(),
         posts.getTotalPages()
     );
 
-    return postManager.createUserPostsResponse(postDtoList, pagination);
+    return postManager.toUserPostsResponse(postDtoList, pagination);
   }
 
   @Transactional
@@ -108,11 +108,11 @@ public class UserService {
     Pageable pageable = PageRequest.of(page, size);
     Page<CommunityComment> comments = commentReader.readCommentsByUserId(userId, pageable);
     List<CommentDto> commentDtoList = commentManager.toCommentDtoList(comments.getContent());
-    UserCommentsResponse.PaginationDto pagination = commentManager.createPagination(
+    UserCommentsResponse.PaginationDto pagination = commentManager.toPagination(
         comments.getNumber(),
         comments.getTotalPages()
     );
 
-    return commentManager.createUserCommentsResponse(commentDtoList, pagination);
+    return commentManager.toUserCommentsResponse(commentDtoList, pagination);
   }
 }

@@ -27,14 +27,14 @@ public class PostManager {
                          .toList();
   }
 
-  public PaginationDto createPagination(Integer currentPage, Integer totalPages) {
+  public PaginationDto toPagination(Integer currentPage, Integer totalPages) {
     return PaginationDto.builder()
                         .currentPage(currentPage)
                         .totalPages(totalPages)
                         .build();
   }
 
-  public UserPostsResponse createUserPostsResponse(List<PostDto> postDtoList,
+  public UserPostsResponse toUserPostsResponse(List<PostDto> postDtoList,
       PaginationDto pagination) {
     return UserPostsResponse.builder()
                             .posts(postDtoList)

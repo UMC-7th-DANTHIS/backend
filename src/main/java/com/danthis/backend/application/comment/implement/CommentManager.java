@@ -23,14 +23,14 @@ public class CommentManager {
                             .toList();
   }
 
-  public PaginationDto createPagination(Integer currentPage, Integer totalPages) {
+  public PaginationDto toPagination(Integer currentPage, Integer totalPages) {
     return PaginationDto.builder()
                         .currentPage(currentPage)
                         .totalPages(totalPages)
                         .build();
   }
 
-  public UserCommentsResponse createUserCommentsResponse(List<CommentDto> commentDtoList,
+  public UserCommentsResponse toUserCommentsResponse(List<CommentDto> commentDtoList,
       PaginationDto pagination) {
     return UserCommentsResponse.builder()
                                .comments(commentDtoList)
