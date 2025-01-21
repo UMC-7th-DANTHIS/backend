@@ -1,19 +1,29 @@
 package com.danthis.backend.application.user;
 
+import com.danthis.backend.application.post.implement.PostManager;
+import com.danthis.backend.application.post.implement.PostReader;
 import com.danthis.backend.application.user.implement.UserManager;
 import com.danthis.backend.application.user.implement.UserPreferenceMapper;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
 import com.danthis.backend.application.user.response.UserInfoResponse;
+import com.danthis.backend.application.user.response.UserPostsResponse;
+import com.danthis.backend.application.user.response.UserPostsResponse.PaginationDto;
+import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
+import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.mapping.usergenre.UserGenre;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -24,6 +34,8 @@ public class UserService {
   private final UserReader userReader;
   private final UserManager userManager;
   private final UserPreferenceMapper userPreferenceMapper;
+  private final PostReader postReader;
+  private final PostManager postManager;
 
   @Transactional
   public void updateUserInfo(Long userId, UserUpdateServiceRequest request) {
@@ -69,5 +81,18 @@ public class UserService {
                                                  .map(userDancer -> userDancer.getDancer().getId())
                                                  .toList())
                            .build();
+  }
+
+  @Transactional
+  public UserPostsResponse getUserPosts(Long userId, Integer page, Integer size) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<CommunityPost> posts = postReader.readPostsByUserId(userId, pageable);
+    List<PostDto> postDtoList = postManager.toPostDtoList(posts.getContent());
+    PaginationDto pagination = postManager.createPagination(
+        posts.getNumber(),
+        posts.getTotalPages()
+    );
+
+    return postManager.createUserPostsResponse(postDtoList, pagination);
   }
 }
