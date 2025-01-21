@@ -4,6 +4,8 @@ import com.danthis.backend.application.danceclass.implement.DanceClassManager;
 import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
+import com.danthis.backend.common.exception.BusinessException;
+import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -33,7 +35,7 @@ public class DanceClassService {
     Set<Hashtag> hashtags = danceClassReader.readHashtagsByIds(request.getHashtags());
     Dancer dancer = dancerRepository.findById(request.getDancerId())
                                     .orElseThrow(
-                                        () -> new IllegalArgumentException("Invalid Dancer ID"));
+                                        () -> new BusinessException(ErrorCode.DANCER_NOT_FOUND));
 
     DanceClass danceClass = danceClassMapper.mapToEntity(request, genre, dancer);
     danceClassManager.saveDanceClass(danceClass);

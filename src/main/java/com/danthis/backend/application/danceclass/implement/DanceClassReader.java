@@ -1,5 +1,7 @@
 package com.danthis.backend.application.danceclass.implement;
 
+import com.danthis.backend.common.exception.BusinessException;
+import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.genre.repository.GenreRepository;
 import com.danthis.backend.domain.hashtag.Hashtag;
@@ -19,7 +21,7 @@ public class DanceClassReader {
 
   public Genre readGenreById(Long genreId) {
     return genreRepository.findById(genreId)
-                          .orElseThrow(() -> new IllegalArgumentException("Invalid Genre ID"));
+                          .orElseThrow(() -> new BusinessException(ErrorCode.GENRE_NOT_FOUND));
   }
 
   public Set<Hashtag> readHashtagsByIds(Set<Long> hashtagIds) {
