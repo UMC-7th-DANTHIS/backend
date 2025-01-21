@@ -26,6 +26,5 @@ public class UserCommentsResponse {
 
     private Integer currentPage;
     private Integer totalPages;
-    private Long totalResults;
   }
 }

@@ -27,6 +27,5 @@ public class UserPostsResponse {
 
     private Integer currentPage;
     private Integer totalPages;
-    private Long totalResults;
   }
 }
