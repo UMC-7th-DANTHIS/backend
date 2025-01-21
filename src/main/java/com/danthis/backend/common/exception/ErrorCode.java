@@ -16,7 +16,9 @@ public enum ErrorCode {
   NOT_EXIST_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "존재하지 않는 리프레시 토큰입니다."),
   ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
-  USER_DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "찜이 돼있지 않은 댄서입니다.");
+  DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "댄서를 찾을 수 없습니다."),
+  USER_DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "찜이 되어있지 않은 댄서입니다."),
+  USER_DANCER_EXIST(HttpStatus.BAD_REQUEST, "이미 찜이 되어있는 댄서입니다.");
 
   private final HttpStatus httpStatus;
   private final String message;

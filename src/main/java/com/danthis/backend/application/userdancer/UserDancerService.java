@@ -1,8 +1,11 @@
 package com.danthis.backend.application.userdancer;
 
+import com.danthis.backend.application.dancer.implement.DancerReader;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.userdancer.implement.UserDancerManager;
 import com.danthis.backend.application.userdancer.implement.UserDancerReader;
+import com.danthis.backend.common.exception.BusinessException;
+import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.user.User;
@@ -25,7 +28,12 @@ public class UserDancerService {
   public void addFavoriteDancer(Long userId, Long dancerId) {
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
+
+    if (userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null) {
+      throw new BusinessException(ErrorCode.USER_DANCER_NOT_FOUND);
+    }
     UserDancer userDancer = userDancerManager.createFromIds(user, dancer);
+
     userDancerManager.saveUserDancer(userDancer);
   }
 
@@ -33,7 +41,8 @@ public class UserDancerService {
   public void removeFavoriteDancer(Long userId, Long dancerId) {
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
-    UserDancer userDancer = userDancerReader.readUserDancerByUserIdAndDancerId(user, dancer);
+    UserDancer userDancer = userDancerReader.readUserDancerByUserAndDancer(user, dancer);
+    
     userDancerManager.deleteUserDancer(userDancer);
   }
 }
