@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PostManager {
 
-  private final CommunityPostRepository communityPostRepository;
-
   public List<PostDto> toPostDtoList(List<CommunityPost> communityPosts) {
     return communityPosts.stream()
                          .map(communityPost -> PostDto.builder()

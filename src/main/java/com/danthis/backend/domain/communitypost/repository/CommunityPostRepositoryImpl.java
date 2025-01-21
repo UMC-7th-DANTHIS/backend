@@ -14,9 +14,8 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class CommunityPostRepositoryImpl implements CommunityPostRepositoryCustom {
 
-  private final JPAQueryFactory queryFactory;
-  private final QCommunityPost communityPost = QCommunityPost.communityPost;
   private final JPAQueryFactory jpaQueryFactory;
+  private final QCommunityPost communityPost = QCommunityPost.communityPost;
 
   @Override
   public Page<CommunityPost> findByUserId(Long userId, Pageable pageable) {
