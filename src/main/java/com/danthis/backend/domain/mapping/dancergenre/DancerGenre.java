@@ -29,13 +29,4 @@ public class DancerGenre extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "genre_id")
   private Genre genre;
-
-  public static Set<DancerGenre> createFromIds(Dancer dancer, Set<Genre> genres) {
-    return genres.stream()
-                 .map(genre -> DancerGenre.builder()
-                                          .dancer(dancer)
-                                          .genre(genre)
-                                          .build())
-                 .collect(Collectors.toSet());
-  }
 }
