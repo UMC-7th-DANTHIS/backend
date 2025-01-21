@@ -6,5 +6,5 @@ import com.danthis.backend.domain.user.User;
 
 public interface UserDancerRepositoryCustom {
 
-  UserDancer findUserDancerByUserIdAndDancerId(User user, Dancer dancer);
+  UserDancer findUserDancerByUserAndDancer(User user, Dancer dancer);
 }

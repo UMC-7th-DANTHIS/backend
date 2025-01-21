@@ -19,7 +19,7 @@ public class UserDancerRepositoryImpl implements UserDancerRepositoryCustom {
   private final QUserDancer userDancer = QUserDancer.userDancer;
 
   @Override
-  public UserDancer findUserDancerByUserIdAndDancerId(User user, Dancer dancer) {
+  public UserDancer findUserDancerByUserAndDancer(User user, Dancer dancer) {
     return Optional.ofNullable(jpaQueryFactory.selectFrom(userDancer)
                                               .where(userDancer.user.eq(user)
                                                                     .and(userDancer.dancer.eq(

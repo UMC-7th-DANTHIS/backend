@@ -13,7 +13,7 @@ public class UserDancerReader {
 
   private final UserDancerRepository userDancerRepository;
 
-  public UserDancer readUserDancerByUserIdAndDancerId(User user, Dancer dancer) {
-    return userDancerRepository.findUserDancerByUserIdAndDancerId(user, dancer);
+  public UserDancer readUserDancerByUserAndDancer(User user, Dancer dancer) {
+    return userDancerRepository.findUserDancerByUserAndDancer(user, dancer);
   }
 }
