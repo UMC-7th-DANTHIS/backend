@@ -4,6 +4,8 @@ import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
 import com.danthis.backend.application.user.UserService;
 import com.danthis.backend.application.user.response.UserInfoResponse;
+import com.danthis.backend.application.user.response.UserPostsResponse;
+import com.danthis.backend.application.user.response.UserCommentsResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,6 +50,28 @@ public class UserController {
   @AssignCurrentUserInfo
   public ApiResponse<UserInfoResponse> getUserInfo(CurrentUserInfo userInfo) {
     UserInfoResponse response = userService.getUserInfo(userInfo.getUserId());
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "유저의 게시글 조회 API", description = "유저가 쓴 게시글을 조회합니다.")
+  @GetMapping("/posts")
+  @AssignCurrentUserInfo
+  public ApiResponse<UserPostsResponse> getUserPosts(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "4") Integer size) {
+    UserPostsResponse response = userService.getUserPosts(userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "유저의 댓글 조회 API", description = "유저가 쓴 댓글을 조회합니다.")
+  @GetMapping("/comments")
+  @AssignCurrentUserInfo
+  public ApiResponse<UserCommentsResponse> getUserComments(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "6") Integer size) {
+    UserCommentsResponse response = userService.getUserComments(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 }
