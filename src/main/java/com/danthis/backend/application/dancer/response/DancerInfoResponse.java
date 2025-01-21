@@ -15,5 +15,5 @@ public class DancerInfoResponse {
   private String history;
   private String openChatUrl;
   private List<Long> favoriteGenres;
-  private List<Long> imageUrlList;
+  private List<String> imageUrlList;
 }
