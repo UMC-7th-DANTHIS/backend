@@ -1,8 +1,8 @@
 package com.danthis.backend.application.post.implement;
 
-import com.danthis.backend.application.user.response.UserPostsResponse;
-import com.danthis.backend.application.user.response.UserPostsResponse.PaginationDto;
-import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.PaginationDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.PostDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.UserPostsResponse;
 import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.communitypost.communitypostimage.CommunityPostImage;
 import java.util.List;

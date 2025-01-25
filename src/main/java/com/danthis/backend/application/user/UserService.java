@@ -8,12 +8,12 @@ import com.danthis.backend.application.user.implement.UserManager;
 import com.danthis.backend.application.user.implement.UserPreferenceMapper;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
-import com.danthis.backend.application.user.response.UserCommentsResponse;
-import com.danthis.backend.application.user.response.UserCommentsResponse.CommentDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.CommentDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.PaginationDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.PostDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.UserCommentsResponse;
+import com.danthis.backend.application.user.response.UserCommunityResponse.UserPostsResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
-import com.danthis.backend.application.user.response.UserPostsResponse;
-import com.danthis.backend.application.user.response.UserPostsResponse.PaginationDto;
-import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
 import com.danthis.backend.domain.communitycomment.CommunityComment;
 import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -108,7 +108,7 @@ public class UserService {
     Pageable pageable = PageRequest.of(page, size);
     Page<CommunityComment> comments = commentReader.readCommentsByUserId(userId, pageable);
     List<CommentDto> commentDtoList = commentManager.toCommentDtoList(comments.getContent());
-    UserCommentsResponse.PaginationDto pagination = commentManager.toPagination(
+    PaginationDto pagination = commentManager.toPagination(
         comments.getNumber(),
         comments.getTotalPages()
     );

@@ -1,8 +1,8 @@
 package com.danthis.backend.application.comment.implement;
 
-import com.danthis.backend.application.user.response.UserCommentsResponse;
-import com.danthis.backend.application.user.response.UserCommentsResponse.CommentDto;
-import com.danthis.backend.application.user.response.UserCommentsResponse.PaginationDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.CommentDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.PaginationDto;
+import com.danthis.backend.application.user.response.UserCommunityResponse.UserCommentsResponse;
 import com.danthis.backend.domain.communitycomment.CommunityComment;
 import java.util.List;
 import lombok.Getter;
