@@ -1,0 +1,23 @@
+services:
+  springboot:
+    container_name: danthis
+    image: iamjunseoplee/danthis:latest
+    ports:
+      - 8080:8080
+    environment:
+     SPRING_PROFILES_ACTIVE: dev-env
+    networks:
+      - my_network
+
+  redis:
+    image: redis
+    container_name: redis-cache
+    command: ["redis-server", "--port", "6379"]
+    ports:
+      - 6379:6379
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
