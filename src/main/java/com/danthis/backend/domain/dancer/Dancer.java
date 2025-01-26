@@ -40,17 +40,16 @@ public class Dancer extends BaseEntity {
   @Column(nullable = false, length = 50)
   private String dancerName;
 
-  @Column(nullable = false, length = 50)
+  @Column(nullable = false, length = 20)
   private String instargramId;
 
-  @Column(nullable = false, length = 10)
+  @Column(nullable = false, length = 80)
   private String bio;
 
-  @Column(nullable = false, length = 10)
+  @Column(nullable = false, length = 1000)
   private String history;
 
-  private String dancerImage;
-
+  @Column(nullable = false, length = 255)
   private String openChatUrl;
 
   private Boolean isApproved;
@@ -81,9 +80,6 @@ public class Dancer extends BaseEntity {
 
   public void updateHistory(String history) {
     this.history = history;
-  }
-
-  public void updateDancerImage(String dancerImage) {
   }
 
   public void updateOpenChatUrl(String openChatUrl) {
