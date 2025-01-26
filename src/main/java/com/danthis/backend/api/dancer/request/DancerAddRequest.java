@@ -2,6 +2,7 @@ package com.danthis.backend.api.dancer.request;
 
 import com.danthis.backend.application.dancer.request.DancerAddServiceRequest;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import java.util.Set;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.Getter;
 public class DancerAddRequest {
 
   @NotBlank(message = "댄서 이름은 필수 입력값입니다.")
-  @Size(max = 50, message = "댄서 이름은 최대 50자까지 가능합니다.")
+  @Size(message = "댄서 이름은 최대 50자까지 가능합니다.")
   private String dancerName;
 
   @NotBlank(message = "인스타그램 계정은 필수 입력값입니다.")
@@ -25,10 +26,10 @@ public class DancerAddRequest {
   @NotBlank(message = "댄서 이력은 필수 입력값입니다.")
   private String history;
 
-  @NotBlank(message = "주 장르는 필수 입력값입니다.")
+  @NotEmpty(message = "주 장르는 필수 입력값입니다.")
   private Set<Long> preferredGenres;
 
-  @NotBlank(message = "댄서 사진은 필수 입력값입니다.")
+  @NotEmpty(message = "댄서 사진은 필수 입력값입니다.")
   private Set<String> dancerImages;
 
   public DancerAddServiceRequest toServiceRequest() {

@@ -34,6 +34,7 @@ public class DancerManager {
                  .bio(request.getBio())
                  .history(request.getHistory())
                  .isApproved(permission)
+                 .openChatUrl(request.getOpenChatUrl())
                  .build();
   }
 
