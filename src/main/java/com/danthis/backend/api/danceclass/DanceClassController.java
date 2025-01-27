@@ -7,12 +7,14 @@ import com.danthis.backend.application.danceclass.response.DanceClassReadService
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,6 +37,18 @@ public class DanceClassController {
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassDetails(
       @PathVariable Long classId) {
     DanceClassReadServiceResponse response = danceClassService.getDanceClassDetail(classId);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "댄스 수업 단일 조회 리뷰 목록 API", description = "댄스 수업 리뷰 목록 섹션을 조회합니다.")
+  @GetMapping("/{classId}/reviews")
+  public ApiResponse<DanceClassReadServiceResponse> getDanceClassReviews(
+      @PathVariable Long classId,
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "5") @Min(1) Integer size
+  ) {
+    DanceClassReadServiceResponse response = danceClassService.getDanceClassReviews(classId, page,
+        size);
     return ApiResponse.OK(response);
   }
 }

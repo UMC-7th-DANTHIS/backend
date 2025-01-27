@@ -2,6 +2,8 @@ package com.danthis.backend.application.danceclass.implement;
 
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
+import com.danthis.backend.domain.classreview.ClassReview;
+import com.danthis.backend.domain.classreview.classreviewimage.ClassReviewImage;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -11,6 +13,7 @@ import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -50,7 +53,7 @@ public class DanceClassMapper {
                     .collect(Collectors.toSet());
   }
 
-  public DanceClassReadServiceResponse toDanceClassReadServiceResponse(DanceClass danceClass) {
+  public DanceClassReadServiceResponse toDanceClassDetailsResponse(DanceClass danceClass) {
     return DanceClassReadServiceResponse.builder()
                                         .id(danceClass.getId())
                                         .className(danceClass.getClassName())
@@ -59,6 +62,22 @@ public class DanceClassMapper {
                                         .pricePerSession(danceClass.getPricePerSession())
                                         .difficulty(danceClass.getDifficulty())
                                         .details(mapDetails(danceClass))
+                                        .build();
+  }
+
+  public DanceClassReadServiceResponse toDanceClassReviewsResponse(DanceClass danceClass,
+      Page<ClassReview> reviewsPage) {
+    return DanceClassReadServiceResponse.builder()
+                                        .id(danceClass.getId())
+                                        .className(danceClass.getClassName())
+                                        .dancer(mapDancer(danceClass))
+                                        .genre(danceClass.getGenre().getId())
+                                        .pricePerSession(danceClass.getPricePerSession())
+                                        .difficulty(danceClass.getDifficulty())
+                                        .classReviews(reviewsPage.getContent().stream()
+                                                                 .map(this::toClassReviewResponse)
+                                                                 .collect(Collectors.toList()))
+                                        .pagination(toPaginationResponse(reviewsPage))
                                         .build();
   }
 
@@ -80,7 +99,7 @@ public class DanceClassMapper {
                                                                     .stream()
                                                                     .map(
                                                                         DanceClassHashtag::getHashtag)
-                                                                    .map(h -> h.getId())
+                                                                    .map(Hashtag::getId)
                                                                     .collect(Collectors.toList()))
                                                 .danceClassImages(danceClass.getDanceClassImages()
                                                                             .stream()
@@ -89,5 +108,30 @@ public class DanceClassMapper {
                                                                             .collect(
                                                                                 Collectors.toList()))
                                                 .build();
+  }
+
+  public DanceClassReadServiceResponse.ClassReview toClassReviewResponse(ClassReview review) {
+    return DanceClassReadServiceResponse.ClassReview.builder()
+                                                    .id(review.getId())
+                                                    .author(review.getUser().getNickname())
+                                                    .title(review.getTitle())
+                                                    .content(review.getContent())
+                                                    .rating(review.getRating())
+                                                    .createdAt(review.getCreatedAt())
+                                                    .reviewImages(
+                                                        review.getClassReviewImages().stream()
+                                                              .map(ClassReviewImage::getImageUrl)
+                                                              .collect(Collectors.toList()))
+                                                    .build();
+  }
+
+  private DanceClassReadServiceResponse.Pagination toPaginationResponse(
+      Page<ClassReview> reviewsPage) {
+    return DanceClassReadServiceResponse.Pagination.builder()
+                                                   .currentPage(reviewsPage.getNumber() + 1)
+                                                   .totalPages(reviewsPage.getTotalPages())
+                                                   .totalReviews(
+                                                       (int) reviewsPage.getTotalElements())
+                                                   .build();
   }
 }

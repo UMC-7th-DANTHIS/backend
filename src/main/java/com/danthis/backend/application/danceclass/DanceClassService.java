@@ -7,6 +7,8 @@ import com.danthis.backend.application.danceclass.request.DanceClassCreateServic
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
+import com.danthis.backend.domain.classreview.ClassReview;
+import com.danthis.backend.domain.classreview.repository.ClassReviewRepository;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -17,6 +19,8 @@ import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +33,7 @@ public class DanceClassService {
   private final DanceClassReader danceClassReader;
   private final DanceClassMapper danceClassMapper;
   private final DancerRepository dancerRepository;
+  private final ClassReviewRepository classReviewRepository;
 
   @Transactional
   public void createDanceClass(DanceClassCreateServiceRequest request) {
@@ -53,6 +58,16 @@ public class DanceClassService {
   @Transactional
   public DanceClassReadServiceResponse getDanceClassDetail(Long classId) {
     DanceClass danceClass = danceClassReader.readDanceClassById(classId);
-    return danceClassMapper.toDanceClassReadServiceResponse(danceClass);
+    return danceClassMapper.toDanceClassDetailsResponse(danceClass);
+  }
+
+  @Transactional
+  public DanceClassReadServiceResponse getDanceClassReviews(Long classId, Integer page,
+      Integer size) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<ClassReview> reviewsPage = classReviewRepository.findByDanceClassId(classId, pageable);
+
+    return danceClassMapper.toDanceClassReviewsResponse(danceClass, reviewsPage);
   }
 }
