@@ -41,3 +41,7 @@ application-dev.yml
 application-jwt.yml
 application-local.yml
 application-oauth.yml
+application-s3.yml
+
+### key file ###
+danthis.pem
