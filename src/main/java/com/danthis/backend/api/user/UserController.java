@@ -4,6 +4,7 @@ import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
 import com.danthis.backend.application.favorite.FavoriteService;
 import com.danthis.backend.application.favorite.response.FavoriteInfoResponse.FavoriteDancerListInfo;
+import com.danthis.backend.application.favorite.response.FavoriteInfoResponse.WishListInfo;
 import com.danthis.backend.application.user.UserService;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
@@ -62,6 +63,18 @@ public class UserController {
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "6") Integer size) {
     FavoriteDancerListInfo response = favoriteService.getFavoriteDancers(
+        userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "찜한 수업 조회 API", description = "유저가 찜한 수업 정보를 조회합니다.")
+  @GetMapping("/dance-classes")
+  @AssignCurrentUserInfo
+  public ApiResponse<WishListInfo> getWishlist(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "6") Integer size) {
+    WishListInfo response = favoriteService.getWishList(
         userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
