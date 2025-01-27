@@ -2,6 +2,8 @@ package com.danthis.backend.api.user;
 
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
+import com.danthis.backend.application.favorite.FavoriteService;
+import com.danthis.backend.application.favorite.response.FavoriteInfoResponse.FavoriteDancerListInfo;
 import com.danthis.backend.application.user.UserService;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final UserService userService;
+  private final FavoriteService favoriteService;
 
   @Operation(summary = "유저 정보 수정 API", description = "유저의 정보를 수정합니다.")
   @PutMapping
@@ -48,6 +51,18 @@ public class UserController {
   @AssignCurrentUserInfo
   public ApiResponse<UserInfoResponse> getUserInfo(CurrentUserInfo userInfo) {
     UserInfoResponse response = userService.getUserInfo(userInfo.getUserId());
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "찜한 댄서 조회 API", description = "유저가 찜한 댄서 정보를 조회합니다.")
+  @GetMapping("/dancers")
+  @AssignCurrentUserInfo
+  public ApiResponse<FavoriteDancerListInfo> getFavoriteDancers(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "6") Integer size) {
+    FavoriteDancerListInfo response = favoriteService.getFavoriteDancers(
+        userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 }
