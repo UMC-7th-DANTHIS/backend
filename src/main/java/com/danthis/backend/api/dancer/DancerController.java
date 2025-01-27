@@ -60,7 +60,7 @@ public class DancerController {
   public ApiResponse<DancerSummaryListResponse> getDancersByGenre(
       @PathVariable("genreId") Long genreId,
       @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "6") Integer size) {
+      @RequestParam(defaultValue = "9") Integer size) {
     DancerSummaryListResponse response = dancerService.getDancersByGenre(genreId, page, size);
     return ApiResponse.OK(response);
   }
