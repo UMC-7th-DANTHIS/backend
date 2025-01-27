@@ -3,10 +3,13 @@ package com.danthis.backend.api.danceclass;
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.danceclass.request.DanceClassCreateRequest;
 import com.danthis.backend.application.danceclass.DanceClassService;
+import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("dance-classes")
 @RequiredArgsConstructor
-@Tag(name = "댄스 수업", description = "댄스 수업 관렴 API")
+@Tag(name = "댄스 수업", description = "댄스 수업 관련 API")
 public class DanceClassController {
 
   private final DanceClassService danceClassService;
@@ -25,5 +28,13 @@ public class DanceClassController {
   public ApiResponse<Void> registerDanceClass(@RequestBody @Valid DanceClassCreateRequest request) {
     danceClassService.createDanceClass(request.toServiceRequest());
     return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "댄스 수업 단일 조회 상세 설명 API", description = "댄스 수업 상세 설명 섹션을 조회합니다.")
+  @GetMapping("/{classId}")
+  public ApiResponse<DanceClassReadServiceResponse> getDanceClassDetails(
+      @PathVariable Long classId) {
+    DanceClassReadServiceResponse response = danceClassService.getDanceClassDetail(classId);
+    return ApiResponse.OK(response);
   }
 }

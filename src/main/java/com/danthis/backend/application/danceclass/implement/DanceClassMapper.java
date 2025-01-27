@@ -1,6 +1,7 @@
 package com.danthis.backend.application.danceclass.implement;
 
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
+import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -47,5 +48,46 @@ public class DanceClassMapper {
                                                .imageUrl(url)
                                                .build())
                     .collect(Collectors.toSet());
+  }
+
+  public DanceClassReadServiceResponse toDanceClassReadServiceResponse(DanceClass danceClass) {
+    return DanceClassReadServiceResponse.builder()
+                                        .id(danceClass.getId())
+                                        .className(danceClass.getClassName())
+                                        .dancer(mapDancer(danceClass))
+                                        .genre(danceClass.getGenre().getId())
+                                        .pricePerSession(danceClass.getPricePerSession())
+                                        .difficulty(danceClass.getDifficulty())
+                                        .details(mapDetails(danceClass))
+                                        .build();
+  }
+
+  private DanceClassReadServiceResponse.Dancer mapDancer(DanceClass danceClass) {
+    return DanceClassReadServiceResponse.Dancer.builder()
+                                               .name(danceClass.getDancer().getDancerName())
+                                               .profileImage(
+                                                   danceClass.getDancer().getDancerImage())
+                                               .openChatUrl(danceClass.getDancer().getOpenChatUrl())
+                                               .build();
+  }
+
+  private DanceClassReadServiceResponse.Details mapDetails(DanceClass danceClass) {
+    return DanceClassReadServiceResponse.Details.builder()
+                                                .videoUrl(danceClass.getClassVideoUrl())
+                                                .description(danceClass.getClassDescription())
+                                                .targetAudience(danceClass.getTargetAudience())
+                                                .hashtags(danceClass.getDanceClassHashtags()
+                                                                    .stream()
+                                                                    .map(
+                                                                        DanceClassHashtag::getHashtag)
+                                                                    .map(h -> h.getId())
+                                                                    .collect(Collectors.toList()))
+                                                .danceClassImages(danceClass.getDanceClassImages()
+                                                                            .stream()
+                                                                            .map(
+                                                                                DanceClassImage::getImageUrl)
+                                                                            .collect(
+                                                                                Collectors.toList()))
+                                                .build();
   }
 }

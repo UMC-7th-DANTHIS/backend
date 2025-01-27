@@ -4,6 +4,7 @@ import com.danthis.backend.application.danceclass.implement.DanceClassManager;
 import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
+import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.danceclass.DanceClass;
@@ -47,5 +48,11 @@ public class DanceClassService {
       Set<DanceClassImage> images = danceClassMapper.mapToImages(danceClass, request.getImages());
       danceClassManager.saveDanceClassImages(images);
     }
+  }
+
+  @Transactional
+  public DanceClassReadServiceResponse getDanceClassDetail(Long classId) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    return danceClassMapper.toDanceClassReadServiceResponse(danceClass);
   }
 }
