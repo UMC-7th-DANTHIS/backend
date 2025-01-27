@@ -77,6 +77,7 @@ public class DancerService {
     return DancerInfoResponse.builder()
                              .id(dancer.getId())
                              .dancerName(dancer.getDancerName())
+                             .instargramId(dancer.getInstargramId())
                              .bio(dancer.getBio())
                              .history(dancer.getHistory())
                              .openChatUrl(dancer.getOpenChatUrl())
