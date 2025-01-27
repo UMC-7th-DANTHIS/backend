@@ -63,11 +63,10 @@ public class DancerManager {
                   .collect(Collectors.toList());
   }
 
-  public PaginationInfo createPagination(Integer number, Integer totalPages, Long totalElements) {
+  public PaginationInfo createPagination(Integer number, Integer totalPages) {
     return PaginationInfo.builder()
                          .currentPage(number)
                          .totalPages(totalPages)
-                         .totalResults(totalElements)
                          .build();
   }
 

@@ -25,15 +25,10 @@ public class DancerGenreRepositoryImpl implements DancerGenreRepositoryCustom {
                                                     .limit(pageable.getPageSize())
                                                     .fetch();
 
-    Long total = jpaQueryFactory.select(dancerGenre.count())
-                                .from(dancerGenre)
-                                .where(dancerGenre.genre.id.eq(genreId))
-                                .fetchOne();
+    Long totalElements = jpaQueryFactory.selectFrom(dancerGenre)
+                                        .where(dancerGenre.genre.id.eq(genreId))
+                                        .fetchCount();
 
-    if (total == null) {
-      total = 0L;
-    }
-
-    return new PageImpl<>(dancerGenres, pageable, total);
+    return new PageImpl<>(dancerGenres, pageable, totalElements);
   }
 }

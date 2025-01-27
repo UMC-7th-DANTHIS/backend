@@ -9,5 +9,4 @@ public class PaginationInfo {
 
   private Integer currentPage;
   private Integer totalPages;
-  private Long totalResults;
 }
