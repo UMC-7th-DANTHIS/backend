@@ -30,23 +30,42 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # Secrets 값 확인
-      - name: Validate Secrets
+      - name: Load and Validate Secrets
+        env:
+          APPLICATION_DEV_YML: ${{ secrets.APPLICATION_DEV_YML }}
+          APPLICATION_OAUTH_YML: ${{ secrets.APPLICATION_OAUTH_YML }}
+          APPLICATION_JWT_YML: ${{ secrets.APPLICATION_JWT_YML }}
+          APPLICATION_S3_YML: ${{ secrets.APPLICATION_S3_YML }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
         run: |
+          echo "Debugging Secrets..."
           if [ -z "$APPLICATION_DEV_YML" ]; then
             echo "Error: APPLICATION_DEV_YML is not set."
             exit 1
+          else
+            echo "APPLICATION_DEV_YML is set."
           fi
+
           if [ -z "$APPLICATION_OAUTH_YML" ]; then
             echo "Error: APPLICATION_OAUTH_YML is not set."
             exit 1
+          else
+            echo "APPLICATION_OAUTH_YML is set."
           fi
+
           if [ -z "$APPLICATION_JWT_YML" ]; then
             echo "Error: APPLICATION_JWT_YML is not set."
             exit 1
+          else
+            echo "APPLICATION_JWT_YML is set."
           fi
+
           if [ -z "$APPLICATION_S3_YML" ]; then
             echo "Error: APPLICATION_S3_YML is not set."
             exit 1
+          else
+            echo "APPLICATION_S3_YML is set."
           fi
 
       - name: Copy dev Secret
@@ -54,28 +73,36 @@ jobs:
           DEV_SECRET: ${{ secrets.APPLICATION_DEV_YML }}
           DEV_SECRET_DIR: src/main/resources
           DEV_SECRET_DIR_FILE_NAME: application-dev.yml
-        run: echo $DEV_SECRET | base64 --decode >> $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
+        run: |
+          mkdir -p $DEV_SECRET_DIR
+          echo $DEV_SECRET | base64 --decode > $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
 
       - name: Copy oauth Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_OAUTH_YML }}
           DEV_SECRET_DIR: src/main/resources
           DEV_SECRET_DIR_FILE_NAME: application-oauth.yml
-        run: echo $DEV_SECRET | base64 --decode >> $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
+        run: |
+          mkdir -p $DEV_SECRET_DIR
+          echo $DEV_SECRET | base64 --decode > $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
 
       - name: Copy jwt Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_JWT_YML }}
           DEV_SECRET_DIR: src/main/resources
           DEV_SECRET_DIR_FILE_NAME: application-jwt.yml
-        run: echo $DEV_SECRET | base64 --decode >> $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
+        run: |
+          mkdir -p $DEV_SECRET_DIR
+          echo $DEV_SECRET | base64 --decode > $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
 
       - name: Copy s3 Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_S3_YML }}
           DEV_SECRET_DIR: src/main/resources
           DEV_SECRET_DIR_FILE_NAME: application-s3.yml
-        run: echo $DEV_SECRET | base64 --decode >> $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
+        run: |
+          mkdir -p $DEV_SECRET_DIR
+          echo $DEV_SECRET | base64 --decode > $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
 
       - name: ./gradlew 권한 설정
         run: chmod +x ./gradlew
@@ -117,7 +144,6 @@ jobs:
           source: "./docker-compose.yml"
           target: "./danthis"
 
-      # 복사된 docker-compose.yml 확인
       - name: Verify docker-compose.yml on EC2
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -147,7 +173,6 @@ jobs:
             sudo docker-compose up -d
             sudo docker image prune -f
 
-      # 서비스 상태 확인
       - name: Verify Service is Running
         uses: appleboy/ssh-action@v0.1.6
         with:
