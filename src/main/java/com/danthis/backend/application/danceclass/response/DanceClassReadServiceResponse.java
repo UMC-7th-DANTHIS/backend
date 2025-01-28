@@ -18,6 +18,8 @@ public class DanceClassReadServiceResponse {
   private Details details;
   private List<ClassReview> classReviews;
   private Pagination pagination;
+  private Double averageRating;
+  private Long totalReviews;
 
   @Getter
   @Builder

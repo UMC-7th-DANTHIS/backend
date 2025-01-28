@@ -70,4 +70,14 @@ public class DanceClassService {
 
     return danceClassMapper.toDanceClassReviewsResponse(danceClass, reviewsPage);
   }
+
+  @Transactional
+  public DanceClassReadServiceResponse getDanceClassAverageRating(Long classId) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+
+    Double averageRating = classReviewRepository.calculateAverageRatingByDanceClassId(classId);
+    long totalReviews = classReviewRepository.countByDanceClassId(classId);
+
+    return danceClassMapper.toDanceClassRatingResponse(danceClass, averageRating, totalReviews);
+  }
 }

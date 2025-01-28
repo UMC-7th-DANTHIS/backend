@@ -51,4 +51,12 @@ public class DanceClassController {
         size);
     return ApiResponse.OK(response);
   }
+
+  @Operation(summary = "댄스 수업 평균 별점 조회 API", description = "댄스 수업의 전체 평균 별점을 조회합니다.")
+  @GetMapping("{classId}/rating")
+  public ApiResponse<DanceClassReadServiceResponse> getDanceClassAverageRating(
+      @PathVariable Long classId) {
+    DanceClassReadServiceResponse response = danceClassService.getDanceClassAverageRating(classId);
+    return ApiResponse.OK(response);
+  }
 }

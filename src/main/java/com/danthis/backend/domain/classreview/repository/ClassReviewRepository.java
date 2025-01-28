@@ -11,4 +11,6 @@ public interface ClassReviewRepository extends JpaRepository<ClassReview, Long>,
     ClassReviewRepositoryCustom {
 
   Page<ClassReview> findByDanceClassId(Long classId, Pageable pageable);
+
+  Long countByDanceClassId(Long classId);
 }

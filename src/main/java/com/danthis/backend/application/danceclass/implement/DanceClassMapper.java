@@ -134,4 +134,22 @@ public class DanceClassMapper {
                                                        (int) reviewsPage.getTotalElements())
                                                    .build();
   }
+
+  public DanceClassReadServiceResponse toDanceClassRatingResponse(DanceClass danceClass,
+      Double averageRating,
+      long totalReviews) {
+    return DanceClassReadServiceResponse.builder()
+                                        .id(danceClass.getId())
+                                        .className(danceClass.getClassName())
+                                        .dancer(mapDancer(danceClass))
+                                        .genre(danceClass.getGenre().getId())
+                                        .pricePerSession(danceClass.getPricePerSession())
+                                        .difficulty(danceClass.getDifficulty())
+                                        .averageRating(
+                                            averageRating != null ? Math.round(averageRating * 10)
+                                                / 10.0
+                                                : 0.0)
+                                        .totalReviews(totalReviews)
+                                        .build();
+  }
 }
