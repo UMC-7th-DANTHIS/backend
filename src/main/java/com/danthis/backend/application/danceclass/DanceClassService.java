@@ -6,14 +6,12 @@ import com.danthis.backend.application.danceclass.implement.DanceClassReader;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
-import com.danthis.backend.common.exception.BusinessException;
-import com.danthis.backend.common.exception.ErrorCode;
+import com.danthis.backend.application.dancer.implement.DancerReader;
+import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.domain.classreview.ClassReview;
-import com.danthis.backend.domain.classreview.repository.ClassReviewRepository;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.dancer.Dancer;
-import com.danthis.backend.domain.dancer.repository.DancerRepository;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
@@ -33,16 +31,14 @@ public class DanceClassService {
   private final DanceClassManager danceClassManager;
   private final DanceClassReader danceClassReader;
   private final DanceClassMapper danceClassMapper;
-  private final DancerRepository dancerRepository;
-  private final ClassReviewRepository classReviewRepository;
+  private final DancerReader dancerReader;
+  private final ReviewReader reviewReader;
 
   @Transactional
   public void createDanceClass(DanceClassCreateServiceRequest request) {
     Genre genre = danceClassReader.readGenreById(request.getGenre());
     Set<Hashtag> hashtags = danceClassReader.readHashtagsByIds(request.getHashtags());
-    Dancer dancer = dancerRepository.findById(request.getDancerId())
-                                    .orElseThrow(
-                                        () -> new BusinessException(ErrorCode.DANCER_NOT_FOUND));
+    Dancer dancer = dancerReader.readDancerById(request.getDancerId());
 
     DanceClass danceClass = danceClassMapper.mapToEntity(request, genre, dancer);
     danceClassManager.saveDanceClass(danceClass);
@@ -67,7 +63,7 @@ public class DanceClassService {
       Integer size) {
     DanceClass danceClass = danceClassReader.readDanceClassById(classId);
     PageRequest pageable = PageRequest.of(page - 1, size);
-    Page<ClassReview> reviewsPage = classReviewRepository.findByDanceClassId(classId, pageable);
+    Page<ClassReview> reviewsPage = reviewReader.readReviewsByClassId(classId, pageable);
 
     return danceClassMapper.toDanceClassReviewsResponse(danceClass, reviewsPage);
   }
@@ -76,8 +72,8 @@ public class DanceClassService {
   public DanceClassReadServiceResponse getDanceClassAverageRating(Long classId) {
     DanceClass danceClass = danceClassReader.readDanceClassById(classId);
 
-    Double averageRating = classReviewRepository.calculateAverageRatingByDanceClassId(classId);
-    long totalReviews = classReviewRepository.countByDanceClassId(classId);
+    Double averageRating = reviewReader.calculateAverageRatingByDanceClassId(classId);
+    long totalReviews = reviewReader.countReviewsByDanceClassId(classId);
 
     return danceClassMapper.toDanceClassRatingResponse(danceClass, averageRating, totalReviews);
   }
