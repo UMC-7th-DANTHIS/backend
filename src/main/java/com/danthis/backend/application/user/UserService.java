@@ -31,7 +31,6 @@ public class UserService {
 
     user.updateNickname(request.getNickname());
     user.updateGender(request.getGender());
-    user.updateEmail(request.getEmail());
     user.updatePhoneNumber(request.getPhoneNumber());
     user.updateProfileImage(request.getProfileImage());
 
