@@ -11,7 +11,6 @@ import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.repository.DanceClassRepository;
 import com.danthis.backend.domain.user.User;
 import com.danthis.backend.domain.user.repository.UserRepository;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -49,16 +48,14 @@ public class ReviewManager {
     );
 
     if (request.getReviewImages() != null && !request.getReviewImages().isEmpty()) {
-      Set<ClassReviewImage> reviewImages = request.getReviewImages().stream()
-                                                  .map(imageUrl -> ClassReviewImage.builder()
-                                                                                   .classReview(
-                                                                                       classReview)
-                                                                                   .imageUrl(
-                                                                                       imageUrl)
-                                                                                   .build())
-                                                  .collect(Collectors.toSet());
-
-      classReviewImageRepository.saveAll(reviewImages);
+      classReviewImageRepository.saveAll(
+          request.getReviewImages().stream()
+                 .map(imageUrl -> ClassReviewImage.builder()
+                                                  .classReview(classReview)
+                                                  .imageUrl(imageUrl)
+                                                  .build())
+                 .collect(Collectors.toSet())
+      );
     }
   }
 }
