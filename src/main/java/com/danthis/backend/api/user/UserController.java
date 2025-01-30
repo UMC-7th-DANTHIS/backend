@@ -35,6 +35,14 @@ public class UserController {
     return ApiResponse.OK(null);
   }
 
+  @Operation(summary = "유저 정보 조회 API", description = "유저 정보를 조회합니다.")
+  @GetMapping("/me")
+  @AssignCurrentUserInfo
+  public ApiResponse<UserInfoResponse> getUserInfo(CurrentUserInfo userInfo) {
+    UserInfoResponse response = userService.getUserInfo(userInfo.getUserId());
+    return ApiResponse.OK(response);
+  }
+
   @Operation(summary = "닉네임 중복 검사 API", description = "사용 가능한 닉네임인지 확인합니다.")
   @GetMapping("/check-nickname")
   public ApiResponse<Boolean> checkNicknameAvailability(
@@ -43,11 +51,10 @@ public class UserController {
     return ApiResponse.OK(isAvailable);
   }
 
-  @Operation(summary = "유저 정보 조회 API", description = "유저 정보를 조회합니다.")
-  @GetMapping("/me")
-  @AssignCurrentUserInfo
-  public ApiResponse<UserInfoResponse> getUserInfo(CurrentUserInfo userInfo) {
-    UserInfoResponse response = userService.getUserInfo(userInfo.getUserId());
-    return ApiResponse.OK(response);
+  @Operation(summary = "이메일 존재 여부 확인 API", description = "해당 이메일이 이미 등록된 계정인지 확인합니다.")
+  @GetMapping("/check-email")
+  public ApiResponse<Boolean> checkEmailAvailability(@RequestParam String email) {
+    boolean isRegistered = userService.isEmailRegistered(email);
+    return ApiResponse.OK(isRegistered);
   }
 }

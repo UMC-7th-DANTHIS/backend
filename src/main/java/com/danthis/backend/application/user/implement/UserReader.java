@@ -21,4 +21,8 @@ public class UserReader {
   public boolean isNicknameAvailable(String nickname) {
     return !userRepository.existsByNickname(nickname);
   }
+
+  public boolean existsByEmail(String email) {
+    return userRepository.existsByEmail(email);
+  }
 }
