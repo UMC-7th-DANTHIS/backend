@@ -10,7 +10,6 @@ public class UserUpdateServiceRequest {
 
   private String nickname;
   private String gender;
-  private String email;
   private String phoneNumber;
   private String profileImage;
   private Set<Long> preferredGenres;
