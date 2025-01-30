@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  springboot:
+    container_name: danthis
+    image: iamjunseoplee/danthis:latest
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-env
+    depends_on:
+      - redis
+    networks:
+      - my_network
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis
+    container_name: redis-cache
+    command: ["redis-server", "--port", "6379"]
+    ports:
+      - 6379:6379
+    networks:
+      - my_network
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  my_network:
+    driver: bridge
