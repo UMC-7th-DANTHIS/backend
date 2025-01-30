@@ -4,6 +4,7 @@ import com.danthis.backend.application.danceclass.implement.DanceClassManager;
 import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
+import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
@@ -79,5 +80,13 @@ public class DanceClassService {
     long totalReviews = classReviewRepository.countByDanceClassId(classId);
 
     return danceClassMapper.toDanceClassRatingResponse(danceClass, averageRating, totalReviews);
+  }
+
+  @Transactional
+  public DanceClassListServiceResponse getDanceClassList(Long genreId, int page, int size) {
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<DanceClass> danceClasses = danceClassReader.readDanceClasses(genreId, pageable);
+
+    return DanceClassListServiceResponse.from(danceClasses);
   }
 }

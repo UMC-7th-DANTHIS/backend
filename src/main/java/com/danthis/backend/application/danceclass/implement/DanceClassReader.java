@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -39,5 +41,12 @@ public class DanceClassReader {
     return danceClassRepository.findById(classId)
                                .orElseThrow(
                                    () -> new BusinessException(ErrorCode.DANCE_CLASS_NOT_FOUND));
+  }
+
+  public Page<DanceClass> readDanceClasses(Long genreId, PageRequest pageable) {
+    if (genreId != null) {
+      return danceClassRepository.findByGenreId(genreId, pageable);
+    }
+    return danceClassRepository.findAll(pageable);
   }
 }

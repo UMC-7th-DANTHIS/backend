@@ -3,6 +3,7 @@ package com.danthis.backend.api.danceclass;
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.danceclass.request.DanceClassCreateRequest;
 import com.danthis.backend.application.danceclass.DanceClassService;
+import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,6 +58,17 @@ public class DanceClassController {
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassAverageRating(
       @PathVariable Long classId) {
     DanceClassReadServiceResponse response = danceClassService.getDanceClassAverageRating(classId);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "댄스 수업 목록 조회 API", description = "장르를 필터링하여 댄스 수업 목록을 조회합니다.")
+  @GetMapping("/")
+  public ApiResponse<DanceClassListServiceResponse> getDanceClasses(
+      @RequestParam(required = false) Long genre,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "9") @Min(1) int size) {
+
+    DanceClassListServiceResponse response = danceClassService.getDanceClassList(genre, page, size);
     return ApiResponse.OK(response);
   }
 }
