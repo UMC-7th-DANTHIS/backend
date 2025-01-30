@@ -60,7 +60,7 @@ public class DancerManager {
                                                                 .map(DancerImage::getImageUrl)
                                                                 .collect(Collectors.toSet()))
                                                       .build())
-                  .collect(Collectors.toList());
+                  .toList();
   }
 
   public PaginationInfo createPagination(Integer number, Integer totalPages) {
