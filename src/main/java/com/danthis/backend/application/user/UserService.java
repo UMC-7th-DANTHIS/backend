@@ -1,8 +1,10 @@
 package com.danthis.backend.application.user;
 
-import com.danthis.backend.application.user.implement.UserManager;
-import com.danthis.backend.application.user.implement.UserPreferenceMapper;
-import com.danthis.backend.application.user.implement.UserReader;
+import com.danthis.backend.application.user.implement.*;
+import com.danthis.backend.application.user.implement.mapping.UserDancerManager;
+import com.danthis.backend.application.user.implement.mapping.UserDancerReader;
+import com.danthis.backend.application.user.implement.mapping.UserGenreManager;
+import com.danthis.backend.application.user.implement.mapping.UserGenreReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -24,6 +26,10 @@ public class UserService {
   private final UserReader userReader;
   private final UserManager userManager;
   private final UserPreferenceMapper userPreferenceMapper;
+  private final UserGenreManager userGenreManager;
+  private final UserDancerManager userDancerManager;
+  private final UserGenreReader userGenreReader;
+  private final UserDancerReader userDancerReader;
 
   @Transactional
   public void updateUserInfo(Long userId, UserUpdateServiceRequest request) {
@@ -37,8 +43,14 @@ public class UserService {
     Set<Genre> genres = userPreferenceMapper.mapToGenres(request.getPreferredGenres());
     Set<Dancer> dancers = userPreferenceMapper.mapToDancers(request.getPreferredDancers());
 
+    userGenreManager.deleteByUser(user);
+    userDancerManager.deleteByUser(user);
+
     Set<UserGenre> updatedGenres = UserGenre.createFromIds(user, genres);
     Set<UserDancer> updatedDancers = UserDancer.createFromIds(user, dancers);
+
+    userGenreManager.saveAll(updatedGenres);
+    userDancerManager.saveAll(updatedDancers);
 
     user.updatePreferredGenres(updatedGenres);
     user.updatePreferredDancers(updatedDancers);
@@ -61,12 +73,8 @@ public class UserService {
                            .email(user.getEmail())
                            .phoneNumber(user.getPhoneNumber())
                            .profileImage(user.getProfileImage())
-                           .preferredGenres(user.getUserGenres().stream()
-                                                .map(userGenre -> userGenre.getGenre().getId())
-                                                .toList())
-                           .preferredDancers(user.getUserDancers().stream()
-                                                 .map(userDancer -> userDancer.getDancer().getId())
-                                                 .toList())
+                           .preferredGenres(userGenreReader.findGenreIdsByUser(user))
+                           .preferredDancers(userDancerReader.findDancerIdsByUser(user))
                            .build();
   }
 }
