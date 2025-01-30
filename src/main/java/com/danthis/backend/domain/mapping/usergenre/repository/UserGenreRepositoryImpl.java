@@ -13,7 +13,7 @@ public class UserGenreRepositoryImpl implements UserGenreRepositoryCustom {
 
   private final JPAQueryFactory jpaQueryFactory;
   private final QUserGenre userGenre = QUserGenre.userGenre;
-  
+
   @Override
   public void deleteByUser(Long userId) {
     jpaQueryFactory.delete(userGenre)
