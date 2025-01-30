@@ -28,10 +28,6 @@ public class UserDancerService {
   public void addFavoriteDancer(Long userId, Long dancerId) {
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
-
-    if (userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null) {
-      throw new BusinessException(ErrorCode.USER_DANCER_EXIST);
-    }
     UserDancer userDancer = userDancerManager.createFromIds(user, dancer);
 
     userDancerManager.saveUserDancer(userDancer);
