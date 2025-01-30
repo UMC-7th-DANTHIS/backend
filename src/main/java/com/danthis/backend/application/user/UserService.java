@@ -59,11 +59,6 @@ public class UserService {
   }
 
   @Transactional
-  public boolean isNicknameAvailable(String nickname) {
-    return userReader.isNicknameAvailable(nickname);
-  }
-
-  @Transactional
   public UserInfoResponse getUserInfo(Long userId) {
     User user = userReader.readUserById(userId);
 
@@ -76,5 +71,15 @@ public class UserService {
                            .preferredGenres(userGenreReader.findGenreIdsByUser(user))
                            .preferredDancers(userDancerReader.findDancerIdsByUser(user))
                            .build();
+  }
+
+  @Transactional
+  public boolean isEmailRegistered(String email) {
+    return userReader.existsByEmail(email);
+  }
+
+  @Transactional
+  public boolean isNicknameAvailable(String nickname) {
+    return userReader.isNicknameAvailable(nickname);
   }
 }
