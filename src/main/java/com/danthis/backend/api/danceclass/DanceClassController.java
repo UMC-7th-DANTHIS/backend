@@ -5,6 +5,7 @@ import com.danthis.backend.api.danceclass.request.DanceClassCreateRequest;
 import com.danthis.backend.application.danceclass.DanceClassService;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
+import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ public class DanceClassController {
 
   @Operation(summary = "댄스 수업 등록 API", description = "새로운 댄스 수업을 등록합니다.")
   @PostMapping()
+  @AssignCurrentUserInfo
   public ApiResponse<Void> registerDanceClass(@RequestBody @Valid DanceClassCreateRequest request) {
     danceClassService.createDanceClass(request.toServiceRequest());
     return ApiResponse.OK(null);
@@ -35,6 +37,7 @@ public class DanceClassController {
 
   @Operation(summary = "댄스 수업 단일 조회 상세 설명 API", description = "댄스 수업 상세 설명 섹션을 조회합니다.")
   @GetMapping("/{classId}")
+  @AssignCurrentUserInfo
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassDetails(
       @PathVariable Long classId) {
     DanceClassReadServiceResponse response = danceClassService.getDanceClassDetail(classId);
@@ -43,6 +46,7 @@ public class DanceClassController {
 
   @Operation(summary = "댄스 수업 단일 조회 리뷰 목록 API", description = "댄스 수업 리뷰 목록 섹션을 조회합니다.")
   @GetMapping("/{classId}/reviews")
+  @AssignCurrentUserInfo
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassReviews(
       @PathVariable Long classId,
       @RequestParam(defaultValue = "1") @Min(1) Integer page,
@@ -55,6 +59,7 @@ public class DanceClassController {
 
   @Operation(summary = "댄스 수업 평균 별점 조회 API", description = "댄스 수업의 전체 평균 별점을 조회합니다.")
   @GetMapping("{classId}/rating")
+  @AssignCurrentUserInfo
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassAverageRating(
       @PathVariable Long classId) {
     DanceClassReadServiceResponse response = danceClassService.getDanceClassAverageRating(classId);
@@ -63,6 +68,7 @@ public class DanceClassController {
 
   @Operation(summary = "댄스 수업 목록 조회 API", description = "장르를 필터링하여 댄스 수업 목록을 조회합니다.")
   @GetMapping()
+  @AssignCurrentUserInfo
   public ApiResponse<DanceClassListServiceResponse> getDanceClasses(
       @RequestParam(required = false) Long genre,
       @RequestParam(defaultValue = "1") @Min(1) int page,
