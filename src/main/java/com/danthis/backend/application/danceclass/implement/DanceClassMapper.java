@@ -76,7 +76,7 @@ public class DanceClassMapper {
                                         .difficulty(danceClass.getDifficulty())
                                         .classReviews(reviewsPage.getContent().stream()
                                                                  .map(this::toClassReviewResponse)
-                                                                 .collect(Collectors.toList()))
+                                                                 .toList())
                                         .pagination(toPaginationResponse(reviewsPage))
                                         .build();
   }
@@ -85,7 +85,7 @@ public class DanceClassMapper {
     return DanceClassReadServiceResponse.Dancer.builder()
                                                .name(danceClass.getDancer().getDancerName())
                                                .profileImage(
-                                                   danceClass.getDancer().getDancerImage())
+                                                   danceClass.getDancer().getProfileImage())
                                                .openChatUrl(danceClass.getDancer().getOpenChatUrl())
                                                .build();
   }
@@ -100,13 +100,12 @@ public class DanceClassMapper {
                                                                     .map(
                                                                         DanceClassHashtag::getHashtag)
                                                                     .map(Hashtag::getId)
-                                                                    .collect(Collectors.toList()))
+                                                                    .toList())
                                                 .danceClassImages(danceClass.getDanceClassImages()
                                                                             .stream()
                                                                             .map(
                                                                                 DanceClassImage::getImageUrl)
-                                                                            .collect(
-                                                                                Collectors.toList()))
+                                                                            .toList())
                                                 .build();
   }
 
@@ -121,7 +120,7 @@ public class DanceClassMapper {
                                                     .reviewImages(
                                                         review.getClassReviewImages().stream()
                                                               .map(ClassReviewImage::getImageUrl)
-                                                              .collect(Collectors.toList()))
+                                                              .toList())
                                                     .build();
   }
 
