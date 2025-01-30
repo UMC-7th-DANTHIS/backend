@@ -15,7 +15,7 @@ public class DancerReader {
 
   private final DancerRepository dancerRepository;
 
-  public Dancer readById(Long dancerId) {
+  public Dancer readDancerById(Long dancerId) {
     return dancerRepository.findById(dancerId)
                            .orElseThrow(() -> new BusinessException(ErrorCode.DANCER_NOT_FOUND));
   }
