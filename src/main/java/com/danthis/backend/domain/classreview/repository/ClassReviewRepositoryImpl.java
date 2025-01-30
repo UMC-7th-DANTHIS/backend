@@ -16,7 +16,8 @@ public class ClassReviewRepositoryImpl implements ClassReviewRepositoryCustom {
   public Double calculateAverageRatingByDanceClassId(Long classId) {
     return jpaQueryFactory.select(classReview.rating.avg())
                           .from(classReview)
-                          .where(classReview.danceClass.id.eq(classId))
+                          .where(classReview.danceClass.id.eq(classId)
+                                                          .and(classReview.isActive.eq(true)))
                           .fetchOne();
   }
 }
