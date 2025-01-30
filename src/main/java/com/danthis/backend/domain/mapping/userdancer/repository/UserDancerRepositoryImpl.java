@@ -1,13 +1,9 @@
 package com.danthis.backend.domain.mapping.userdancer.repository;
 
-import com.danthis.backend.common.exception.BusinessException;
-import com.danthis.backend.common.exception.ErrorCode;
-import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.userdancer.QUserDancer;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
-import com.danthis.backend.domain.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.Optional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,12 +15,18 @@ public class UserDancerRepositoryImpl implements UserDancerRepositoryCustom {
   private final QUserDancer userDancer = QUserDancer.userDancer;
 
   @Override
-  public UserDancer findUserDancerByUserAndDancer(User user, Dancer dancer) {
-    return Optional.ofNullable(jpaQueryFactory.selectFrom(userDancer)
-                                              .where(userDancer.user.eq(user)
-                                                                    .and(userDancer.dancer.eq(
-                                                                        dancer)))
-                                              .fetchFirst())
-                   .orElseThrow(() -> new BusinessException(ErrorCode.USER_DANCER_NOT_FOUND));
+  public void deleteByUser(Long userId) {
+    jpaQueryFactory.delete(userDancer)
+                   .where(userDancer.user.id.eq(userId)
+                                            .and(userDancer.isActive.eq(true)))
+                   .execute();
+  }
+
+  @Override
+  public List<UserDancer> findByUser(Long userId) {
+    return jpaQueryFactory.selectFrom(userDancer)
+                          .where(userDancer.user.id.eq(userId)
+                                                   .and(userDancer.isActive.eq(true)))
+                          .fetch();
   }
 }
