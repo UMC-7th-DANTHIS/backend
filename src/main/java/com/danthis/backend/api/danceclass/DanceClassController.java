@@ -27,7 +27,7 @@ public class DanceClassController {
   private final DanceClassService danceClassService;
 
   @Operation(summary = "댄스 수업 등록 API", description = "새로운 댄스 수업을 등록합니다.")
-  @PostMapping("/")
+  @PostMapping()
   public ApiResponse<Void> registerDanceClass(@RequestBody @Valid DanceClassCreateRequest request) {
     danceClassService.createDanceClass(request.toServiceRequest());
     return ApiResponse.OK(null);
@@ -62,7 +62,7 @@ public class DanceClassController {
   }
 
   @Operation(summary = "댄스 수업 목록 조회 API", description = "장르를 필터링하여 댄스 수업 목록을 조회합니다.")
-  @GetMapping("/")
+  @GetMapping()
   public ApiResponse<DanceClassListServiceResponse> getDanceClasses(
       @RequestParam(required = false) Long genre,
       @RequestParam(defaultValue = "1") @Min(1) int page,
