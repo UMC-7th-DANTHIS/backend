@@ -2,8 +2,7 @@ package com.danthis.backend.application.user.implement;
 
 import com.danthis.backend.domain.mapping.usergenre.repository.UserGenreRepository;
 import com.danthis.backend.domain.user.User;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +12,9 @@ public class UserGenreReader {
 
   private final UserGenreRepository userGenreRepository;
 
-  public Set<Long> findGenreIdsByUser(User user) {
+  public List<Long> findGenreIdsByUser(User user) {
     return userGenreRepository.findByUser(user).stream()
                               .map(userGenre -> userGenre.getGenre().getId())
-                              .collect(Collectors.toSet());
+                              .toList();
   }
 }
