@@ -52,7 +52,7 @@ public class DancerService {
 
   @Transactional
   public Long updateDancerInfo(DancerUpdateServiceRequest request) {
-    Dancer dancer = dancerReader.readById(request.getId());
+    Dancer dancer = dancerReader.readDancerById(request.getId());
 
     Set<Genre> genres = dancerMapper.mapToGenre(request.getPreferredGenres());
     Set<DancerGenre> dancerGenres = dancerMapper.mapToDancerGenre(dancer, genres);
@@ -73,7 +73,7 @@ public class DancerService {
 
   @Transactional
   public DancerInfoResponse getDancerInfo(Long dancerId) {
-    Dancer dancer = dancerReader.readById(dancerId);
+    Dancer dancer = dancerReader.readDancerById(dancerId);
     return DancerInfoResponse.builder()
                              .id(dancer.getId())
                              .dancerName(dancer.getDancerName())
