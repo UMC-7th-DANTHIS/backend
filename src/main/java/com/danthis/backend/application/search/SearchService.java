@@ -2,9 +2,11 @@ package com.danthis.backend.application.search;
 
 import com.danthis.backend.application.search.implement.SearchReader;
 import com.danthis.backend.application.search.response.ClassSearchServiceResponse;
+import com.danthis.backend.application.search.response.CommunityPostSearchServiceResponse;
 import com.danthis.backend.application.search.response.DancerSearchServiceResponse;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
+import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.dancer.Dancer;
 import jakarta.transaction.Transactional;
@@ -43,5 +45,17 @@ public class SearchService {
     Page<Dancer> dancerPage = searchReader.searchDancers(query, pageable);
 
     return DancerSearchServiceResponse.from(query, dancerPage);
+  }
+
+  @Transactional
+  public CommunityPostSearchServiceResponse searchCommunityPosts(String query, int page, int size) {
+    if (query == null || query.trim().isEmpty()) {
+      throw new BusinessException(ErrorCode.INVALID_SEARCH_QUERY);
+    }
+
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<CommunityPost> postPage = searchReader.searchCommunityPosts(query, pageable);
+
+    return CommunityPostSearchServiceResponse.from(query, postPage);
   }
 }

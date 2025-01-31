@@ -3,6 +3,7 @@ package com.danthis.backend.api.search;
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.application.search.SearchService;
 import com.danthis.backend.application.search.response.ClassSearchServiceResponse;
+import com.danthis.backend.application.search.response.CommunityPostSearchServiceResponse;
 import com.danthis.backend.application.search.response.DancerSearchServiceResponse;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
@@ -51,5 +52,19 @@ public class SearchController {
 
     DancerSearchServiceResponse response = searchService.searchDancers(query, page, size);
     return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "커뮤니티 게시글 검색 API", description = "검색어를 포함한 커뮤니티 게시글 목록을 조회합니다.")
+  @GetMapping("/posts")
+  public ApiResponse<CommunityPostSearchServiceResponse> searchCommunityPosts(
+      @RequestParam String query,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "5") @Min(1) int size
+  ) {
+    if (query.trim().isEmpty()) {
+      throw new BusinessException(ErrorCode.INVALID_SEARCH_QUERY);
+    }
+
+    return ApiResponse.OK(searchService.searchCommunityPosts(query, page, size));
   }
 }
