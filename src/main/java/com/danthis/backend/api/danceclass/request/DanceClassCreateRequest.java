@@ -35,6 +35,7 @@ public class DanceClassCreateRequest {
   @Size(max = 1000, message = "수업 추천 대상은 최대 1000자까지 가능합니다")
   private String targetAudience;
 
+  @Size(max = 3, message = "해시태그는 최대 3개까지 선택 가능합니다.")
   private Set<Long> hashtags;
 
   private Set<String> images;
