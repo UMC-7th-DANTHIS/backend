@@ -32,4 +32,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                                    .fetchFirst();
     return count != null;
   }
+
+  @Override
+  public boolean existsByEmail(String email) {
+    Integer count = jpaQueryFactory.selectOne()
+                                   .from(user)
+                                   .where(user.email.eq(email)
+                                                    .and(user.isActive.eq(true)))
+                                   .fetchFirst();
+    return count != null;
+  }
 }
