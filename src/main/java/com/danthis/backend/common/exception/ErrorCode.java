@@ -15,8 +15,11 @@ public enum ErrorCode {
   INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 엑세스 토큰입니다."),
   NOT_EXIST_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "존재하지 않는 리프레시 토큰입니다."),
   ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
+  DANCE_CLASS_NOT_FOUND(HttpStatus.NOT_FOUND, "댄스 수업을 찾을 수 없습니다"),
   DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "댄서를 찾을 수 없습니다."),
-  GENRE_NOT_FOUND(HttpStatus.NOT_FOUND, "댄스 장르를 찾을 수 없습니다.");
+  GENRE_NOT_FOUND(HttpStatus.NOT_FOUND, "댄스 장르를 찾을 수 없습니다."),
+  USER_DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "찜이 되어있지 않은 댄서입니다."),
+  REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다");
 
   private final HttpStatus httpStatus;
   private final String message;

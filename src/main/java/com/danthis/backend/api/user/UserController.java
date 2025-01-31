@@ -39,14 +39,6 @@ public class UserController {
     return ApiResponse.OK(null);
   }
 
-  @Operation(summary = "닉네임 중복 검사 API", description = "사용 가능한 닉네임인지 확인합니다.")
-  @GetMapping("/check-nickname")
-  public ApiResponse<Boolean> checkNicknameAvailability(
-      @RequestParam String nickname) {
-    boolean isAvailable = userService.isNicknameAvailable(nickname);
-    return ApiResponse.OK(isAvailable);
-  }
-
   @Operation(summary = "유저 정보 조회 API", description = "유저 정보를 조회합니다.")
   @GetMapping("/me")
   @AssignCurrentUserInfo
@@ -55,11 +47,27 @@ public class UserController {
     return ApiResponse.OK(response);
   }
 
+  @Operation(summary = "닉네임 중복 검사 API", description = "사용 가능한 닉네임인지 확인합니다.")
+  @GetMapping("/check-nickname")
+  public ApiResponse<Boolean> checkNicknameAvailability(
+      @RequestParam String nickname) {
+    boolean isAvailable = userService.isNicknameAvailable(nickname);
+    return ApiResponse.OK(isAvailable);
+  }
+
+  @Operation(summary = "이메일 존재 여부 확인 API", description = "해당 이메일이 이미 등록된 계정인지 확인합니다.")
+  @GetMapping("/check-email")
+  public ApiResponse<Boolean> checkEmailAvailability(@RequestParam String email) {
+    boolean isRegistered = userService.isEmailRegistered(email);
+    return ApiResponse.OK(isRegistered);
+  }
+
   @Operation(summary = "찜한 댄서 조회 API", description = "유저가 찜한 댄서 정보를 조회합니다.")
   @GetMapping("/dancers")
   @AssignCurrentUserInfo
   public ApiResponse<FavoriteDancerListInfo> getFavoriteDancers(
       CurrentUserInfo userInfo,
+      // Todo: 쿼리파라미터 값 화면설계서와 맞추기
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "6") Integer size) {
     FavoriteDancerListInfo response = favoriteService.getFavoriteDancers(
@@ -72,6 +80,7 @@ public class UserController {
   @AssignCurrentUserInfo
   public ApiResponse<WishListInfo> getWishlist(
       CurrentUserInfo userInfo,
+      // Todo: 쿼리파라미터 값 화면설계서와 맞추기
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "6") Integer size) {
     WishListInfo response = favoriteService.getWishList(

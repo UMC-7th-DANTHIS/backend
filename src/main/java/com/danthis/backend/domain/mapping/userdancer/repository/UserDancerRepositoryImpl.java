@@ -18,6 +18,21 @@ public class UserDancerRepositoryImpl implements UserDancerRepositoryCustom {
   private final QUserDancer userDancer = QUserDancer.userDancer;
 
   @Override
+  public void deleteByUser(Long userId) {
+    jpaQueryFactory.delete(userDancer)
+                   .where(userDancer.user.id.eq(userId)
+                                            .and(userDancer.isActive.eq(true)))
+                   .execute();
+  }
+
+  @Override
+  public List<UserDancer> findByUser(Long userId) {
+    return jpaQueryFactory.selectFrom(userDancer)
+                          .where(userDancer.user.id.eq(userId)
+                                                   .and(userDancer.isActive.eq(true)))
+                          .fetch();
+  }
+
   public Page<UserDancer> findByUserId(Long userId, Pageable pageable) {
     List<UserDancer> userDancers = jpaQueryFactory.selectFrom(userDancer)
                                                   .where(userDancer.user.id.eq(userId))
