@@ -99,4 +99,11 @@ public class Dancer extends BaseEntity {
     this.dancerImages.clear();
     this.dancerImages.addAll(images);
   }
+
+  public String getProfileImage() {
+    return dancerImages.stream()
+                       .findFirst()
+                       .map(DancerImage::getImageUrl)
+                       .orElse(null);
+  }
 }
