@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
 public class DancerManager {
 
   private final DancerRepository dancerRepository;
-  private final DancerGenreRepository dancerGenreRepository;
-  private final DancerImageRepository dancerImageRepository;
 
   public Dancer createDancer(User user, DancerAddServiceRequest request) {
     Boolean permission = true;  // 모든 댄서 가입이 바로 허용된다. 나중에 false로 변경해야 함
@@ -40,14 +38,6 @@ public class DancerManager {
 
   public void saveDancer(Dancer dancer) {
     dancerRepository.save(dancer);
-  }
-
-  public void saveDancerGenre(Set<DancerGenre> dancerGenres) {
-    dancerGenreRepository.saveAll(dancerGenres);
-  }
-
-  public void saveDancerImage(Set<DancerImage> dancerImages) {
-    dancerImageRepository.saveAll(dancerImages);
   }
 
   public List<DancerSummaryResponse> toSummaryInfo(List<Dancer> dancers) {

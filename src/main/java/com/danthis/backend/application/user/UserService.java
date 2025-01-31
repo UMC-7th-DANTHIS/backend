@@ -1,8 +1,11 @@
 package com.danthis.backend.application.user;
 
+import com.danthis.backend.application.dancer.implement.DancerReader;
 import com.danthis.backend.application.user.implement.UserManager;
 import com.danthis.backend.application.user.implement.UserPreferenceMapper;
 import com.danthis.backend.application.user.implement.UserReader;
+import com.danthis.backend.application.user.implement.mapping.UserDancerManager;
+import com.danthis.backend.application.user.implement.mapping.UserDancerReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -24,6 +27,9 @@ public class UserService {
   private final UserReader userReader;
   private final UserManager userManager;
   private final UserPreferenceMapper userPreferenceMapper;
+  private final DancerReader dancerReader;
+  private final UserDancerManager userDancerManager;
+  private final UserDancerReader userDancerReader;
 
   @Transactional
   public void updateUserInfo(Long userId, UserUpdateServiceRequest request) {
@@ -69,5 +75,23 @@ public class UserService {
                                                  .map(userDancer -> userDancer.getDancer().getId())
                                                  .toList())
                            .build();
+  }
+
+  @Transactional
+  public void addFavoriteDancer(Long dancerId, Long userId) {
+    User user = userReader.readUserById(userId);
+    Dancer dancer = dancerReader.readDancerById(dancerId);
+    UserDancer userDancer = userDancerManager.toUserDancer(user, dancer);
+
+    userDancerManager.saveUserDancer(userDancer);
+  }
+
+  @Transactional
+  public void removeFavoriteDancer(Long dancerId, Long userId) {
+    User user = userReader.readUserById(userId);
+    Dancer dancer = dancerReader.readDancerById(dancerId);
+    UserDancer userDancer = userDancerReader.readUserDancerByUserAndDancer(user, dancer);
+
+    userDancerManager.deleteUserDancer(userDancer);
   }
 }

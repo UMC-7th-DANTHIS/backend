@@ -54,10 +54,10 @@ public class Dancer extends BaseEntity {
 
   private Boolean isApproved;
 
-  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
   private Set<DancerGenre> dancerGenres;
 
-  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
   private Set<DancerImage> dancerImages;
 
   @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)

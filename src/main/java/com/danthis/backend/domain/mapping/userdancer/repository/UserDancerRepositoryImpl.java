@@ -20,11 +20,11 @@ public class UserDancerRepositoryImpl implements UserDancerRepositoryCustom {
 
   @Override
   public UserDancer findUserDancerByUserAndDancer(User user, Dancer dancer) {
-    return Optional.ofNullable(jpaQueryFactory.selectFrom(userDancer)
-                                              .where(userDancer.user.eq(user)
-                                                                    .and(userDancer.dancer.eq(
-                                                                        dancer)))
-                                              .fetchFirst())
-                   .orElseThrow(() -> new BusinessException(ErrorCode.USER_DANCER_NOT_FOUND));
+    return jpaQueryFactory.selectFrom(userDancer)
+                          .where(userDancer.user.eq(user)
+                                                .and(userDancer.dancer.eq(dancer)
+                                                                      .and(userDancer.isActive.eq(
+                                                                          true))))
+                          .fetchFirst();
   }
 }

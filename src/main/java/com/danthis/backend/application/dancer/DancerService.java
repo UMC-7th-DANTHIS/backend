@@ -3,13 +3,16 @@ package com.danthis.backend.application.dancer;
 import com.danthis.backend.application.dancer.implement.DancerManager;
 import com.danthis.backend.application.dancer.implement.DancerMapper;
 import com.danthis.backend.application.dancer.implement.DancerReader;
+import com.danthis.backend.application.dancer.implement.mapping.DancerGenreManager;
+import com.danthis.backend.application.dancer.implement.mapping.DancerGenreReader;
+import com.danthis.backend.application.dancer.implement.mapping.DancerImageManager;
+import com.danthis.backend.application.dancer.implement.mapping.DancerImageReader;
 import com.danthis.backend.application.dancer.request.DancerAddServiceRequest;
 import com.danthis.backend.application.dancer.request.DancerUpdateServiceRequest;
 import com.danthis.backend.application.dancer.response.DancerInfoResponse;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
 import com.danthis.backend.application.dancer.response.DancerSummaryResponse;
 import com.danthis.backend.application.dancer.response.PaginationInfo;
-import com.danthis.backend.application.dancergenre.implement.DancerGenreReader;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
@@ -33,6 +36,9 @@ public class DancerService {
   private final DancerMapper dancerMapper;
   private final UserReader userReader;
   private final DancerGenreReader dancerGenreReader;
+  private final DancerGenreManager dancerGenreManager;
+  private final DancerImageManager dancerImageManager;
+  private final DancerImageReader dancerImageReader;
 
   @Transactional
   public Long addDancerInfo(Long userId, DancerAddServiceRequest request) {
@@ -44,8 +50,8 @@ public class DancerService {
     Set<DancerImage> dancerImages = dancerMapper.mapToDancerImage(dancer,
         request.getDancerImages());
 
-    dancerManager.saveDancerGenre(dancerGenres);
-    dancerManager.saveDancerImage(dancerImages);
+    dancerGenreManager.saveAll(dancerGenres);
+    dancerImageManager.saveAll(dancerImages);
 
     return dancer.getId();
   }
@@ -54,16 +60,22 @@ public class DancerService {
   public Long updateDancerInfo(DancerUpdateServiceRequest request) {
     Dancer dancer = dancerReader.readDancerById(request.getId());
 
-    Set<Genre> genres = dancerMapper.mapToGenre(request.getPreferredGenres());
-    Set<DancerGenre> dancerGenres = dancerMapper.mapToDancerGenre(dancer, genres);
-    Set<DancerImage> dancerImages = dancerMapper.mapToDancerImage(dancer,
-        request.getDancerImages());
-
     dancer.updateDancerName(request.getDancerName());
     dancer.updateInstargramId(request.getInstargramId());
     dancer.updateBio(request.getBio());
     dancer.updateHistory(request.getHistory());
     dancer.updateOpenChatUrl(request.getOpenChatUrl());
+
+    Set<Genre> genres = dancerMapper.mapToGenre(request.getPreferredGenres());
+    Set<DancerGenre> dancerGenres = dancerMapper.mapToDancerGenre(dancer, genres);
+    Set<DancerImage> dancerImages = dancerMapper.mapToDancerImage(dancer,
+        request.getDancerImages());
+
+    dancerGenreManager.deleteByDancer(dancer);
+    dancerGenreManager.saveAll(dancerGenres);
+    dancerImageManager.deleteByDancer(dancer);
+    dancerImageManager.saveAll(dancerImages);
+
     dancer.updateDancerGenres(dancerGenres);
     dancer.updateDancerImages(dancerImages);
 
@@ -81,15 +93,8 @@ public class DancerService {
                              .bio(dancer.getBio())
                              .history(dancer.getHistory())
                              .openChatUrl(dancer.getOpenChatUrl())
-                             .favoriteGenres(dancer.getDancerGenres()
-                                                   .stream()
-                                                   .map(dancerGenre -> dancerGenre.getGenre()
-                                                                                  .getId())
-                                                   .toList())
-                             .imageUrlList(dancer.getDancerImages()
-                                                 .stream()
-                                                 .map(DancerImage::getImageUrl)
-                                                 .toList())
+                             .favoriteGenres(dancerGenreReader.findGenreIdByDancer(dancer))
+                             .imageUrlList(dancerImageReader.findImageUrlByDancer(dancer))
                              .build();
   }
 
