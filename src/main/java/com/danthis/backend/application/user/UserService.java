@@ -88,7 +88,7 @@ public class UserService {
   }
 
   @Transactional
-  public void addFavoriteDancer(Long dancerId, Long userId) {
+  public void addFavoriteDancer(Long userId, Long dancerId) {
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
     UserDancer userDancer = userDancerManager.toUserDancer(user, dancer);
@@ -97,7 +97,7 @@ public class UserService {
   }
 
   @Transactional
-  public void removeFavoriteDancer(Long dancerId, Long userId) {
+  public void removeFavoriteDancer(Long userId, Long dancerId) {
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
     UserDancer userDancer = userDancerReader.readUserDancerByUserAndDancer(user, dancer);
