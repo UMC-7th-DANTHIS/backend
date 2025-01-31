@@ -23,7 +23,7 @@ public class ReviewService {
   private final ReviewMapper reviewMapper;
 
   @Transactional
-  public void createReview(Long classId, Long userId, ReviewCreateServiceRequest request) {
+  public void createReview(Long userId, Long classId, ReviewCreateServiceRequest request) {
     DanceClass danceClass = reviewManager.getDanceClassById(classId);
     User user = reviewManager.getUserById(userId);
 
