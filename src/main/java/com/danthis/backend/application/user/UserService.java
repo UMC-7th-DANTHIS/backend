@@ -30,10 +30,10 @@ public class UserService {
   private final UserManager userManager;
   private final UserPreferenceMapper userPreferenceMapper;
   private final DancerReader dancerReader;
-  private final UserDancerManager userDancerManager;
-  private final UserDancerReader userDancerReader;
   private final UserGenreManager userGenreManager;
   private final UserGenreReader userGenreReader;
+  private final UserDancerManager userDancerManager;
+  private final UserDancerReader userDancerReader;
 
   @Transactional
   public void updateUserInfo(Long userId, UserUpdateServiceRequest request) {

@@ -6,7 +6,6 @@ import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.user.User;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
