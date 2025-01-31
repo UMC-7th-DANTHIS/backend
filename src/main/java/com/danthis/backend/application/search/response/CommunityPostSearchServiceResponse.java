@@ -39,13 +39,8 @@ public class CommunityPostSearchServiceResponse {
                                               .map(post -> PostSummary.builder()
                                                                       .id(post.getId())
                                                                       .title(post.getTitle())
-                                                                      .content(
-                                                                          post.getContent().length()
-                                                                              > 100 ?
-                                                                              post.getContent()
-                                                                                  .substring(0, 100)
-                                                                                  + "..."
-                                                                              : post.getContent())
+                                                                      .content(truncateContent(
+                                                                          post.getContent()))
                                                                       .postImages(
                                                                           post.getCommunityPostImages()
                                                                               .stream()
@@ -66,5 +61,13 @@ public class CommunityPostSearchServiceResponse {
                                              .results(postSummaries)
                                              .pagination(paginationInfo)
                                              .build();
+  }
+
+  private static String truncateContent(String content) {
+    int maxLength = 100;
+    if (content.length() <= maxLength) {
+      return content;
+    }
+    return content.substring(0, maxLength) + " ...";
   }
 }
