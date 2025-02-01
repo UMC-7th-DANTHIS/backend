@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WishListManager {
 
-  public WishListResponse toWishListInfo(Page<WishList> wishListPage) {
+  public WishListResponse toWishListResponse(Page<WishList> wishListPage) {
     List<DanceClassInfo> classInfoList = wishListPage.getContent().stream().map(
         wishList -> DanceClassInfo.builder()
                                   .id(wishList.getDanceClass().getId())

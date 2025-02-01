@@ -98,7 +98,7 @@ public class UserService {
     Pageable pageable = PageRequest.of(page, size);
 
     Page<UserDancer> dancers = userDancerReader.readDancersByUserId(userId, pageable);
-    return userDancerManager.toFavoriteDancerListInfo(dancers);
+    return userDancerManager.toFavoriteDancerListResponse(dancers);
   }
 
   @Transactional
@@ -106,6 +106,6 @@ public class UserService {
     Pageable pageable = PageRequest.of(page, size);
 
     Page<WishList> wishLists = wishListReader.readWishListByUserId(userId, pageable);
-    return wishListManager.toWishListInfo(wishLists);
+    return wishListManager.toWishListResponse(wishLists);
   }
 }
