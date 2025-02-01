@@ -38,18 +38,14 @@ public class DancerSearchServiceResponse {
     List<DancerSummary> dancerSummaries = dancerPage.getContent().stream()
                                                     .map(dancer -> DancerSummary.builder()
                                                                                 .id(dancer.getId())
-                                                                                .name(
-                                                                                    dancer.getDancerName())
-                                                                                .profileImage(
-                                                                                    dancer.getDancerImages()
+                                                                                .name(dancer.getDancerName())
+                                                                                .profileImage(dancer.getDancerImages()
                                                                                           .stream()
                                                                                           .map(
                                                                                               dancerImage -> dancerImage.getImageUrl())
                                                                                           .toList())
-                                                                                .instagramId(
-                                                                                    dancer.getInstargramId())
-                                                                                .mainGenres(
-                                                                                    dancer.getDancerGenres()
+                                                                                .instagramId(dancer.getInstargramId())
+                                                                                .mainGenres(dancer.getDancerGenres()
                                                                                           .stream()
                                                                                           .map(
                                                                                               dancerGenre -> dancerGenre.getGenre()

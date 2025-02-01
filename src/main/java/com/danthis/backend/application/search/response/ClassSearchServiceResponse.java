@@ -41,20 +41,12 @@ public class ClassSearchServiceResponse {
                                                                 .map(
                                                                     danceClass -> DanceClassSummary.builder()
                                                                                                    .id(danceClass.getId())
-                                                                                                   .className(
-                                                                                                       danceClass.getClassName())
-                                                                                                   .dancer(
-                                                                                                       danceClass.getDancer()
-                                                                                                                 .getDancerName())
-                                                                                                   .genre(
-                                                                                                       danceClass.getGenre()
-                                                                                                                 .getId())
-                                                                                                   .pricePerSession(
-                                                                                                       danceClass.getPricePerSession())
-                                                                                                   .difficulty(
-                                                                                                       danceClass.getDifficulty())
-                                                                                                   .classImage(
-                                                                                                       danceClass.getDanceClassImages()
+                                                                                                   .className(danceClass.getClassName())
+                                                                                                   .dancer(danceClass.getDancer().getDancerName())
+                                                                                                   .genre(danceClass.getGenre().getId())
+                                                                                                   .pricePerSession(danceClass.getPricePerSession())
+                                                                                                   .difficulty(danceClass.getDifficulty())
+                                                                                                   .classImage(danceClass.getDanceClassImages()
                                                                                                                  .stream()
                                                                                                                  .map(
                                                                                                                      image -> image.getImageUrl())

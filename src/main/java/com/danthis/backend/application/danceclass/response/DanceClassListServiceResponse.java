@@ -34,13 +34,9 @@ public class DanceClassListServiceResponse {
                                                                     .map(
                                                                         danceClass -> DanceClassSummary.builder()
                                                                                                        .id(danceClass.getId())
-                                                                                                       .className(
-                                                                                                           danceClass.getClassName())
-                                                                                                       .dancerName(
-                                                                                                           danceClass.getDancer()
-                                                                                                                     .getDancerName())
-                                                                                                       .thumbnailImage(
-                                                                                                           danceClass.getDanceClassImages()
+                                                                                                       .className(danceClass.getClassName())
+                                                                                                       .dancerName(danceClass.getDancer().getDancerName())
+                                                                                                       .thumbnailImage(danceClass.getDanceClassImages()
                                                                                                                      .stream()
                                                                                                                      .findFirst()
                                                                                                                      .map(
