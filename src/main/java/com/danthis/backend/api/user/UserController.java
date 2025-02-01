@@ -3,6 +3,8 @@ package com.danthis.backend.api.user;
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
 import com.danthis.backend.application.user.UserService;
+import com.danthis.backend.application.user.response.UserFavoriteResponse.FavoriteDancerListResponse;
+import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
@@ -80,5 +82,29 @@ public class UserController {
       @PathVariable("dancerId") Long dancerId) {
     userService.removeFavoriteDancer(userInfo.getUserId(), dancerId);
     return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "찜한 댄서 조회 API", description = "유저가 찜한 댄서 정보를 조회합니다.")
+  @GetMapping("/dancers")
+  @AssignCurrentUserInfo
+  public ApiResponse<FavoriteDancerListResponse> getFavoriteDancers(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "9") Integer size) {
+    FavoriteDancerListResponse response = userService.getFavoriteDancers(
+        userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "찜한 수업 조회 API", description = "유저가 찜한 수업 정보를 조회합니다.")
+  @GetMapping("/dance-classes")
+  @AssignCurrentUserInfo
+  public ApiResponse<WishListResponse> getWishlist(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "9") Integer size) {
+    WishListResponse response = userService.getWishList(
+        userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
   }
 }
