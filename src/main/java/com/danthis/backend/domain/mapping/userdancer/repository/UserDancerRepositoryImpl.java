@@ -21,8 +21,7 @@ public class UserDancerRepositoryImpl implements UserDancerRepositoryCustom {
     return jpaQueryFactory.selectFrom(userDancer)
                           .where(userDancer.user.eq(user)
                                                 .and(userDancer.dancer.eq(dancer)
-                                                                      .and(userDancer.isActive.eq(
-                                                                          true))))
+                                                                      .and(userDancer.isActive.eq(true))))
                           .fetchFirst();
   }
 

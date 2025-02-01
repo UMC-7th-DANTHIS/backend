@@ -68,8 +68,7 @@ public class DancerService {
 
     Set<Genre> genres = dancerMapper.mapToGenre(request.getPreferredGenres());
     Set<DancerGenre> dancerGenres = dancerMapper.mapToDancerGenre(dancer, genres);
-    Set<DancerImage> dancerImages = dancerMapper.mapToDancerImage(dancer,
-        request.getDancerImages());
+    Set<DancerImage> dancerImages = dancerMapper.mapToDancerImage(dancer, request.getDancerImages());
 
     dancerGenreManager.deleteByDancer(dancer);
     dancerGenreManager.saveAll(dancerGenres);

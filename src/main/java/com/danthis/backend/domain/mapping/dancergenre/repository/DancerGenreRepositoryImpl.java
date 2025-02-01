@@ -20,7 +20,8 @@ public class DancerGenreRepositoryImpl implements DancerGenreRepositoryCustom {
   @Override
   public void deleteByDancer(Long dancerId) {
     jpaQueryFactory.delete(dancerGenre)
-                   .where(dancerGenre.dancer.id.eq(dancerId).and(dancerGenre.isActive.eq(true)))
+                   .where(dancerGenre.dancer.id.eq(dancerId)
+                                               .and(dancerGenre.isActive.eq(true)))
                    .execute();
   }
 
@@ -36,17 +37,14 @@ public class DancerGenreRepositoryImpl implements DancerGenreRepositoryCustom {
   public Page<DancerGenre> findByGenreId(Long genreId, Pageable pageable) {
     List<DancerGenre> dancerGenres = jpaQueryFactory.selectFrom(dancerGenre)
                                                     .where(dancerGenre.genre.id.eq(genreId)
-                                                                               .and(
-                                                                                   dancerGenre.isActive.eq(
-                                                                                       true)))
+                                                                               .and(dancerGenre.isActive.eq(true)))
                                                     .offset(pageable.getOffset())
                                                     .limit(pageable.getPageSize())
                                                     .fetch();
 
     long totalElements = jpaQueryFactory.selectFrom(dancerGenre)
                                         .where(dancerGenre.genre.id.eq(genreId)
-                                                                   .and(dancerGenre.isActive.eq(
-                                                                       true)))
+                                                                   .and(dancerGenre.isActive.eq(true)))
                                         .fetchCount();
 
     return new PageImpl<>(dancerGenres, pageable, totalElements);
