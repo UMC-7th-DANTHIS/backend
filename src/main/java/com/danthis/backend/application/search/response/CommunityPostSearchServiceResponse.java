@@ -64,7 +64,7 @@ public class CommunityPostSearchServiceResponse {
   }
 
   private static String truncateContent(String content) {
-    int maxLength = 100;
+    int maxLength = 210;
     if (content.length() <= maxLength) {
       return content;
     }
