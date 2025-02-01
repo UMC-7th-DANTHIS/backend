@@ -37,9 +37,7 @@ public class UserDancerRepositoryImpl implements UserDancerRepositoryCustom {
   public Page<UserDancer> findByUserId(Long userId, Pageable pageable) {
     List<UserDancer> userDancers = jpaQueryFactory.selectFrom(userDancer)
                                                   .where(userDancer.user.id.eq(userId)
-                                                                           .and(
-                                                                               userDancer.isActive.eq(
-                                                                                   true)))
+                                                                           .and(userDancer.isActive.eq(true)))
                                                   .offset(pageable.getOffset())
                                                   .limit(pageable.getPageSize())
                                                   .fetch();

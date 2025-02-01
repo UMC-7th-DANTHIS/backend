@@ -29,25 +29,4 @@ public class UserDancerManager {
   public void deleteByUser(User user) {
     userDancerRepository.deleteByUser(user.getId());
   }
-
-  public FavoriteDancerListResponse toFavoriteDancerListResponse(Page<UserDancer> userDancerPage) {
-    List<DancerInfo> dancerInfoList = userDancerPage.getContent().stream().map(
-        userDancer -> DancerInfo.builder()
-                                .id(userDancer.getDancer().getId())
-                                .dancerName(userDancer.getDancer().getDancerName())
-                                .images(userDancer.getDancer().getDancerImages().stream()
-                                                  .map(DancerImage::getImageUrl)
-                                                  .toList())
-                                .build()).toList();
-
-    Pagination pagination = Pagination.builder()
-                                      .currentPage(userDancerPage.getNumber())
-                                      .totalPages(userDancerPage.getTotalPages())
-                                      .build();
-
-    return FavoriteDancerListResponse.builder()
-                                     .dancers(dancerInfoList)
-                                     .pagination(pagination)
-                                     .build();
-  }
 }
