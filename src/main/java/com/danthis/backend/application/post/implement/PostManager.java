@@ -14,6 +14,7 @@ public class PostManager {
   public List<PostDto> toPostDtoList(List<CommunityPost> communityPosts) {
     return communityPosts.stream()
                          .map(communityPost -> PostDto.builder()
+                                                      .postId(communityPost.getId())
                                                       .title(communityPost.getTitle())
                                                       .content(communityPost.getContent())
                                                       .images(communityPost.getCommunityPostImages()
