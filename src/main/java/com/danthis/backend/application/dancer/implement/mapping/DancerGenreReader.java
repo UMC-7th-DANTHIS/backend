@@ -1,8 +1,10 @@
-package com.danthis.backend.application.dancergenre.implement;
+package com.danthis.backend.application.dancer.implement.mapping;
 
+import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.mapping.dancergenre.repository.DancerGenreRepository;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,5 +20,11 @@ public class DancerGenreReader {
   public Page<DancerGenre> readDancerGenresByGenreId(Long genreId, Integer page, Integer size) {
     Pageable pageable = PageRequest.of(page, size);
     return dancerGenreRepository.findByGenreId(genreId, pageable);
+  }
+
+  public List<Long> findGenreIdByDancer(Dancer dancer) {
+    return dancerGenreRepository.findByDancer(dancer.getId()).stream()
+                                .map(dancerGenre -> dancerGenre.getGenre().getId())
+                                .toList();
   }
 }

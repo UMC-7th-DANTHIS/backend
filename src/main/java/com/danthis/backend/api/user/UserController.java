@@ -12,7 +12,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +61,27 @@ public class UserController {
   public ApiResponse<Boolean> checkEmailAvailability(@RequestParam String email) {
     boolean isRegistered = userService.isEmailRegistered(email);
     return ApiResponse.OK(isRegistered);
+  }
+
+
+  @Operation(summary = "댄서 찜 등록 API", description = "댄서를 찜 리스트에 등록합니다.")
+  @PostMapping("/{dancerId}/favorite")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> addFavoriteDancer(
+      CurrentUserInfo userInfo,
+      @PathVariable("dancerId") Long dancerId) {
+    userService.addFavoriteDancer(userInfo.getUserId(), dancerId);
+    return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "댄서 찜 해제 API", description = "댄서를 찜 리스트에서 해제합니다.")
+  @DeleteMapping("/{dancerId}/favorite")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> removeFavoriteDancer(
+      CurrentUserInfo userInfo,
+      @PathVariable("dancerId") Long dancerId) {
+    userService.removeFavoriteDancer(userInfo.getUserId(), dancerId);
+    return ApiResponse.OK(null);
   }
 
   @Operation(summary = "찜한 댄서 조회 API", description = "유저가 찜한 댄서 정보를 조회합니다.")

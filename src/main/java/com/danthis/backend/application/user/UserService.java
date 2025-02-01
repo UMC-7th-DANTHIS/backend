@@ -1,6 +1,9 @@
 package com.danthis.backend.application.user;
 
-import com.danthis.backend.application.user.implement.*;
+import com.danthis.backend.application.dancer.implement.DancerReader;
+import com.danthis.backend.application.user.implement.UserManager;
+import com.danthis.backend.application.user.implement.UserPreferenceMapper;
+import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.user.implement.mapping.UserDancerManager;
 import com.danthis.backend.application.user.implement.mapping.UserDancerReader;
 import com.danthis.backend.application.user.implement.mapping.UserGenreManager;
@@ -34,9 +37,10 @@ public class UserService {
   private final UserReader userReader;
   private final UserManager userManager;
   private final UserPreferenceMapper userPreferenceMapper;
+  private final DancerReader dancerReader;
   private final UserGenreManager userGenreManager;
-  private final UserDancerManager userDancerManager;
   private final UserGenreReader userGenreReader;
+  private final UserDancerManager userDancerManager;
   private final UserDancerReader userDancerReader;
   private final WishListManager wishListManager;
   private final WishListReader wishListReader;
@@ -91,6 +95,24 @@ public class UserService {
   @Transactional
   public boolean isNicknameAvailable(String nickname) {
     return userReader.isNicknameAvailable(nickname);
+  }
+
+  @Transactional
+  public void addFavoriteDancer(Long userId, Long dancerId) {
+    User user = userReader.readUserById(userId);
+    Dancer dancer = dancerReader.readDancerById(dancerId);
+    UserDancer userDancer = userDancerManager.toUserDancer(user, dancer);
+
+    userDancerManager.saveUserDancer(userDancer);
+  }
+
+  @Transactional
+  public void removeFavoriteDancer(Long userId, Long dancerId) {
+    User user = userReader.readUserById(userId);
+    Dancer dancer = dancerReader.readDancerById(dancerId);
+    UserDancer userDancer = userDancerReader.readUserDancerByUserAndDancer(user, dancer);
+
+    userDancerManager.deleteUserDancer(userDancer);
   }
 
   @Transactional

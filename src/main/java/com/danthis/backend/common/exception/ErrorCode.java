@@ -19,7 +19,8 @@ public enum ErrorCode {
   DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "댄서를 찾을 수 없습니다."),
   GENRE_NOT_FOUND(HttpStatus.NOT_FOUND, "댄스 장르를 찾을 수 없습니다."),
   USER_DANCER_NOT_FOUND(HttpStatus.NOT_FOUND, "찜이 되어있지 않은 댄서입니다."),
-  REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다");
+  REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다"),
+  INVALID_SEARCH_QUERY(HttpStatus.BAD_REQUEST, "검색어를 입력하지 않았습니다.");
 
   private final HttpStatus httpStatus;
   private final String message;

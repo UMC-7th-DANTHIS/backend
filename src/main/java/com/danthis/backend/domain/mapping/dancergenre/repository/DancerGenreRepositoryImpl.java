@@ -18,15 +18,33 @@ public class DancerGenreRepositoryImpl implements DancerGenreRepositoryCustom {
   private final QDancerGenre dancerGenre = QDancerGenre.dancerGenre;
 
   @Override
+  public void deleteByDancer(Long dancerId) {
+    jpaQueryFactory.delete(dancerGenre)
+                   .where(dancerGenre.dancer.id.eq(dancerId)
+                                               .and(dancerGenre.isActive.eq(true)))
+                   .execute();
+  }
+
+  @Override
+  public List<DancerGenre> findByDancer(Long dancerId) {
+    return jpaQueryFactory.selectFrom(dancerGenre)
+                          .where(dancerGenre.dancer.id.eq(dancerId)
+                                                      .and(dancerGenre.isActive.eq(true)))
+                          .fetch();
+  }
+
+  @Override
   public Page<DancerGenre> findByGenreId(Long genreId, Pageable pageable) {
     List<DancerGenre> dancerGenres = jpaQueryFactory.selectFrom(dancerGenre)
-                                                    .where(dancerGenre.genre.id.eq(genreId))
+                                                    .where(dancerGenre.genre.id.eq(genreId)
+                                                                               .and(dancerGenre.isActive.eq(true)))
                                                     .offset(pageable.getOffset())
                                                     .limit(pageable.getPageSize())
                                                     .fetch();
 
-    Long totalElements = jpaQueryFactory.selectFrom(dancerGenre)
-                                        .where(dancerGenre.genre.id.eq(genreId))
+    long totalElements = jpaQueryFactory.selectFrom(dancerGenre)
+                                        .where(dancerGenre.genre.id.eq(genreId)
+                                                                   .and(dancerGenre.isActive.eq(true)))
                                         .fetchCount();
 
     return new PageImpl<>(dancerGenres, pageable, totalElements);

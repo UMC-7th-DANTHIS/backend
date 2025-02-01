@@ -6,13 +6,9 @@ import com.danthis.backend.application.dancer.response.DancerSummaryResponse;
 import com.danthis.backend.application.dancer.response.PaginationInfo;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
-import com.danthis.backend.domain.dancer.dancerimage.repository.DancerImageRepository;
 import com.danthis.backend.domain.dancer.repository.DancerRepository;
-import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
-import com.danthis.backend.domain.mapping.dancergenre.repository.DancerGenreRepository;
 import com.danthis.backend.domain.user.User;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,8 +18,6 @@ import org.springframework.stereotype.Component;
 public class DancerManager {
 
   private final DancerRepository dancerRepository;
-  private final DancerGenreRepository dancerGenreRepository;
-  private final DancerImageRepository dancerImageRepository;
 
   public Dancer createDancer(User user, DancerAddServiceRequest request) {
     Boolean permission = true;  // 모든 댄서 가입이 바로 허용된다. 나중에 false로 변경해야 함
@@ -40,14 +34,6 @@ public class DancerManager {
 
   public void saveDancer(Dancer dancer) {
     dancerRepository.save(dancer);
-  }
-
-  public void saveDancerGenre(Set<DancerGenre> dancerGenres) {
-    dancerGenreRepository.saveAll(dancerGenres);
-  }
-
-  public void saveDancerImage(Set<DancerImage> dancerImages) {
-    dancerImageRepository.saveAll(dancerImages);
   }
 
   public List<DancerSummaryResponse> toSummaryInfo(List<Dancer> dancers) {
