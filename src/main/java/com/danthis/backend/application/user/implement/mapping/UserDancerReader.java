@@ -1,5 +1,7 @@
 package com.danthis.backend.application.user.implement.mapping;
 
+import com.danthis.backend.domain.dancer.Dancer;
+import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.mapping.userdancer.repository.UserDancerRepository;
 import com.danthis.backend.domain.user.User;
 import java.util.List;
@@ -17,5 +19,9 @@ public class UserDancerReader {
                                .stream()
                                .map(userDancer -> userDancer.getDancer().getId())
                                .toList();
+  }
+
+  public UserDancer readUserDancerByUserAndDancer(User user, Dancer dancer) {
+    return userDancerRepository.findUserDancerByUserAndDancer(user, dancer);
   }
 }

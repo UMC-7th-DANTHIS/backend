@@ -6,7 +6,6 @@ import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.user.User;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -54,10 +53,10 @@ public class Dancer extends BaseEntity {
 
   private Boolean isApproved;
 
-  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
   private Set<DancerGenre> dancerGenres;
 
-  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
   private Set<DancerImage> dancerImages;
 
   @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)

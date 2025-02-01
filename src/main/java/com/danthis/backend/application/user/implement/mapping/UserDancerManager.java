@@ -1,5 +1,6 @@
 package com.danthis.backend.application.user.implement.mapping;
 
+import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.mapping.userdancer.repository.UserDancerRepository;
 import com.danthis.backend.domain.user.User;
@@ -22,5 +23,22 @@ public class UserDancerManager {
   @Transactional
   public void deleteByUser(User user) {
     userDancerRepository.deleteByUser(user.getId());
+  }
+
+  public UserDancer toUserDancer(User user, Dancer dancer) {
+    return UserDancer.builder()
+                     .user(user)
+                     .dancer(dancer)
+                     .build();
+  }
+
+  @Transactional
+  public void saveUserDancer(UserDancer userDancer) {
+    userDancerRepository.save(userDancer);
+  }
+
+  @Transactional
+  public void deleteUserDancer(UserDancer userDancer) {
+    userDancerRepository.delete(userDancer);
   }
 }
