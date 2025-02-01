@@ -4,6 +4,7 @@ import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.communitypost.QCommunityPost;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,11 +21,20 @@ public class CommunityPostRepositoryImpl implements CommunityPostRepositoryCusto
   @Override
   public Page<CommunityPost> findByUserId(Long userId, Pageable pageable) {
     List<CommunityPost> posts = jpaQueryFactory.selectFrom(communityPost)
-                                               .where(communityPost.user.id.eq(userId))
+                                               .where(communityPost.user.id.eq(userId)
+                                                                           .and(communityPost.isActive.eq(true)))
                                                .offset(pageable.getOffset())
                                                .limit(pageable.getPageSize())
                                                .fetch();
 
-    return new PageImpl<>(posts, pageable, posts.size());
+    long totalElements = Optional.ofNullable(jpaQueryFactory
+                                     .select(communityPost.count())
+                                     .from(communityPost)
+                                     .where(communityPost.user.id.eq(userId)
+                                                                 .and(communityPost.isActive.eq(true)))
+                                     .fetchOne())
+                                 .orElse(0L);
+
+    return new PageImpl<>(posts, pageable, totalElements);
   }
 }

@@ -1,19 +1,20 @@
 package com.danthis.backend.application.user;
 
-import com.danthis.backend.application.comment.implement.CommentManager;
-import com.danthis.backend.application.comment.implement.CommentReader;
 import com.danthis.backend.application.post.implement.PostManager;
 import com.danthis.backend.application.post.implement.PostReader;
+import com.danthis.backend.application.review.implement.ReviewManager;
+import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.user.implement.UserManager;
 import com.danthis.backend.application.user.implement.UserPreferenceMapper;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
-import com.danthis.backend.application.user.response.UserCommunityResponse.CommentDto;
-import com.danthis.backend.application.user.response.UserCommunityResponse.PaginationDto;
-import com.danthis.backend.application.user.response.UserCommunityResponse.PostDto;
-import com.danthis.backend.application.user.response.UserCommunityResponse.UserCommentsResponse;
-import com.danthis.backend.application.user.response.UserCommunityResponse.UserPostsResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
+import com.danthis.backend.application.user.response.UserPostsResponse;
+import com.danthis.backend.application.user.response.UserPostsResponse.Pagination;
+import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
+import com.danthis.backend.application.user.response.UserReviewResponse;
+import com.danthis.backend.application.user.response.UserReviewResponse.ReviewDto;
+import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.communitycomment.CommunityComment;
 import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -41,8 +42,8 @@ public class UserService {
   private final UserPreferenceMapper userPreferenceMapper;
   private final PostReader postReader;
   private final PostManager postManager;
-  private final CommentReader commentReader;
-  private final CommentManager commentManager;
+  private final ReviewReader reviewReader;
+  private final ReviewManager reviewManager;
 
   @Transactional
   public void updateUserInfo(Long userId, UserUpdateServiceRequest request) {
@@ -92,27 +93,25 @@ public class UserService {
 
   @Transactional
   public UserPostsResponse getUserPosts(Long userId, Integer page, Integer size) {
-    Pageable pageable = PageRequest.of(page, size);
-    Page<CommunityPost> posts = postReader.readPostsByUserId(userId, pageable);
+    Page<CommunityPost> posts = postReader.readPostsByUserId(userId, PageRequest.of(page, size));
     List<PostDto> postDtoList = postManager.toPostDtoList(posts.getContent());
-    PaginationDto pagination = postManager.toPagination(
-        posts.getNumber(),
-        posts.getTotalPages()
-    );
+    Pagination pagination = Pagination.builder()
+                                      .currentPage(posts.getNumber())
+                                      .totalPages(posts.getTotalPages())
+                                      .build();
 
-    return postManager.toUserPostsResponse(postDtoList, pagination);
+    return UserPostsResponse.from(postDtoList, pagination);
   }
 
   @Transactional
-  public UserCommentsResponse getUserComments(Long userId, Integer page, Integer size) {
-    Pageable pageable = PageRequest.of(page, size);
-    Page<CommunityComment> comments = commentReader.readCommentsByUserId(userId, pageable);
-    List<CommentDto> commentDtoList = commentManager.toCommentDtoList(comments.getContent());
-    PaginationDto pagination = commentManager.toPagination(
-        comments.getNumber(),
-        comments.getTotalPages()
-    );
+  public UserReviewResponse getUserReviews(Long userId, Integer page, Integer size) {
+    Page<ClassReview> reviews = reviewReader.readReviewsByUserId(userId, PageRequest.of(page, size));
+    List<ReviewDto> reviewDtoList = reviewManager.toReviewDtoList(reviews.getContent());
+    Pagination pagination = Pagination.builder()
+                                      .currentPage(reviews.getNumber())
+                                      .totalPages(reviews.getTotalPages())
+                                      .build();
 
-    return commentManager.toUserCommentsResponse(commentDtoList, pagination);
+    return UserReviewResponse.from(reviewDtoList, pagination);
   }
 }
