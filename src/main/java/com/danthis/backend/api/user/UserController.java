@@ -65,9 +65,8 @@ public class UserController {
   @AssignCurrentUserInfo
   public ApiResponse<FavoriteDancerListResponse> getFavoriteDancers(
       CurrentUserInfo userInfo,
-      // Todo: 쿼리파라미터 값 화면설계서와 맞추기
       @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "6") Integer size) {
+      @RequestParam(defaultValue = "9") Integer size) {
     FavoriteDancerListResponse response = userService.getFavoriteDancers(
         userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
@@ -78,9 +77,8 @@ public class UserController {
   @AssignCurrentUserInfo
   public ApiResponse<WishListResponse> getWishlist(
       CurrentUserInfo userInfo,
-      // Todo: 쿼리파라미터 값 화면설계서와 맞추기
       @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "6") Integer size) {
+      @RequestParam(defaultValue = "9") Integer size) {
     WishListResponse response = userService.getWishList(
         userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
