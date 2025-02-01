@@ -5,17 +5,25 @@ import com.danthis.backend.application.user.implement.mapping.UserDancerManager;
 import com.danthis.backend.application.user.implement.mapping.UserDancerReader;
 import com.danthis.backend.application.user.implement.mapping.UserGenreManager;
 import com.danthis.backend.application.user.implement.mapping.UserGenreReader;
+import com.danthis.backend.application.user.implement.mapping.WishListManager;
+import com.danthis.backend.application.user.implement.mapping.WishListReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
+import com.danthis.backend.application.user.response.UserFavoriteResponse.FavoriteDancerListResponse;
+import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.mapping.usergenre.UserGenre;
+import com.danthis.backend.domain.mapping.wishlist.WishList;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -30,6 +38,8 @@ public class UserService {
   private final UserDancerManager userDancerManager;
   private final UserGenreReader userGenreReader;
   private final UserDancerReader userDancerReader;
+  private final WishListManager wishListManager;
+  private final WishListReader wishListReader;
 
   @Transactional
   public void updateUserInfo(Long userId, UserUpdateServiceRequest request) {
@@ -81,5 +91,21 @@ public class UserService {
   @Transactional
   public boolean isNicknameAvailable(String nickname) {
     return userReader.isNicknameAvailable(nickname);
+  }
+
+  @Transactional
+  public FavoriteDancerListResponse getFavoriteDancers(Long userId, Integer page, Integer size) {
+    Pageable pageable = PageRequest.of(page, size);
+
+    Page<UserDancer> dancers = userDancerReader.readDancersByUserId(userId, pageable);
+    return userDancerManager.toFavoriteDancerListInfo(dancers);
+  }
+
+  @Transactional
+  public WishListResponse getWishList(Long userId, Integer page, Integer size) {
+    Pageable pageable = PageRequest.of(page, size);
+
+    Page<WishList> wishLists = wishListReader.readWishListByUserId(userId, pageable);
+    return wishListManager.toWishListInfo(wishLists);
   }
 }

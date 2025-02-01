@@ -2,10 +2,9 @@ package com.danthis.backend.api.user;
 
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
-import com.danthis.backend.application.favorite.FavoriteService;
-import com.danthis.backend.application.favorite.response.FavoriteInfoResponse.FavoriteDancerListInfo;
-import com.danthis.backend.application.favorite.response.FavoriteInfoResponse.WishListInfo;
 import com.danthis.backend.application.user.UserService;
+import com.danthis.backend.application.user.response.UserFavoriteResponse.FavoriteDancerListResponse;
+import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final UserService userService;
-  private final FavoriteService favoriteService;
 
   @Operation(summary = "유저 정보 수정 API", description = "유저의 정보를 수정합니다.")
   @PutMapping
@@ -65,12 +63,12 @@ public class UserController {
   @Operation(summary = "찜한 댄서 조회 API", description = "유저가 찜한 댄서 정보를 조회합니다.")
   @GetMapping("/dancers")
   @AssignCurrentUserInfo
-  public ApiResponse<FavoriteDancerListInfo> getFavoriteDancers(
+  public ApiResponse<FavoriteDancerListResponse> getFavoriteDancers(
       CurrentUserInfo userInfo,
       // Todo: 쿼리파라미터 값 화면설계서와 맞추기
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "6") Integer size) {
-    FavoriteDancerListInfo response = favoriteService.getFavoriteDancers(
+    FavoriteDancerListResponse response = userService.getFavoriteDancers(
         userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
@@ -78,12 +76,12 @@ public class UserController {
   @Operation(summary = "찜한 수업 조회 API", description = "유저가 찜한 수업 정보를 조회합니다.")
   @GetMapping("/dance-classes")
   @AssignCurrentUserInfo
-  public ApiResponse<WishListInfo> getWishlist(
+  public ApiResponse<WishListResponse> getWishlist(
       CurrentUserInfo userInfo,
       // Todo: 쿼리파라미터 값 화면설계서와 맞추기
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "6") Integer size) {
-    WishListInfo response = favoriteService.getWishList(
+    WishListResponse response = userService.getWishList(
         userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }

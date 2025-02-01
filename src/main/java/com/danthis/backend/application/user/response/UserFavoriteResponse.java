@@ -1,16 +1,14 @@
-package com.danthis.backend.application.favorite.response;
+package com.danthis.backend.application.user.response;
 
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
-@Getter
-@Builder
-public class FavoriteInfoResponse {
+public class UserFavoriteResponse {
 
   @Getter
   @Builder
-  public static class FavoriteDancerListInfo {
+  public static class FavoriteDancerListResponse {
 
     List<DancerInfo> dancers;
     Pagination pagination;
@@ -22,12 +20,12 @@ public class FavoriteInfoResponse {
 
     private Long id;
     private String dancerName;
-    private List<String> imageUrlList;
+    private List<String> images;
   }
 
   @Getter
   @Builder
-  public static class WishListInfo {
+  public static class WishListResponse {
 
     List<DanceClassInfo> danceClasses;
     Pagination pagination;
