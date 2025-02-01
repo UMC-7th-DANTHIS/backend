@@ -48,8 +48,7 @@ public class ClassSearchServiceResponse {
                                                                                                    .difficulty(danceClass.getDifficulty())
                                                                                                    .classImage(danceClass.getDanceClassImages()
                                                                                                                  .stream()
-                                                                                                                 .map(
-                                                                                                                     image -> image.getImageUrl())
+                                                                                                                 .map(image -> image.getImageUrl())
                                                                                                                  .toList())
                                                                                                    .build())
                                                                 .toList();

@@ -31,18 +31,15 @@ public class DanceClassListServiceResponse {
                                         .totalPages(danceClassPage.getTotalPages())
                                         .totalElements(danceClassPage.getTotalElements())
                                         .danceClasses(danceClassPage.getContent().stream()
-                                                                    .map(
-                                                                        danceClass -> DanceClassSummary.builder()
+                                                                    .map(danceClass -> DanceClassSummary.builder()
                                                                                                        .id(danceClass.getId())
                                                                                                        .className(danceClass.getClassName())
                                                                                                        .dancerName(danceClass.getDancer().getDancerName())
                                                                                                        .thumbnailImage(danceClass.getDanceClassImages()
                                                                                                                      .stream()
                                                                                                                      .findFirst()
-                                                                                                                     .map(
-                                                                                                                         image -> image.getImageUrl())
-                                                                                                                     .orElse(
-                                                                                                                         null))
+                                                                                                                     .map(image -> image.getImageUrl())
+                                                                                                                     .orElse(null))
                                                                                                        .build())
                                                                     .toList())
                                         .build();

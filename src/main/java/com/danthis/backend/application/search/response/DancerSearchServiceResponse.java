@@ -41,15 +41,12 @@ public class DancerSearchServiceResponse {
                                                                                 .name(dancer.getDancerName())
                                                                                 .profileImage(dancer.getDancerImages()
                                                                                           .stream()
-                                                                                          .map(
-                                                                                              dancerImage -> dancerImage.getImageUrl())
+                                                                                          .map(dancerImage -> dancerImage.getImageUrl())
                                                                                           .toList())
                                                                                 .instagramId(dancer.getInstargramId())
                                                                                 .mainGenres(dancer.getDancerGenres()
                                                                                           .stream()
-                                                                                          .map(
-                                                                                              dancerGenre -> dancerGenre.getGenre()
-                                                                                                                        .getId())
+                                                                                          .map(dancerGenre -> dancerGenre.getGenre().getId())
                                                                                           .toList())
                                                                                 .build())
                                                     .toList();

@@ -42,8 +42,7 @@ public class CommunityPostSearchServiceResponse {
                                                                       .content(truncateContent(post.getContent()))
                                                                       .postImages(post.getCommunityPostImages()
                                                                               .stream()
-                                                                              .map(
-                                                                                  image -> image.getUrl())
+                                                                              .map(image -> image.getUrl())
                                                                               .toList())
                                                                       .build())
                                               .toList();
