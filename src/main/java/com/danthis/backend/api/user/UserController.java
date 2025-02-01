@@ -65,7 +65,7 @@ public class UserController {
   @Operation(summary = "댄서 찜 등록 API", description = "댄서를 찜 리스트에 등록합니다.")
   @PostMapping("/{dancerId}/favorite")
   @AssignCurrentUserInfo
-  public ApiResponse<Long> addFavoriteDancer(
+  public ApiResponse<Void> addFavoriteDancer(
       CurrentUserInfo userInfo,
       @PathVariable("dancerId") Long dancerId) {
     userService.addFavoriteDancer(userInfo.getUserId(), dancerId);
