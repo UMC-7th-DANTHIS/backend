@@ -7,4 +7,5 @@ import org.springframework.data.domain.Pageable;
 public interface CommunityPostRepositoryCustom {
 
   Page<CommunityPost> findByUserId(Long userId, Pageable pageable);
+  Page<CommunityPost> searchByPostTitle(String query, Pageable pageable);
 }

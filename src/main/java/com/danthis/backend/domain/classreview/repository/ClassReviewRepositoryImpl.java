@@ -19,6 +19,15 @@ public class ClassReviewRepositoryImpl implements ClassReviewRepositoryCustom {
   private final JPAQueryFactory jpaQueryFactory;
 
   @Override
+  public Double calculateAverageRatingByDanceClassId(Long classId) {
+    return jpaQueryFactory.select(classReview.rating.avg())
+                          .from(classReview)
+                          .where(classReview.danceClass.id.eq(classId)
+                                                          .and(classReview.isActive.eq(true)))
+                          .fetchOne();
+  }
+
+  @Override
   public Page<ClassReview> findByUserId(Long userId, Pageable pageable) {
     List<ClassReview> reviews = jpaQueryFactory.selectFrom(classReview)
                                                .where(classReview.user.id.eq(userId).and(

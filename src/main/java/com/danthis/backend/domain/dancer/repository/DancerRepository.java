@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DancerRepository extends JpaRepository<Dancer, Long> {
+public interface DancerRepository extends JpaRepository<Dancer, Long>, DancerRepositoryCustom {
+
 }

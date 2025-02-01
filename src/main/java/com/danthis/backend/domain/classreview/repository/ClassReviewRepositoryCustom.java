@@ -6,5 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface ClassReviewRepositoryCustom {
 
+  Double calculateAverageRatingByDanceClassId(Long classId);
   Page<ClassReview> findByUserId(Long userId, Pageable pageable);
 }
