@@ -6,6 +6,8 @@ import com.danthis.backend.application.user.UserService;
 import com.danthis.backend.application.user.response.UserFavoriteResponse.FavoriteDancerListResponse;
 import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
+import com.danthis.backend.application.user.response.UserPostsResponse;
+import com.danthis.backend.application.user.response.UserReviewResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -105,6 +107,28 @@ public class UserController {
       @RequestParam(defaultValue = "9") Integer size) {
     WishListResponse response = userService.getWishList(
         userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "유저의 게시글 조회 API", description = "유저가 쓴 게시글을 조회합니다.")
+  @GetMapping("/posts")
+  @AssignCurrentUserInfo
+  public ApiResponse<UserPostsResponse> getUserPosts(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "5") Integer size) {
+    UserPostsResponse response = userService.getUserPosts(userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "유저의 리뷰 조회 API", description = "유저가 쓴 리뷰를 조회합니다.")
+  @GetMapping("/comments")
+  @AssignCurrentUserInfo
+  public ApiResponse<UserReviewResponse> getUserReviews(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "5") Integer size) {
+    UserReviewResponse response = userService.getUserReviews(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 }

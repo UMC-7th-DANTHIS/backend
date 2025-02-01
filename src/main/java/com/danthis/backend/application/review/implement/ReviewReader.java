@@ -44,4 +44,8 @@ public class ReviewReader {
       throw new BusinessException(ErrorCode.DANCE_CLASS_NOT_FOUND);
     }
   }
+
+  public Page<ClassReview> readReviewsByUserId(Long classId, Pageable pageable) {
+    return classReviewRepository.findByUserId(classId, pageable);
+  }
 }
