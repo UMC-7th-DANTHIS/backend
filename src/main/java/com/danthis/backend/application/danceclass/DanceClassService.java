@@ -94,7 +94,8 @@ public class DanceClassService {
   }
 
   @Transactional
-  public void approveBooking(Long classId, Long userId, DanceClassBookingApproveRequest request) {
+  public void approveBooking(Long requesterId, Long classId, Long userId,
+      DanceClassBookingApproveRequest request) {
     if (!request.getIsApproved()) {
       throw new BusinessException(ErrorCode.INVALID_BOOKING);
     }
@@ -102,6 +103,10 @@ public class DanceClassService {
     DanceClass danceClass = danceClassReader.readDanceClassById(classId);
     User user = userReader.readUserById(userId);
     DanceClassBooking booking = danceClassReader.readBookingByClassAndUser(danceClass, user);
+
+    if (!danceClass.getDancer().getUser().getId().equals(requesterId)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
 
     danceClassManager.approveBooking(booking);
   }

@@ -7,6 +7,7 @@ import com.danthis.backend.application.danceclass.DanceClassService;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
+import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -80,14 +81,16 @@ public class DanceClassController {
     return ApiResponse.OK(response);
   }
 
-  @Operation(summary = "댄스 수업 예약 승인 API", description = "댄서가 유저를 특정 댄스 수업에 등록합니다.")
+  @Operation(summary = "댄스 수업 예약 승인 API", description = "댄서가 유저의 예약을 승인합니다.")
   @PatchMapping("/{classId}/bookings/{userId}/approve")
+  @AssignCurrentUserInfo
   public ApiResponse<Void> approveBooking(
       @PathVariable Long classId,
       @PathVariable Long userId,
-      @RequestBody @Valid DanceClassBookingApproveRequest request) {
-
-    danceClassService.approveBooking(classId, userId, request);
+      @Valid @RequestBody DanceClassBookingApproveRequest request,
+      CurrentUserInfo userInfo
+  ) {
+    danceClassService.approveBooking(userInfo.getUserId(), classId, userId, request);
     return ApiResponse.OK(null);
   }
 }
