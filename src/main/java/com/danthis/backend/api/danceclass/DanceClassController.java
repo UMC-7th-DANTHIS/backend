@@ -1,6 +1,7 @@
 package com.danthis.backend.api.danceclass;
 
 import com.danthis.backend.api.ApiResponse;
+import com.danthis.backend.api.danceclass.request.DanceClassBookingApproveRequest;
 import com.danthis.backend.api.danceclass.request.DanceClassCreateRequest;
 import com.danthis.backend.application.danceclass.DanceClassService;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,5 +78,16 @@ public class DanceClassController {
 
     DanceClassListServiceResponse response = danceClassService.getDanceClassList(genre, page, size);
     return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "댄스 수업 예약 승인 API", description = "댄서가 유저를 특정 댄스 수업에 등록합니다.")
+  @PatchMapping("/{classId}/bookings/{userId}/approve")
+  public ApiResponse<Void> approveBooking(
+      @PathVariable Long classId,
+      @PathVariable Long userId,
+      @RequestBody @Valid DanceClassBookingApproveRequest request) {
+
+    danceClassService.approveBooking(classId, userId, request);
+    return ApiResponse.OK(null);
   }
 }

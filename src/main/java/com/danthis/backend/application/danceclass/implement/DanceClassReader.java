@@ -8,6 +8,9 @@ import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.genre.repository.GenreRepository;
 import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.hashtag.repository.HashtagRepository;
+import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
+import com.danthis.backend.domain.mapping.danceclassbooking.repository.DanceClassBookingRepository;
+import com.danthis.backend.domain.user.User;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,6 +26,7 @@ public class DanceClassReader {
   private final GenreRepository genreRepository;
   private final HashtagRepository hashtagRepository;
   private final DanceClassRepository danceClassRepository;
+  private final DanceClassBookingRepository bookingRepository;
 
   public Genre readGenreById(Long genreId) {
     return genreRepository.findById(genreId)
@@ -48,5 +52,10 @@ public class DanceClassReader {
       return danceClassRepository.findByGenreId(genreId, pageable);
     }
     return danceClassRepository.findAll(pageable);
+  }
+
+  public DanceClassBooking readBookingByClassAndUser(DanceClass danceClass, User user) {
+    return bookingRepository.findByDanceClassAndUser(danceClass, user)
+                            .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_BOOKING));
   }
 }
