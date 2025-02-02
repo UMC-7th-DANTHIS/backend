@@ -40,4 +40,12 @@ public class ChatReader {
   public List<DanceClassBooking> readBookingsByDancer(Dancer dancer) {
     return bookingRepository.findByDanceClassDancer(dancer);
   }
+
+  public boolean isUser(Long userId) {
+    return userRepository.existsById(userId);
+  }
+
+  public List<DanceClassBooking> readBookingsByUser(User user) {
+    return bookingRepository.findByUser(user);
+  }
 }

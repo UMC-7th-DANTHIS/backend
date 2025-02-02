@@ -5,6 +5,7 @@ import com.danthis.backend.api.chat.request.ChatBookingRequest;
 import com.danthis.backend.application.chat.ChatService;
 import com.danthis.backend.application.chat.response.ChatBookingServiceResponse;
 import com.danthis.backend.application.chat.response.DancerChatListServiceResponse;
+import com.danthis.backend.application.chat.response.UserChatListServiceResponse;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
@@ -45,6 +46,18 @@ public class ChatController {
     }
 
     DancerChatListServiceResponse response = chatService.getDancerChatList(dancerId);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "유저가 채팅한 댄서 목록 조회", description = "해당 유저가 채팅한 댄서들의 목록을 가져옵니다.")
+  @GetMapping("/user/{userId}")
+  @AssignCurrentUserInfo
+  public ApiResponse<UserChatListServiceResponse> getUserChatList(@PathVariable Long userId) {
+    if (!chatService.isUser(userId)) {
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    UserChatListServiceResponse response = chatService.getUserChatList(userId);
     return ApiResponse.OK(response);
   }
 }

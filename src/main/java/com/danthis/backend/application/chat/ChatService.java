@@ -6,7 +6,9 @@ import com.danthis.backend.application.chat.implement.ChatMapper;
 import com.danthis.backend.application.chat.implement.ChatReader;
 import com.danthis.backend.application.chat.response.ChatBookingServiceResponse;
 import com.danthis.backend.application.chat.response.DancerChatListServiceResponse;
+import com.danthis.backend.application.chat.response.UserChatListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
+import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
@@ -26,6 +28,7 @@ public class ChatService {
   private final ChatManager chatManager;
   private final ChatMapper chatMapper;
   private final DancerReader dancerReader;
+  private final UserReader userReader;
 
   @Transactional
   public ChatBookingServiceResponse createChatBooking(ChatBookingRequest request) {
@@ -48,5 +51,18 @@ public class ChatService {
     List<DanceClassBooking> chatBookings = chatReader.readBookingsByDancer(dancer);
 
     return chatMapper.toDancerChatListResponse(dancer, chatBookings);
+  }
+
+  @Transactional
+  public boolean isUser(Long userId) {
+    return chatReader.isUser(userId);
+  }
+
+  @Transactional
+  public UserChatListServiceResponse getUserChatList(Long userId) {
+    User user = userReader.readUserById(userId);
+    List<DanceClassBooking> chatBookings = chatReader.readBookingsByUser(user);
+
+    return chatMapper.toUserChatListResponse(user, chatBookings);
   }
 }
