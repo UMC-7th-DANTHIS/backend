@@ -27,19 +27,11 @@ public class ChatMapper {
   public DancerChatListServiceResponse toDancerChatListResponse(Dancer dancer,
       List<DanceClassBooking> chatBookings) {
     List<DancerChatListServiceResponse.ChatUserSummary> users = chatBookings.stream()
-                                                                            .map(
-                                                                                booking -> DancerChatListServiceResponse.ChatUserSummary.builder()
-                                                                                                                                        .userId(
-                                                                                                                                            booking.getUser()
-                                                                                                                                                   .getId())
-                                                                                                                                        .nickname(
-                                                                                                                                            booking.getUser()
-                                                                                                                                                   .getNickname())
-                                                                                                                                        .profileImage(
-                                                                                                                                            booking.getUser()
-                                                                                                                                                   .getProfileImage())
-                                                                                                                                        .latestBookingDate(
-                                                                                                                                            booking.getBookingDate())
+                                                                            .map(booking -> DancerChatListServiceResponse.ChatUserSummary.builder()
+                                                                                                                                        .userId(booking.getUser().getId())
+                                                                                                                                        .nickname(booking.getUser().getNickname())
+                                                                                                                                        .profileImage(booking.getUser().getProfileImage())
+                                                                                                                                        .latestBookingDate(booking.getBookingDate())
                                                                                                                                         .build())
                                                                             .toList();
 
@@ -52,22 +44,11 @@ public class ChatMapper {
   public UserChatListServiceResponse toUserChatListResponse(User user,
       List<DanceClassBooking> chatBookings) {
     List<UserChatListServiceResponse.ChatDancerSummary> dancers = chatBookings.stream()
-                                                                              .map(
-                                                                                  booking -> UserChatListServiceResponse.ChatDancerSummary.builder()
-                                                                                                                                          .chatId(
-                                                                                                                                              booking.getId())
-                                                                                                                                          .dancerId(
-                                                                                                                                              booking.getDanceClass()
-                                                                                                                                                     .getDancer()
-                                                                                                                                                     .getId())
-                                                                                                                                          .dancerName(
-                                                                                                                                              booking.getDanceClass()
-                                                                                                                                                     .getDancer()
-                                                                                                                                                     .getDancerName())
-                                                                                                                                          .profileImage(
-                                                                                                                                              booking.getDanceClass()
-                                                                                                                                                     .getDancer()
-                                                                                                                                                     .getProfileImage())
+                                                                              .map(booking -> UserChatListServiceResponse.ChatDancerSummary.builder()
+                                                                                                                                          .chatId(booking.getId())
+                                                                                                                                          .dancerId(booking.getDanceClass().getDancer().getId())
+                                                                                                                                          .dancerName(booking.getDanceClass().getDancer().getDancerName())
+                                                                                                                                          .profileImage(booking.getDanceClass().getDancer().getProfileImage())
                                                                                                                                           .build())
                                                                               .toList();
 
