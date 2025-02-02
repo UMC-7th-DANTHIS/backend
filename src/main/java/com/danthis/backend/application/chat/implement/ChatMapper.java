@@ -8,6 +8,7 @@ import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.user.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,36 +25,40 @@ public class ChatMapper {
                                      .build();
   }
 
-  public DancerChatListServiceResponse toDancerChatListResponse(Dancer dancer,
-      List<DanceClassBooking> chatBookings) {
-    List<DancerChatListServiceResponse.ChatUserSummary> users = chatBookings.stream()
+  public DancerChatListServiceResponse toDancerChatListResponse(Dancer dancer, Page<DanceClassBooking> chatBookings) {
+    List<DancerChatListServiceResponse.ChatUserSummary> users = chatBookings.getContent().stream()
                                                                             .map(booking -> DancerChatListServiceResponse.ChatUserSummary.builder()
-                                                                                                                                        .userId(booking.getUser().getId())
-                                                                                                                                        .nickname(booking.getUser().getNickname())
-                                                                                                                                        .profileImage(booking.getUser().getProfileImage())
-                                                                                                                                        .latestBookingDate(booking.getBookingDate())
-                                                                                                                                        .build())
+                                                                                                                                         .userId(booking.getUser().getId())
+                                                                                                                                         .nickname(booking.getUser().getNickname())
+                                                                                                                                         .profileImage(booking.getUser().getProfileImage())
+                                                                                                                                         .latestBookingDate(booking.getBookingDate())
+                                                                                                                                         .build())
                                                                             .toList();
 
     return DancerChatListServiceResponse.builder()
                                         .dancerId(dancer.getId())
+                                        .currentPage(chatBookings.getNumber() + 1)
+                                        .totalPages(chatBookings.getTotalPages())
+                                        .totalUsers((int) chatBookings.getTotalElements())
                                         .chats(users)
                                         .build();
   }
 
-  public UserChatListServiceResponse toUserChatListResponse(User user,
-      List<DanceClassBooking> chatBookings) {
-    List<UserChatListServiceResponse.ChatDancerSummary> dancers = chatBookings.stream()
+  public UserChatListServiceResponse toUserChatListResponse(User user, Page<DanceClassBooking> chatBookings) {
+    List<UserChatListServiceResponse.ChatDancerSummary> dancers = chatBookings.getContent().stream()
                                                                               .map(booking -> UserChatListServiceResponse.ChatDancerSummary.builder()
-                                                                                                                                          .chatId(booking.getId())
-                                                                                                                                          .dancerId(booking.getDanceClass().getDancer().getId())
-                                                                                                                                          .dancerName(booking.getDanceClass().getDancer().getDancerName())
-                                                                                                                                          .profileImage(booking.getDanceClass().getDancer().getProfileImage())
-                                                                                                                                          .build())
+                                                                                                                                           .chatId(booking.getId())
+                                                                                                                                           .dancerId(booking.getDanceClass().getDancer().getId())
+                                                                                                                                           .dancerName(booking.getDanceClass().getDancer().getDancerName())
+                                                                                                                                           .profileImage(booking.getDanceClass().getDancer().getProfileImage())
+                                                                                                                                           .build())
                                                                               .toList();
 
     return UserChatListServiceResponse.builder()
                                       .userId(user.getId())
+                                      .currentPage(chatBookings.getNumber() + 1)
+                                      .totalPages(chatBookings.getTotalPages())
+                                      .totalDancers((int) chatBookings.getTotalElements())
                                       .chatList(dancers)
                                       .build();
   }

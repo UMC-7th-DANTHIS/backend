@@ -10,6 +10,9 @@ import lombok.Getter;
 public class DancerChatListServiceResponse {
 
   private Long dancerId;
+  private int currentPage;
+  private int totalPages;
+  private int totalUsers;
   private List<ChatUserSummary> chats;
 
   @Getter

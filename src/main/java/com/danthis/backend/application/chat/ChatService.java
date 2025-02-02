@@ -14,9 +14,9 @@ import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -46,9 +46,9 @@ public class ChatService {
   }
 
   @Transactional
-  public DancerChatListServiceResponse getDancerChatList(Long dancerId) {
+  public DancerChatListServiceResponse getDancerChatList(Long dancerId, int page, int size) {
     Dancer dancer = dancerReader.readDancerById(dancerId);
-    List<DanceClassBooking> chatBookings = chatReader.readBookingsByDancer(dancer);
+    Page<DanceClassBooking> chatBookings = chatReader.readBookingsByDancer(dancer, page, size);
 
     return chatMapper.toDancerChatListResponse(dancer, chatBookings);
   }
@@ -59,9 +59,9 @@ public class ChatService {
   }
 
   @Transactional
-  public UserChatListServiceResponse getUserChatList(Long userId) {
+  public UserChatListServiceResponse getUserChatList(Long userId, int page, int size) {
     User user = userReader.readUserById(userId);
-    List<DanceClassBooking> chatBookings = chatReader.readBookingsByUser(user);
+    Page<DanceClassBooking> chatBookings = chatReader.readBookingsByUser(user, page, size);
 
     return chatMapper.toUserChatListResponse(user, chatBookings);
   }

@@ -12,12 +12,14 @@ import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,24 +42,30 @@ public class ChatController {
   @Operation(summary = "댄서가 채팅한 유저 목록 조회", description = "댄서가 아닌 사용자는 접근할 수 없습니다.")
   @GetMapping("/dancer/{dancerId}")
   @AssignCurrentUserInfo
-  public ApiResponse<DancerChatListServiceResponse> getDancerChatList(@PathVariable Long dancerId) {
+  public ApiResponse<DancerChatListServiceResponse> getDancerChatList(
+      @PathVariable Long dancerId,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "10") @Min(1) int size) {
+
     if (!chatService.isDancer(dancerId)) {
       throw new BusinessException(ErrorCode.ACCESS_DENIED);
     }
 
-    DancerChatListServiceResponse response = chatService.getDancerChatList(dancerId);
+    DancerChatListServiceResponse response = chatService.getDancerChatList(dancerId, page, size);
     return ApiResponse.OK(response);
   }
 
   @Operation(summary = "유저가 채팅한 댄서 목록 조회", description = "해당 유저가 채팅한 댄서들의 목록을 가져옵니다.")
   @GetMapping("/user/{userId}")
   @AssignCurrentUserInfo
-  public ApiResponse<UserChatListServiceResponse> getUserChatList(@PathVariable Long userId) {
+  public ApiResponse<UserChatListServiceResponse> getUserChatList(
+      @PathVariable Long userId,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "10") @Min(1) int size) {
     if (!chatService.isUser(userId)) {
       throw new BusinessException(ErrorCode.USER_NOT_FOUND);
     }
-
-    UserChatListServiceResponse response = chatService.getUserChatList(userId);
+    UserChatListServiceResponse response = chatService.getUserChatList(userId, page, size);
     return ApiResponse.OK(response);
   }
 }

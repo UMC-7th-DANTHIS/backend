@@ -9,12 +9,14 @@ import lombok.Getter;
 public class UserChatListServiceResponse {
 
   private Long userId;
+  private int currentPage;
+  private int totalPages;
+  private int totalDancers;
   private List<ChatDancerSummary> chatList;
 
   @Getter
   @Builder
   public static class ChatDancerSummary {
-
     private Long chatId;
     private Long dancerId;
     private String dancerName;

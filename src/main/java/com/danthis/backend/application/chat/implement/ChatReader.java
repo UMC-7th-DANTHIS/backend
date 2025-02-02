@@ -10,8 +10,10 @@ import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclassbooking.repository.DanceClassBookingRepository;
 import com.danthis.backend.domain.user.User;
 import com.danthis.backend.domain.user.repository.UserRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,15 +39,17 @@ public class ChatReader {
     return dancerRepository.existsById(dancerId);
   }
 
-  public List<DanceClassBooking> readBookingsByDancer(Dancer dancer) {
-    return bookingRepository.findByDanceClassDancer(dancer);
+  public Page<DanceClassBooking> readBookingsByDancer(Dancer dancer, int page, int size) {
+    Pageable pageable = PageRequest.of(page - 1, size);
+    return bookingRepository.findByDanceClassDancer(dancer, pageable);
   }
 
   public boolean isUser(Long userId) {
     return userRepository.existsById(userId);
   }
 
-  public List<DanceClassBooking> readBookingsByUser(User user) {
-    return bookingRepository.findByUser(user);
+  public Page<DanceClassBooking> readBookingsByUser(User user, int page, int size) {
+    Pageable pageable = PageRequest.of(page - 1, size);
+    return bookingRepository.findByUser(user, pageable);
   }
 }
