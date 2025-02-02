@@ -4,6 +4,7 @@ import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.danceclass.request.DanceClassBookingApproveRequest;
 import com.danthis.backend.api.danceclass.request.DanceClassCreateRequest;
 import com.danthis.backend.application.danceclass.DanceClassService;
+import com.danthis.backend.application.danceclass.response.DanceClassBookingServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
@@ -92,5 +93,14 @@ public class DanceClassController {
   ) {
     danceClassService.approveBooking(userInfo.getUserId(), classId, userId, request);
     return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "댄스 수업 예약 승인된 유저 목록 조회 API", description = "해당 댄스 수업에 예약이 승인된 유저 목록을 조회합니다.")
+  @GetMapping("/{classId}/bookings")
+  @AssignCurrentUserInfo
+  public ApiResponse<DanceClassBookingServiceResponse> getApprovedBookings(
+      @PathVariable Long classId) {
+    DanceClassBookingServiceResponse response = danceClassService.getApprovedBookings(classId);
+    return ApiResponse.OK(response);
   }
 }

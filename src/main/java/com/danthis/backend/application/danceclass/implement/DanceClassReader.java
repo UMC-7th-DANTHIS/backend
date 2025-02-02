@@ -11,6 +11,7 @@ import com.danthis.backend.domain.hashtag.repository.HashtagRepository;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclassbooking.repository.DanceClassBookingRepository;
 import com.danthis.backend.domain.user.User;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,5 +58,9 @@ public class DanceClassReader {
   public DanceClassBooking readBookingByClassAndUser(DanceClass danceClass, User user) {
     return bookingRepository.findByDanceClassAndUser(danceClass, user)
                             .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_BOOKING));
+  }
+
+  public List<DanceClassBooking> readApprovedBookingsByClass(DanceClass danceClass) {
+    return bookingRepository.findApprovedBookingsByClass(danceClass);
   }
 }

@@ -5,6 +5,7 @@ import com.danthis.backend.application.danceclass.implement.DanceClassManager;
 import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
+import com.danthis.backend.application.danceclass.response.DanceClassBookingServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
@@ -21,6 +22,7 @@ import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import com.danthis.backend.domain.user.User;
+import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,9 +107,22 @@ public class DanceClassService {
     DanceClassBooking booking = danceClassReader.readBookingByClassAndUser(danceClass, user);
 
     if (!danceClass.getDancer().getUser().getId().equals(requesterId)) {
-      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+      throw new BusinessException(ErrorCode.DANCER_FORBIDDEN_ACCESS);
     }
 
     danceClassManager.approveBooking(booking);
+  }
+
+  @Transactional
+  public DanceClassBookingServiceResponse getApprovedBookings(Long classId) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    List<DanceClassBooking> approvedBookings = danceClassReader.readApprovedBookingsByClass(
+        danceClass);
+
+    if (approvedBookings.isEmpty()) {
+      throw new BusinessException(ErrorCode.NO_APPROVED_USERS);
+    }
+
+    return DanceClassBookingServiceResponse.from(classId, approvedBookings);
   }
 }

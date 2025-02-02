@@ -1,7 +1,6 @@
 package com.danthis.backend.domain.mapping.danceclassbooking.repository;
 
 import com.danthis.backend.domain.danceclass.DanceClass;
-import com.danthis.backend.domain.danceclass.repository.DanceClassRepositoryCustom;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.user.User;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DanceClassBookingRepository extends JpaRepository<DanceClassBooking, Long>,
-    DanceClassRepositoryCustom {
+    DanceClassBookingRepositoryCustom {
 
   List<DanceClassBooking> findByDanceClassDancer(Dancer dancer);
 

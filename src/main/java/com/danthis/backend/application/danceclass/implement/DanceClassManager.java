@@ -41,7 +41,8 @@ public class DanceClassManager {
       throw new BusinessException(ErrorCode.INVALID_BOOKING);
     }
 
-    booking.updatedApprove(true);;
+    booking.updatedApprove(true);
+
     bookingRepository.save(booking);
   }
 }
