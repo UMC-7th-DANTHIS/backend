@@ -44,10 +44,14 @@ public class DanceClassService {
   private final UserReader userReader;
 
   @Transactional
-  public void createDanceClass(DanceClassCreateServiceRequest request) {
+  public void createDanceClass(DanceClassCreateServiceRequest request, Long userId) {
+    Dancer dancer = dancerReader.readDancerByUserId(userId);
+    if (dancer == null) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
     Genre genre = danceClassReader.readGenreById(request.getGenre());
     Set<Hashtag> hashtags = danceClassReader.readHashtagsByIds(request.getHashtags());
-    Dancer dancer = dancerReader.readDancerById(request.getDancerId());
 
     DanceClass danceClass = danceClassMapper.mapToEntity(request, genre, dancer);
     danceClassManager.saveDanceClass(danceClass);

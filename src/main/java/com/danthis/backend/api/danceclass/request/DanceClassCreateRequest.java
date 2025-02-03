@@ -43,9 +43,6 @@ public class DanceClassCreateRequest {
   @NotBlank(message = "수업 추천 대상은 필수 입력값입니다.")
   private String videoUrl;
 
-  @NotNull(message = "댄서 ID는 필수 입력값입니다.")
-  private Long dancerId;
-
   public DanceClassCreateServiceRequest toServiceRequest() {
     return DanceClassCreateServiceRequest.builder()
                                          .className(className)
@@ -57,7 +54,6 @@ public class DanceClassCreateRequest {
                                          .hashtags(hashtags)
                                          .images(images)
                                          .videoUrl(videoUrl)
-                                         .dancerId(dancerId)
                                          .build();
   }
 }

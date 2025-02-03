@@ -31,11 +31,14 @@ public class DanceClassController {
 
   private final DanceClassService danceClassService;
 
-  @Operation(summary = "댄스 수업 등록 API", description = "새로운 댄스 수업을 등록합니다.")
+  @Operation(summary = "댄스 수업 등록 API", description = "새로운 댄스 수업을 등록합니다. 댄서만 등록할 수 있습니다.")
   @PostMapping()
   @AssignCurrentUserInfo
-  public ApiResponse<Void> registerDanceClass(@RequestBody @Valid DanceClassCreateRequest request) {
-    danceClassService.createDanceClass(request.toServiceRequest());
+  public ApiResponse<Void> registerDanceClass(
+      @RequestBody @Valid DanceClassCreateRequest request,
+      CurrentUserInfo userInfo) {
+
+    danceClassService.createDanceClass(request.toServiceRequest(), userInfo.getUserId());
     return ApiResponse.OK(null);
   }
 
