@@ -25,4 +25,8 @@ public class DancerReader {
                           .map(DancerGenre::getDancer)
                           .toList();
   }
+
+  public Dancer readDancerByUserId(Long userId) {
+    return dancerRepository.findByUserId(userId).orElse(null);
+  }
 }
