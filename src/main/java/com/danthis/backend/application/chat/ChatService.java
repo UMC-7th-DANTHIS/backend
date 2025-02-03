@@ -9,6 +9,8 @@ import com.danthis.backend.application.chat.response.DancerChatListServiceRespon
 import com.danthis.backend.application.chat.response.UserChatListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
 import com.danthis.backend.application.user.implement.UserReader;
+import com.danthis.backend.common.exception.BusinessException;
+import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
@@ -41,12 +43,9 @@ public class ChatService {
   }
 
   @Transactional
-  public boolean isDancer(Long dancerId) {
-    return chatReader.isDancer(dancerId);
-  }
-
-  @Transactional
   public DancerChatListServiceResponse getDancerChatList(Long dancerId, int page, int size) {
+    validateDancerOrThrow(dancerId);
+
     Dancer dancer = dancerReader.readDancerById(dancerId);
     Page<DanceClassBooking> chatBookings = chatReader.readBookingsByDancer(dancer, page, size);
 
@@ -54,15 +53,24 @@ public class ChatService {
   }
 
   @Transactional
-  public boolean isUser(Long userId) {
-    return chatReader.isUser(userId);
-  }
-
-  @Transactional
   public UserChatListServiceResponse getUserChatList(Long userId, int page, int size) {
+    validateUserOrThrow(userId);
+
     User user = userReader.readUserById(userId);
     Page<DanceClassBooking> chatBookings = chatReader.readBookingsByUser(user, page, size);
 
     return chatMapper.toUserChatListResponse(user, chatBookings);
+  }
+
+  private void validateDancerOrThrow(Long dancerId) {
+    if (!chatReader.isDancer(dancerId)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+  }
+
+  private void validateUserOrThrow(Long userId) {
+    if (!chatReader.isUser(userId)) {
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
   }
 }

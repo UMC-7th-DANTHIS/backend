@@ -6,8 +6,6 @@ import com.danthis.backend.application.chat.ChatService;
 import com.danthis.backend.application.chat.response.ChatBookingServiceResponse;
 import com.danthis.backend.application.chat.response.DancerChatListServiceResponse;
 import com.danthis.backend.application.chat.response.UserChatListServiceResponse;
-import com.danthis.backend.common.exception.BusinessException;
-import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,10 +45,6 @@ public class ChatController {
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "10") @Min(1) int size) {
 
-    if (!chatService.isDancer(dancerId)) {
-      throw new BusinessException(ErrorCode.ACCESS_DENIED);
-    }
-
     DancerChatListServiceResponse response = chatService.getDancerChatList(dancerId, page, size);
     return ApiResponse.OK(response);
   }
@@ -62,9 +56,7 @@ public class ChatController {
       @PathVariable Long userId,
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "10") @Min(1) int size) {
-    if (!chatService.isUser(userId)) {
-      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
-    }
+
     UserChatListServiceResponse response = chatService.getUserChatList(userId, page, size);
     return ApiResponse.OK(response);
   }

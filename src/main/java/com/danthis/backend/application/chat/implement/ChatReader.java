@@ -39,13 +39,13 @@ public class ChatReader {
     return dancerRepository.existsById(dancerId);
   }
 
+  public boolean isUser(Long userId) {
+    return userRepository.existsById(userId);
+  }
+
   public Page<DanceClassBooking> readBookingsByDancer(Dancer dancer, int page, int size) {
     Pageable pageable = PageRequest.of(page - 1, size);
     return bookingRepository.findByDanceClassDancer(dancer, pageable);
-  }
-
-  public boolean isUser(Long userId) {
-    return userRepository.existsById(userId);
   }
 
   public Page<DanceClassBooking> readBookingsByUser(User user, int page, int size) {
