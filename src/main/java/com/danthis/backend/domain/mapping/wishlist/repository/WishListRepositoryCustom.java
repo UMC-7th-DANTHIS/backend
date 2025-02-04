@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable;
 public interface WishListRepositoryCustom {
 
   Page<WishList> findByUserId(Long userId, Pageable pageable);
+
+  WishList findWishListByUserIdAndClassId(Long userId, Long classId);
 }

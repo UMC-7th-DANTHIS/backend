@@ -11,6 +11,8 @@ import com.danthis.backend.application.danceclass.response.DanceClassReadService
 import com.danthis.backend.application.dancer.implement.DancerReader;
 import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.user.implement.UserReader;
+import com.danthis.backend.application.user.implement.mapping.WishListManager;
+import com.danthis.backend.application.user.implement.mapping.WishListReader;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.classreview.ClassReview;
@@ -21,6 +23,7 @@ import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
+import com.danthis.backend.domain.mapping.wishlist.WishList;
 import com.danthis.backend.domain.user.User;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +45,8 @@ public class DanceClassService {
   private final DancerReader dancerReader;
   private final ReviewReader reviewReader;
   private final UserReader userReader;
+  private final WishListManager wishListManager;
+  private final WishListReader wishListReader;
 
   @Transactional
   public void createDanceClass(DanceClassCreateServiceRequest request, Long userId) {
@@ -132,11 +137,17 @@ public class DanceClassService {
 
   @Transactional
   public void addFavoriteClass(Long userId, Long classId) {
+    User user = userReader.readUserById(userId);
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    WishList wishList = WishList.from(user, danceClass);
 
+    wishListManager.saveWishList(wishList);
   }
 
   @Transactional
   public void deleteFavoriteClass(Long userId, Long classId) {
-
+    WishList wishList = wishListReader.readWishListByUserIdAndClassId(userId, classId);
+    
+    wishListManager.deleteWishList(wishList);
   }
 }

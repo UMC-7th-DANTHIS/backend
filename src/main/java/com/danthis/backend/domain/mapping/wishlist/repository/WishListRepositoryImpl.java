@@ -37,4 +37,13 @@ public class WishListRepositoryImpl implements WishListRepositoryCustom {
 
     return new PageImpl<>(wishLists, pageable, totalElements);
   }
+
+  @Override
+  public WishList findWishListByUserIdAndClassId(Long userId, Long classId) {
+    return jpaQueryFactory.selectFrom(wishList)
+                          .where(wishList.user.id.eq(userId)
+                                                 .and(wishList.danceClass.id.eq(classId))
+                                                 .and(wishList.isActive.eq(true)))
+                          .fetchFirst();
+  }
 }
