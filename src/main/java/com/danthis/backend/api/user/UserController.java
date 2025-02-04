@@ -122,7 +122,7 @@ public class UserController {
   }
 
   @Operation(summary = "유저의 리뷰 조회 API", description = "유저가 쓴 리뷰를 조회합니다.")
-  @GetMapping("/comments")
+  @GetMapping("/reviews")
   @AssignCurrentUserInfo
   public ApiResponse<UserReviewResponse> getUserReviews(
       CurrentUserInfo userInfo,
