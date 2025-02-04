@@ -129,4 +129,14 @@ public class DanceClassService {
 
     return DanceClassBookingServiceResponse.from(classId, approvedBookings);
   }
+
+  @Transactional
+  public void addFavoriteClass(Long userId, Long classId) {
+
+  }
+
+  @Transactional
+  public void deleteFavoriteClass(Long userId, Long classId) {
+
+  }
 }
