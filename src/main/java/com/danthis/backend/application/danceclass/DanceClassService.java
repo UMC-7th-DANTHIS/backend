@@ -147,7 +147,13 @@ public class DanceClassService {
   @Transactional
   public void deleteFavoriteClass(Long userId, Long classId) {
     WishList wishList = wishListReader.readWishListByUserIdAndClassId(userId, classId);
-    
+
     wishListManager.deleteWishList(wishList);
+  }
+
+  @Transactional
+  public DanceClassListServiceResponse getUserLearningClasses(Long userId, Integer page, Integer size) {
+    PageRequest pageable = PageRequest.of(page, size);
+    return null;
   }
 }
