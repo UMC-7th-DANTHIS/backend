@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -153,7 +154,10 @@ public class DanceClassService {
 
   @Transactional
   public DanceClassListServiceResponse getUserLearningClasses(Long userId, Integer page, Integer size) {
-    PageRequest pageable = PageRequest.of(page, size);
-    return null;
+    Pageable pageable = PageRequest.of(page - 1, size);
+    User user = userReader.readUserById(userId);
+
+    Page<DanceClass> danceClasses = danceClassReader.readUserLearningClasses(user, pageable);
+    return DanceClassListServiceResponse.from(danceClasses);
   }
 }

@@ -133,7 +133,7 @@ public class DanceClassController {
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassListServiceResponse> getUserLearningClasses(
       CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "0") @Min(0) int page,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "9") @Min(1) int size) {
 
     DanceClassListServiceResponse response = danceClassService.getUserLearningClasses(userInfo.getUserId(), page, size);

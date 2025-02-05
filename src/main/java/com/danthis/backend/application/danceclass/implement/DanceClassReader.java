@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -62,5 +63,10 @@ public class DanceClassReader {
 
   public List<DanceClassBooking> readApprovedBookingsByClass(DanceClass danceClass) {
     return bookingRepository.findApprovedBookingsByClass(danceClass);
+  }
+
+  public Page<DanceClass> readUserLearningClasses(User user, Pageable pageable) {
+    Page<DanceClassBooking> bookingClasses = bookingRepository.findByUser(user, pageable);
+    return bookingClasses.map(DanceClassBooking::getDanceClass);
   }
 }
