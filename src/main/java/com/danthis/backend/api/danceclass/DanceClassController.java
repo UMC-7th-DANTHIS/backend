@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -105,5 +106,25 @@ public class DanceClassController {
       @PathVariable Long classId) {
     DanceClassBookingServiceResponse response = danceClassService.getApprovedBookings(classId);
     return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "댄스 수업 찜 등록 API", description = "해당 댄스수업을 찜 매핑테이블에 추가합니다.")
+  @PostMapping("/{classId}/favorite")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> addFavoriteClass(
+      CurrentUserInfo userInfo,
+      @PathVariable Long classId) {
+    danceClassService.addFavoriteClass(userInfo.getUserId(), classId);
+    return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "댄스 수업 찜 해제 API", description = "해당 댄스수업을 찜 매핑테이블에서 삭제합니다.")
+  @DeleteMapping("/{classId}/favorite")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> deleteFavoriteClass(
+      CurrentUserInfo userInfo,
+      @PathVariable Long classId) {
+    danceClassService.deleteFavoriteClass(userInfo.getUserId(), classId);
+    return ApiResponse.OK(null);
   }
 }

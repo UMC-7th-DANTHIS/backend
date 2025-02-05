@@ -33,4 +33,11 @@ public class WishList extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "class_id")
   private DanceClass danceClass;
+
+  public static WishList from(User user, DanceClass danceClass) {
+    return WishList.builder()
+                   .user(user)
+                   .danceClass(danceClass)
+                   .build();
+  }
 }

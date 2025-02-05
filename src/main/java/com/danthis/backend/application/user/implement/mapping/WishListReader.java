@@ -16,4 +16,8 @@ public class WishListReader {
   public Page<WishList> readWishListByUserId(Long userId, Pageable pageable) {
     return wishListRepository.findByUserId(userId, pageable);
   }
+
+  public WishList readWishListByUserIdAndClassId(Long userId, Long classId) {
+    return wishListRepository.findWishListByUserIdAndClassId(userId, classId);
+  }
 }

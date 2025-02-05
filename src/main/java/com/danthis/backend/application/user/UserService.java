@@ -117,7 +117,7 @@ public class UserService {
   public void addFavoriteDancer(Long userId, Long dancerId) {
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
-    UserDancer userDancer = userDancerManager.toUserDancer(user, dancer);
+    UserDancer userDancer = UserDancer.from(user, dancer);
 
     userDancerManager.saveUserDancer(userDancer);
   }
