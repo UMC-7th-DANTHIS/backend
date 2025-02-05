@@ -44,4 +44,11 @@ public class UserDancer extends BaseEntity {
                                            .build())
                   .collect(Collectors.toSet());
   }
+
+  public static UserDancer from(User user, Dancer dancer) {
+    return UserDancer.builder()
+                     .user(user)
+                     .dancer(dancer)
+                     .build();
+  }
 }

@@ -31,13 +31,6 @@ public class UserDancerManager {
     userDancerRepository.deleteByUser(user.getId());
   }
 
-  public UserDancer toUserDancer(User user, Dancer dancer) {
-    return UserDancer.builder()
-                     .user(user)
-                     .dancer(dancer)
-                     .build();
-  }
-
   @Transactional
   public void saveUserDancer(UserDancer userDancer) {
     userDancerRepository.save(userDancer);
