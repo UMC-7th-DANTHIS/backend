@@ -1,10 +1,12 @@
 package com.danthis.backend.application.review.implement;
 
+import com.danthis.backend.application.user.response.UserReviewResponse.ReviewDto;
 import com.danthis.backend.application.review.request.ReviewCreateServiceRequest;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.classreview.classreviewimage.ClassReviewImage;
+import java.util.List;
 import com.danthis.backend.domain.classreview.classreviewimage.repository.ClassReviewImageRepository;
 import com.danthis.backend.domain.classreview.repository.ClassReviewRepository;
 import com.danthis.backend.domain.danceclass.DanceClass;
@@ -57,5 +59,21 @@ public class ReviewManager {
                  .collect(Collectors.toSet())
       );
     }
+  }
+  public List<ReviewDto> toReviewDtoList(List<ClassReview> reviews) {
+    return reviews.stream()
+                  .map(review -> ReviewDto.builder()
+                                          .reviewId(review.getId())
+                                          .classId(review.getDanceClass().getId())
+                                          .title(review.getTitle())
+                                          .content(review.getContent())
+                                          .rating(review.getRating())
+                                          .createdAt(review.getCreatedAt())
+                                          .images(review.getClassReviewImages()
+                                                        .stream()
+                                                        .map(ClassReviewImage::getImageUrl)
+                                                        .collect(Collectors.toSet()))
+                                          .build())
+                  .toList();
   }
 }

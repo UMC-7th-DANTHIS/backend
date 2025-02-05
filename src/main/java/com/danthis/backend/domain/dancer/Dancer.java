@@ -42,7 +42,7 @@ public class Dancer extends BaseEntity {
   @Column(nullable = false, length = 20)
   private String instargramId;
 
-  @Column(nullable = false, length = 80)
+  @Column(nullable = false, length = 60)
   private String bio;
 
   @Column(nullable = false, length = 1000)
