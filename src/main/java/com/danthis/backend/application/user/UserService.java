@@ -1,8 +1,8 @@
 package com.danthis.backend.application.user;
 
+import com.danthis.backend.application.community.implement.PostManager;
+import com.danthis.backend.application.community.implement.PostReader;
 import com.danthis.backend.application.dancer.implement.DancerReader;
-import com.danthis.backend.application.post.implement.PostManager;
-import com.danthis.backend.application.post.implement.PostReader;
 import com.danthis.backend.application.review.implement.ReviewManager;
 import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.user.implement.UserManager;
