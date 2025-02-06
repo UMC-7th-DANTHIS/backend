@@ -11,4 +11,6 @@ public interface DanceClassRepository extends JpaRepository<DanceClass, Long>,
     DanceClassRepositoryCustom {
 
   Page<DanceClass> findByGenreId(Long genreId, Pageable pageable);
+
+  Page<DanceClass> findByDancerId(Long dancerId, Pageable pageable);
 }

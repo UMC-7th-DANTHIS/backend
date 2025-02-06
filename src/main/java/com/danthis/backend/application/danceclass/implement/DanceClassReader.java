@@ -63,4 +63,8 @@ public class DanceClassReader {
   public List<DanceClassBooking> readApprovedBookingsByClass(DanceClass danceClass) {
     return bookingRepository.findApprovedBookingsByClass(danceClass);
   }
+
+  public Page<DanceClass> readDancerClasses(Long dancerId, PageRequest pageable) {
+    return danceClassRepository.findByDancerId(dancerId, pageable);
+  }
 }
