@@ -23,6 +23,8 @@ import com.danthis.backend.application.user.response.UserPostsResponse.Paginatio
 import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
 import com.danthis.backend.application.user.response.UserReviewResponse;
 import com.danthis.backend.application.user.response.UserReviewResponse.ReviewDto;
+import com.danthis.backend.common.exception.BusinessException;
+import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -117,6 +119,9 @@ public class UserService {
   public void addFavoriteDancer(Long userId, Long dancerId) {
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
+    if (userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null) {
+      throw new BusinessException(ErrorCode.ALREADY_FAVORITE);
+    }
     UserDancer userDancer = UserDancer.from(user, dancer);
 
     userDancerManager.saveUserDancer(userDancer);
@@ -127,6 +132,9 @@ public class UserService {
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
     UserDancer userDancer = userDancerReader.readUserDancerByUserAndDancer(user, dancer);
+    if (userDancer == null) {
+      throw new BusinessException(ErrorCode.NOT_FAVORITE);
+    }
 
     userDancerManager.deleteUserDancer(userDancer);
   }

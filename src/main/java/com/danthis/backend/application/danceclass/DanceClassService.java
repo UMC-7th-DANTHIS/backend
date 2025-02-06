@@ -137,6 +137,9 @@ public class DanceClassService {
 
   @Transactional
   public void addFavoriteClass(Long userId, Long classId) {
+    if (wishListReader.readWishListByUserIdAndClassId(userId, classId) != null) {
+      throw new BusinessException(ErrorCode.ALREADY_FAVORITE);
+    }
     User user = userReader.readUserById(userId);
     DanceClass danceClass = danceClassReader.readDanceClassById(classId);
     WishList wishList = WishList.from(user, danceClass);
@@ -147,7 +150,9 @@ public class DanceClassService {
   @Transactional
   public void deleteFavoriteClass(Long userId, Long classId) {
     WishList wishList = wishListReader.readWishListByUserIdAndClassId(userId, classId);
-    
+    if (wishList == null) {
+      throw new BusinessException(ErrorCode.NOT_FAVORITE);
+    }
     wishListManager.deleteWishList(wishList);
   }
 }
