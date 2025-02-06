@@ -154,7 +154,7 @@ public class DanceClassService {
 
   @Transactional
   public DanceClassListServiceResponse getUserLearningClasses(Long userId, Integer page, Integer size) {
-    Pageable pageable = PageRequest.of(page - 1, size);
+    PageRequest pageable = PageRequest.of(page - 1, size);
     User user = userReader.readUserById(userId);
 
     Page<DanceClass> danceClasses = danceClassReader.readUserLearningClasses(user, pageable);

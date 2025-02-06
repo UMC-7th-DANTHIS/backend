@@ -65,7 +65,7 @@ public class DanceClassReader {
     return bookingRepository.findApprovedBookingsByClass(danceClass);
   }
 
-  public Page<DanceClass> readUserLearningClasses(User user, Pageable pageable) {
+  public Page<DanceClass> readUserLearningClasses(User user, PageRequest pageable) {
     Page<DanceClassBooking> bookingClasses = bookingRepository.findByUser(user, pageable);
     return bookingClasses.map(DanceClassBooking::getDanceClass);
   }
