@@ -58,4 +58,18 @@ public class FileController {
       @RequestParam String fileExtension) {
     return fileService.getPresignedUrl("classvideo", fileExtension);
   }
+
+  @Operation(summary = "게시글 사진 presignedURL 발급")
+  @PostMapping("/images/post")
+  public List<GetPresignedUrlResponse> getPostImagesPresignedUrls(
+      @RequestParam List<String> fileExtensions) {
+
+    List<GetPresignedUrlResponse> presignedUrls = new ArrayList<>();
+
+    for (String fileExtension : fileExtensions) {
+      presignedUrls.add(fileService.getPresignedUrl("post", fileExtension));
+    }
+
+    return presignedUrls;
+  }
 }
