@@ -1,4 +1,4 @@
-package com.danthis.backend.application.post.implement;
+package com.danthis.backend.application.community.implement;
 
 import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
 import com.danthis.backend.domain.communitypost.CommunityPost;
