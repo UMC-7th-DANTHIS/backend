@@ -2,6 +2,7 @@ package com.danthis.backend.api.community;
 
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.community.request.PostCreateRequest;
+import com.danthis.backend.api.community.request.PostUpdateRequest;
 import com.danthis.backend.application.community.PostService;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
@@ -9,7 +10,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +31,18 @@ public class CommunityController {
   public ApiResponse<Void> createPost(
       @RequestBody @Valid PostCreateRequest request, CurrentUserInfo userInfo) {
     postService.createPost(request.toServiceRequest(userInfo.getUserId()));
+    return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다.")
+  @PutMapping("/posts/{postId}")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> updatePost(
+      @PathVariable Long postId,
+      @RequestBody @Valid PostUpdateRequest request,
+      CurrentUserInfo userInfo
+  ) {
+    postService.updatePost(request.toServiceRequest(postId, userInfo.getUserId()));
     return ApiResponse.OK(null);
   }
 }

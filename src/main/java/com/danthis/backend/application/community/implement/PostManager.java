@@ -31,12 +31,17 @@ public class PostManager {
                          .toList();
   }
 
+  public void savePost(CommunityPost post) {
+    communityPostRepository.save(post);
+  }
+
   public void savePost(CommunityPost post, List<String> images) {
     CommunityPost savedPost = communityPostRepository.save(post);
 
     if (images != null && !images.isEmpty()) {
       List<CommunityPostImage> postImages = images.stream()
-                                                  .map(url -> CommunityPostImage.builder().url(url)
+                                                  .map(url -> CommunityPostImage.builder()
+                                                                                .url(url)
                                                                                 .post(savedPost)
                                                                                 .build())
                                                   .toList();
