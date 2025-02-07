@@ -14,4 +14,8 @@ public class CommentManager {
   public void saveComment(CommunityComment comment) {
     communityCommentRepository.save(comment);
   }
+
+  public void deleteComment(CommunityComment comment) {
+    communityCommentRepository.delete(comment);
+  }
 }

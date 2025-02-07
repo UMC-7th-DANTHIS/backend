@@ -7,6 +7,8 @@ import com.danthis.backend.application.community.implement.PostReader;
 import com.danthis.backend.application.community.request.CommentCreateServiceRequest;
 import com.danthis.backend.application.community.response.CommentListServiceResponse;
 import com.danthis.backend.application.user.implement.UserReader;
+import com.danthis.backend.common.exception.BusinessException;
+import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.communitycomment.CommunityComment;
 import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.user.User;
@@ -41,5 +43,18 @@ public class CommentService {
     Page<CommunityComment> commentsPage = commentReader.readCommentsByPostId(postId, page, size);
 
     return commentMapper.toCommentListResponse(postId, commentsPage);
+  }
+
+  @Transactional
+  public void deleteComment(Long postId, Long commentId, Long userId) {
+    CommunityPost post = postReader.readPostById(postId);
+    CommunityComment comment = commentReader.readCommentById(commentId);
+    User user = userReader.readUserById(userId);
+
+    if (!comment.getUser().equals(user)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    commentManager.deleteComment(comment);
   }
 }

@@ -86,4 +86,16 @@ public class CommunityController {
     CommentListServiceResponse response = commentService.getCommentsByPostId(postId, page, size);
     return ApiResponse.OK(response);
   }
+
+  @Operation(summary = "댓글 삭제", description = "기존 댓글을 삭제합니다.")
+  @DeleteMapping("/posts/{postId}/comments/{commentId}")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> deleteComment(
+      @PathVariable Long postId,
+      @PathVariable Long commentId,
+      CurrentUserInfo userInfo
+  ) {
+    commentService.deleteComment(postId, commentId, userInfo.getUserId());
+    return ApiResponse.OK(null);
+  }
 }
