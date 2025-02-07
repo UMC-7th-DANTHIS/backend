@@ -7,6 +7,7 @@ import com.danthis.backend.api.community.request.PostUpdateRequest;
 import com.danthis.backend.application.community.CommentService;
 import com.danthis.backend.application.community.PostService;
 import com.danthis.backend.application.community.response.CommentListServiceResponse;
+import com.danthis.backend.application.community.response.PostListServiceResponse;
 import com.danthis.backend.application.community.response.PostReadServiceResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
@@ -69,6 +70,15 @@ public class CommunityController {
   @GetMapping("/posts/{postId}")
   public ApiResponse<PostReadServiceResponse> getPost(@PathVariable Long postId) {
     return ApiResponse.OK(postService.getPostById(postId));
+  }
+
+  @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회합니다.")
+  @GetMapping("/posts")
+  public ApiResponse<PostListServiceResponse> getPosts(
+      @RequestParam(defaultValue = "1") int page,
+      @RequestParam(defaultValue = "10") int size
+  ) {
+    return ApiResponse.OK(postService.getPosts(page, size));
   }
 
   @Operation(summary = "댓글 작성", description = "게시글에 댓글을 작성합니다.")

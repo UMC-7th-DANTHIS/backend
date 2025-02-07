@@ -6,6 +6,7 @@ import com.danthis.backend.application.community.implement.PostReader;
 import com.danthis.backend.application.community.implement.mapping.PostImageManager;
 import com.danthis.backend.application.community.request.PostCreateServiceRequest;
 import com.danthis.backend.application.community.request.PostUpdateServiceRequest;
+import com.danthis.backend.application.community.response.PostListServiceResponse;
 import com.danthis.backend.application.community.response.PostReadServiceResponse;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.common.exception.BusinessException;
@@ -15,6 +16,7 @@ import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -69,5 +71,11 @@ public class PostService {
   public PostReadServiceResponse getPostById(Long postId) {
     CommunityPost post = postReader.readPostById(postId);
     return postMapper.toPostReadServiceResponse(post);
+  }
+
+  @Transactional
+  public PostListServiceResponse getPosts(int page, int size) {
+    Page<CommunityPost> postPage = postReader.readAllPosts(page, size);
+    return postMapper.toPostListResponse(postPage);
   }
 }

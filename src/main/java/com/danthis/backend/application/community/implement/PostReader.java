@@ -6,6 +6,7 @@ import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.communitypost.repository.CommunityPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -23,5 +24,9 @@ public class PostReader {
     return communityPostRepository.findById(postId)
                                   .orElseThrow(
                                       () -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+  }
+
+  public Page<CommunityPost> readAllPosts(int page, int size) {
+    return communityPostRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page - 1, size));
   }
 }
