@@ -6,6 +6,7 @@ import com.danthis.backend.api.community.request.PostCreateRequest;
 import com.danthis.backend.api.community.request.PostUpdateRequest;
 import com.danthis.backend.application.community.CommentService;
 import com.danthis.backend.application.community.PostService;
+import com.danthis.backend.application.community.response.CommentListServiceResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,11 +14,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -71,5 +74,16 @@ public class CommunityController {
   ) {
     commentService.createComment(request.toServiceRequest(postId, userInfo.getUserId()));
     return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "댓글 목록 조회", description = "게시글의 댓글을 조회합니다.")
+  @GetMapping("/posts/{postId}/comments")
+  public ApiResponse<CommentListServiceResponse> getComments(
+      @PathVariable Long postId,
+      @RequestParam(defaultValue = "1") int page,
+      @RequestParam(defaultValue = "5") int size
+  ) {
+    CommentListServiceResponse response = commentService.getCommentsByPostId(postId, page, size);
+    return ApiResponse.OK(response);
   }
 }

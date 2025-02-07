@@ -2,8 +2,10 @@ package com.danthis.backend.application.community;
 
 import com.danthis.backend.application.community.implement.CommentManager;
 import com.danthis.backend.application.community.implement.CommentMapper;
+import com.danthis.backend.application.community.implement.CommentReader;
 import com.danthis.backend.application.community.implement.PostReader;
 import com.danthis.backend.application.community.request.CommentCreateServiceRequest;
+import com.danthis.backend.application.community.response.CommentListServiceResponse;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.domain.communitycomment.CommunityComment;
 import com.danthis.backend.domain.communitypost.CommunityPost;
@@ -11,6 +13,7 @@ import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -20,6 +23,7 @@ public class CommentService {
 
   private final CommentManager commentManager;
   private final CommentMapper commentMapper;
+  private final CommentReader commentReader;
   private final PostReader postReader;
   private final UserReader userReader;
 
@@ -30,5 +34,12 @@ public class CommentService {
 
     CommunityComment comment = commentMapper.mapToEntity(request, user, post);
     commentManager.saveComment(comment);
+  }
+
+  @Transactional
+  public CommentListServiceResponse getCommentsByPostId(Long postId, int page, int size) {
+    Page<CommunityComment> commentsPage = commentReader.readCommentsByPostId(postId, page, size);
+
+    return commentMapper.toCommentListResponse(postId, commentsPage);
   }
 }
