@@ -1,0 +1,34 @@
+package com.danthis.backend.application.community;
+
+import com.danthis.backend.application.community.implement.CommentManager;
+import com.danthis.backend.application.community.implement.CommentMapper;
+import com.danthis.backend.application.community.implement.PostReader;
+import com.danthis.backend.application.community.request.CommentCreateServiceRequest;
+import com.danthis.backend.application.user.implement.UserReader;
+import com.danthis.backend.domain.communitycomment.CommunityComment;
+import com.danthis.backend.domain.communitypost.CommunityPost;
+import com.danthis.backend.domain.user.User;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class CommentService {
+
+  private final CommentManager commentManager;
+  private final CommentMapper commentMapper;
+  private final PostReader postReader;
+  private final UserReader userReader;
+
+  @Transactional
+  public void createComment(CommentCreateServiceRequest request) {
+    CommunityPost post = postReader.readPostById(request.getPostId());
+    User user = userReader.readUserById(request.getUserId());
+
+    CommunityComment comment = commentMapper.mapToEntity(request, user, post);
+    commentManager.saveComment(comment);
+  }
+}

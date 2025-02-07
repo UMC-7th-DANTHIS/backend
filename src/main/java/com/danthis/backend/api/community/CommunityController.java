@@ -1,8 +1,10 @@
 package com.danthis.backend.api.community;
 
 import com.danthis.backend.api.ApiResponse;
+import com.danthis.backend.api.community.request.CommentCreateRequest;
 import com.danthis.backend.api.community.request.PostCreateRequest;
 import com.danthis.backend.api.community.request.PostUpdateRequest;
+import com.danthis.backend.application.community.CommentService;
 import com.danthis.backend.application.community.PostService;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommunityController {
 
   private final PostService postService;
+  private final CommentService commentService;
 
   @Operation(summary = "게시글 작성", description = "새로운 게시글을 작성합니다.")
   @PostMapping("/posts")
@@ -55,6 +58,18 @@ public class CommunityController {
       CurrentUserInfo userInfo
   ) {
     postService.deletePost(postId, userInfo.getUserId());
+    return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "댓글 작성", description = "게시글에 댓글을 작성합니다.")
+  @PostMapping("/posts/{postId}/comments")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> createComment(
+      @PathVariable Long postId,
+      @RequestBody @Valid CommentCreateRequest request,
+      CurrentUserInfo userInfo
+  ) {
+    commentService.createComment(request.toServiceRequest(postId, userInfo.getUserId()));
     return ApiResponse.OK(null);
   }
 }
