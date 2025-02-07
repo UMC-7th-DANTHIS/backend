@@ -6,6 +6,7 @@ import com.danthis.backend.application.community.implement.PostReader;
 import com.danthis.backend.application.community.implement.mapping.PostImageManager;
 import com.danthis.backend.application.community.request.PostCreateServiceRequest;
 import com.danthis.backend.application.community.request.PostUpdateServiceRequest;
+import com.danthis.backend.application.community.response.PostReadServiceResponse;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
@@ -62,5 +63,11 @@ public class PostService {
 
     postImageManager.deletePostImages(postId);
     postManager.deletePost(post);
+  }
+
+  @Transactional
+  public PostReadServiceResponse getPostById(Long postId) {
+    CommunityPost post = postReader.readPostById(postId);
+    return postMapper.toPostReadServiceResponse(post);
   }
 }

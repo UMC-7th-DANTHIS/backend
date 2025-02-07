@@ -7,6 +7,7 @@ import com.danthis.backend.api.community.request.PostUpdateRequest;
 import com.danthis.backend.application.community.CommentService;
 import com.danthis.backend.application.community.PostService;
 import com.danthis.backend.application.community.response.CommentListServiceResponse;
+import com.danthis.backend.application.community.response.PostReadServiceResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,6 +63,12 @@ public class CommunityController {
   ) {
     postService.deletePost(postId, userInfo.getUserId());
     return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "게시글 단일 조회", description = "게시글을 단일 조회합니다.")
+  @GetMapping("/posts/{postId}")
+  public ApiResponse<PostReadServiceResponse> getPost(@PathVariable Long postId) {
+    return ApiResponse.OK(postService.getPostById(postId));
   }
 
   @Operation(summary = "댓글 작성", description = "게시글에 댓글을 작성합니다.")
