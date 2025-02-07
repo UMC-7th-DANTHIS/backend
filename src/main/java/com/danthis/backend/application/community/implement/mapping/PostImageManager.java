@@ -28,4 +28,9 @@ public class PostImageManager {
     postImageRepository.saveAll(postImages);
     post.updatePostImages(postImages);
   }
+
+  @Transactional
+  public void deletePostImages(Long postId) {
+    postImageRepository.deleteByPostId(postId);
+  }
 }

@@ -48,7 +48,19 @@ public class PostService {
     post.updateContent(request.getContent());
 
     postImageManager.updatePostImages(post, request.getImages());
-
     postManager.savePost(post);
+  }
+
+  @Transactional
+  public void deletePost(Long postId, Long userId) {
+    CommunityPost post = postReader.readPostById(postId);
+    User user = userReader.readUserById(userId);
+
+    if (!post.getUser().equals(user)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    postImageManager.deletePostImages(postId);
+    postManager.deletePost(post);
   }
 }

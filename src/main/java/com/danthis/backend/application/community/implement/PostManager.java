@@ -49,4 +49,8 @@ public class PostManager {
       communityPostImageRepository.saveAll(postImages);
     }
   }
+
+  public void deletePost(CommunityPost post) {
+    communityPostRepository.delete(post);
+  }
 }
