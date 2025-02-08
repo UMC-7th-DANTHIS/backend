@@ -42,8 +42,7 @@ public class PostMapper {
 
   public PostListServiceResponse toPostListResponse(Page<CommunityPost> postPage) {
     List<PostListServiceResponse.PostSummary> posts = postPage.getContent().stream()
-                                                              .map(
-                                                                  post -> PostListServiceResponse.PostSummary.builder()
+                                                              .map(post -> PostListServiceResponse.PostSummary.builder()
                                                                                                              .postId(post.getId())
                                                                                                              .title(post.getTitle())
                                                                                                              .createdAt(post.getCreatedAt())

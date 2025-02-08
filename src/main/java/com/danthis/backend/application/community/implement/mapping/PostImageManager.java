@@ -21,8 +21,10 @@ public class PostImageManager {
     postImageRepository.deleteByPostId(post.getId());
 
     Set<CommunityPostImage> postImages = newImages.stream()
-                                                  .map(url -> CommunityPostImage.builder().url(url)
-                                                                                .post(post).build())
+                                                  .map(url -> CommunityPostImage.builder()
+                                                                                .url(url)
+                                                                                .post(post)
+                                                                                .build())
                                                   .collect(Collectors.toSet());
 
     postImageRepository.saveAll(postImages);

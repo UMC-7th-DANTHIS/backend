@@ -24,8 +24,7 @@ public class PostManager {
                                                       .content(communityPost.getContent())
                                                       .images(communityPost.getCommunityPostImages()
                                                                            .stream()
-                                                                           .map(
-                                                                               CommunityPostImage::getUrl)
+                                                                           .map(CommunityPostImage::getUrl)
                                                                            .toList())
                                                       .build())
                          .toList();

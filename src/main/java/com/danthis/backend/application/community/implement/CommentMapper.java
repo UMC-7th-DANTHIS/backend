@@ -15,8 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CommentMapper {
 
-  public CommunityComment mapToEntity(CommentCreateServiceRequest request, User user,
-      CommunityPost post) {
+  public CommunityComment mapToEntity(CommentCreateServiceRequest request, User user, CommunityPost post) {
     return CommunityComment.builder()
                            .content(request.getContent())
                            .user(user)
