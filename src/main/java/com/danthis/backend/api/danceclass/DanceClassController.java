@@ -128,6 +128,18 @@ public class DanceClassController {
     return ApiResponse.OK(null);
   }
 
+  @Operation(summary = "유저가 수강한 댄스수업 목록 조회 API", description = "유저가 수강한 댄스수업 목록을 조회합니다.")
+  @GetMapping("/users")
+  @AssignCurrentUserInfo
+  public ApiResponse<DanceClassListServiceResponse> getUserLearningClasses(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "9") @Min(1) int size) {
+
+    DanceClassListServiceResponse response = danceClassService.getUserLearningClasses(userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
   @Operation(summary = "댄서가 생성한 댄스수업 목록 조회 API", description = "댄서가 생성한 댄스수업 목록을 조회합니다.")
   @GetMapping("/dancers")
   @AssignCurrentUserInfo
