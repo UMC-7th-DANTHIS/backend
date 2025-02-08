@@ -155,4 +155,16 @@ public class DanceClassService {
     }
     wishListManager.deleteWishList(wishList);
   }
+
+  @Transactional
+  public DanceClassListServiceResponse getDancerClasses(Long userId, Integer page, Integer size) {
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Dancer dancer = dancerReader.readDancerByUserId(userId);
+    if (dancer == null) {
+      throw new BusinessException(ErrorCode.DANCER_NOT_FOUND);
+    }
+
+    Page<DanceClass> danceClasses = danceClassReader.readDancerClasses(dancer.getId(), pageable);
+    return DanceClassListServiceResponse.from(danceClasses);
+  }
 }
