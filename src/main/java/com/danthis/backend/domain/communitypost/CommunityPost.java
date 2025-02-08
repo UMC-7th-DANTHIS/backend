@@ -49,4 +49,13 @@ public class CommunityPost extends BaseEntity {
 
   @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
   private Set<CommunityPostImage> communityPostImages;
+
+  public void updateTitle(String title) {this.title = title;}
+
+  public void updateContent(String content) {this.content = content;}
+
+  public void updatePostImages(Set<CommunityPostImage> images) {
+    this.communityPostImages.clear();
+    this.communityPostImages.addAll(images);
+  }
 }

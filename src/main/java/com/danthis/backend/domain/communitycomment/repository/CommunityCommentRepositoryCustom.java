@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable;
 public interface CommunityCommentRepositoryCustom {
 
   Page<CommunityComment> findByUserId(Long userId, Pageable pageable);
+
+  Page<CommunityComment> findByPostId(Long postId, Pageable pageable);
 }
