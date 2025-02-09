@@ -56,6 +56,16 @@ public class DanceClassController {
     return ApiResponse.OK(null);
   }
 
+  @Operation(summary = "댄스 수업 삭제 API", description = "댄서만 본인의 댄스 수업을 삭제할 수 있습니다.")
+  @DeleteMapping("/{classId}")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> deleteDanceClass(
+      @PathVariable Long classId,
+      CurrentUserInfo userInfo) {
+    danceClassService.deleteDanceClass(classId, userInfo.getUserId());
+    return ApiResponse.OK(null);
+  }
+
   @Operation(summary = "댄스 수업 단일 조회 상세 설명 API", description = "댄스 수업 상세 설명 섹션을 조회합니다.")
   @GetMapping("/{classId}")
   @AssignCurrentUserInfo

@@ -120,6 +120,22 @@ public class DanceClassService {
   }
 
   @Transactional
+  public void deleteDanceClass(Long classId, Long userId) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    Dancer dancer = dancerReader.readDancerByUserId(userId);
+
+    if (!danceClass.getDancer().equals(dancer)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    danceClassImageManager.deleteImagesByDanceClass(danceClass);
+    danceClassHashtagManager.deleteHashtagsByDanceClass(danceClass);
+    danceClassManager.deleteDanceClassBookings(danceClass);
+
+    danceClassManager.deleteDanceClass(danceClass);
+  }
+
+  @Transactional
   public DanceClassReadServiceResponse getDanceClassDetail(Long classId) {
     DanceClass danceClass = danceClassReader.readDanceClassById(classId);
     return danceClassMapper.toDanceClassDetailsResponse(danceClass);

@@ -28,4 +28,9 @@ public class DanceClassImageManager {
 
     danceClassImageRepository.saveAll(newImages);
   }
+
+  @Transactional
+  public void deleteImagesByDanceClass(DanceClass danceClass) {
+    danceClassImageRepository.deleteByDanceClassId(danceClass.getId());
+  }
 }

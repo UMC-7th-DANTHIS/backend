@@ -7,4 +7,6 @@ import java.util.List;
 public interface DanceClassBookingRepositoryCustom {
 
   List<DanceClassBooking> findApprovedBookingsByClass(DanceClass danceClass);
+
+  void deleteByDanceClass(DanceClass danceClass);
 }

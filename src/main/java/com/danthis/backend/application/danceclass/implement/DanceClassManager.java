@@ -45,4 +45,12 @@ public class DanceClassManager {
 
     bookingRepository.save(booking);
   }
+
+  public void deleteDanceClass(DanceClass danceClass) {
+    danceClassRepository.delete(danceClass);
+  }
+
+  public void deleteDanceClassBookings(DanceClass danceClass) {
+    bookingRepository.deleteByDanceClass(danceClass);
+  }
 }

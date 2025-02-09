@@ -29,4 +29,9 @@ public class DanceClassHashtagManager {
 
     danceClassHashtagRepository.saveAll(newHashtags);
   }
+
+  @Transactional
+  public void deleteHashtagsByDanceClass(DanceClass danceClass) {
+    danceClassHashtagRepository.deleteByDanceClassId(danceClass.getId());
+  }
 }
