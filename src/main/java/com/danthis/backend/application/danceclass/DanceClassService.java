@@ -4,7 +4,10 @@ import com.danthis.backend.api.danceclass.request.DanceClassBookingApproveReques
 import com.danthis.backend.application.danceclass.implement.DanceClassManager;
 import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
+import com.danthis.backend.application.danceclass.implement.mapping.DanceClassHashtagManager;
+import com.danthis.backend.application.danceclass.implement.mapping.DanceClassImageManager;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
+import com.danthis.backend.application.danceclass.request.DanceClassUpdateServiceRequest;
 import com.danthis.backend.application.danceclass.response.DanceClassBookingServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
@@ -31,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +50,8 @@ public class DanceClassService {
   private final UserReader userReader;
   private final WishListManager wishListManager;
   private final WishListReader wishListReader;
+  private final DanceClassImageManager danceClassImageManager;
+  private final DanceClassHashtagManager danceClassHashtagManager;
 
   @Transactional
   public void createDanceClass(DanceClassCreateServiceRequest request, Long userId) {
@@ -69,6 +73,50 @@ public class DanceClassService {
       Set<DanceClassImage> images = danceClassMapper.mapToImages(danceClass, request.getImages());
       danceClassManager.saveDanceClassImages(images);
     }
+  }
+
+  @Transactional
+  public void updateDanceClass(DanceClassUpdateServiceRequest request) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(request.getClassId());
+    Dancer dancer = dancerReader.readDancerByUserId(request.getUserId());
+
+    if (!danceClass.getDancer().equals(dancer)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    if (request.getClassName() != null) {
+      danceClass.updateClassName(request.getClassName());
+    }
+    if (request.getPricePerSession() != null) {
+      danceClass.updatePrice(request.getPricePerSession());
+    }
+    if (request.getDifficulty() != null) {
+      danceClass.updateDifficulty(request.getDifficulty());
+    }
+    if (request.getGenre() != null) {
+      Genre genre = danceClassReader.readGenreById(request.getGenre());
+      danceClass.updateGenre(genre);
+    }
+    if (request.getDescription() != null) {
+      danceClass.updateDescription(request.getDescription());
+    }
+    if (request.getTargetAudience() != null) {
+      danceClass.updateTargetAudience(request.getTargetAudience());
+    }
+    if (request.getVideoUrl() != null) {
+      danceClass.updateVideoUrl(request.getVideoUrl());
+    }
+
+    if (request.getHashtags() != null) {
+      Set<Hashtag> hashtags = danceClassReader.readHashtagsByIds(request.getHashtags());
+      danceClassHashtagManager.updateHashtags(danceClass, hashtags);
+    }
+
+    if (request.getImages() != null) {
+      danceClassImageManager.updateImages(danceClass, request.getImages());
+    }
+
+    danceClassManager.saveDanceClass(danceClass);
   }
 
   @Transactional
@@ -171,7 +219,8 @@ public class DanceClassService {
   }
 
   @Transactional
-  public DanceClassListServiceResponse getUserLearningClasses(Long userId, Integer page, Integer size) {
+  public DanceClassListServiceResponse getUserLearningClasses(Long userId, Integer page,
+      Integer size) {
     PageRequest pageable = PageRequest.of(page - 1, size);
     User user = userReader.readUserById(userId);
 

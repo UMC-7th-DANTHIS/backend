@@ -3,6 +3,7 @@ package com.danthis.backend.api.danceclass;
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.danceclass.request.DanceClassBookingApproveRequest;
 import com.danthis.backend.api.danceclass.request.DanceClassCreateRequest;
+import com.danthis.backend.api.danceclass.request.DanceClassUpdateRequest;
 import com.danthis.backend.application.danceclass.DanceClassService;
 import com.danthis.backend.application.danceclass.response.DanceClassBookingServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,6 +42,17 @@ public class DanceClassController {
       CurrentUserInfo userInfo) {
 
     danceClassService.createDanceClass(request.toServiceRequest(), userInfo.getUserId());
+    return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "댄스 수업 수정 API", description = "기존 댄스 수업 정보를 수정합니다. 댄서만 수정할 수 있습니다.")
+  @PutMapping("/{classId}")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> updateDanceClass(
+      @PathVariable Long classId,
+      @RequestBody @Valid DanceClassUpdateRequest request,
+      CurrentUserInfo userInfo) {
+    danceClassService.updateDanceClass(request.toServiceRequest(classId, userInfo.getUserId()));
     return ApiResponse.OK(null);
   }
 
@@ -136,7 +149,8 @@ public class DanceClassController {
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "9") @Min(1) int size) {
 
-    DanceClassListServiceResponse response = danceClassService.getUserLearningClasses(userInfo.getUserId(), page, size);
+    DanceClassListServiceResponse response = danceClassService.getUserLearningClasses(
+        userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 
@@ -148,7 +162,8 @@ public class DanceClassController {
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "9") @Min(1) int size) {
 
-    DanceClassListServiceResponse response = danceClassService.getDancerClasses(userInfo.getUserId(), page, size);
+    DanceClassListServiceResponse response = danceClassService.getDancerClasses(
+        userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 }
