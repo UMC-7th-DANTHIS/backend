@@ -12,6 +12,7 @@ import com.danthis.backend.application.danceclass.response.DanceClassBookingServ
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
+import com.danthis.backend.application.review.implement.ReviewManager;
 import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.user.implement.mapping.WishListManager;
@@ -52,6 +53,7 @@ public class DanceClassService {
   private final WishListReader wishListReader;
   private final DanceClassImageManager danceClassImageManager;
   private final DanceClassHashtagManager danceClassHashtagManager;
+  private final ReviewManager reviewManager;
 
   @Transactional
   public void createDanceClass(DanceClassCreateServiceRequest request, Long userId) {
@@ -131,6 +133,7 @@ public class DanceClassService {
     danceClassImageManager.deleteImagesByDanceClass(danceClass);
     danceClassHashtagManager.deleteHashtagsByDanceClass(danceClass);
     danceClassManager.deleteDanceClassBookings(danceClass);
+    reviewManager.deleteReviewsByDanceClass(danceClass);
 
     danceClassManager.deleteDanceClass(danceClass);
   }
