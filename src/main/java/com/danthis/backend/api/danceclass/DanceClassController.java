@@ -126,8 +126,11 @@ public class DanceClassController {
   @GetMapping("/{classId}/bookings")
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassBookingServiceResponse> getApprovedBookings(
-      @PathVariable Long classId) {
-    DanceClassBookingServiceResponse response = danceClassService.getApprovedBookings(classId);
+      @PathVariable Long classId,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "5") @Min(1) int size) {
+    DanceClassBookingServiceResponse response = danceClassService.getApprovedBookings(classId,
+        page, size);
     return ApiResponse.OK(response);
   }
 

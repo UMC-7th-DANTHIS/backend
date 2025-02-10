@@ -2,11 +2,12 @@ package com.danthis.backend.domain.mapping.danceclassbooking.repository;
 
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DanceClassBookingRepositoryCustom {
 
-  List<DanceClassBooking> findApprovedBookingsByClass(DanceClass danceClass);
+  Page<DanceClassBooking> findApprovedBookingsByClass(DanceClass danceClass, Pageable pageable);
 
   void deleteByDanceClass(DanceClass danceClass);
 }

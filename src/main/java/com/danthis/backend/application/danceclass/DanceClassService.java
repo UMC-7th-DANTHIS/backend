@@ -29,7 +29,6 @@ import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import com.danthis.backend.domain.mapping.wishlist.WishList;
 import com.danthis.backend.domain.user.User;
-import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -191,10 +190,10 @@ public class DanceClassService {
   }
 
   @Transactional
-  public DanceClassBookingServiceResponse getApprovedBookings(Long classId) {
+  public DanceClassBookingServiceResponse getApprovedBookings(Long classId, int page, int size) {
     DanceClass danceClass = danceClassReader.readDanceClassById(classId);
-    List<DanceClassBooking> approvedBookings = danceClassReader.readApprovedBookingsByClass(
-        danceClass);
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<DanceClassBooking> approvedBookings = danceClassReader.readApprovedBookingsByClass(danceClass, pageable);
 
     if (approvedBookings.isEmpty()) {
       throw new BusinessException(ErrorCode.NO_APPROVED_USERS);
