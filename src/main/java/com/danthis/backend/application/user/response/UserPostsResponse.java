@@ -1,20 +1,26 @@
 package com.danthis.backend.application.user.response;
 
+import com.danthis.backend.domain.communitypost.CommunityPost;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 
 @Getter
 @Builder
 public class UserPostsResponse {
 
-  List<PostDto> posts;
-  Pagination pagination;
+  private List<PostDto> posts;
+  private Integer currentPage;
+  private Integer totalPages;
+  private Long totalElements;
 
-  public static UserPostsResponse from(final List<PostDto> posts, final Pagination pagination) {
+  public static UserPostsResponse from(final List<PostDto> posts, Integer currentPage, Integer totalPages, Long totalElements) {
     return UserPostsResponse.builder()
                             .posts(posts)
-                            .pagination(pagination)
+                            .currentPage(currentPage + 1)
+                            .totalPages(totalPages)
+                            .totalElements(totalElements)
                             .build();
   }
 

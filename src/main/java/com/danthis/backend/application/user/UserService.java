@@ -161,14 +161,11 @@ public class UserService {
 
   @Transactional
   public UserPostsResponse getUserPosts(Long userId, Integer page, Integer size) {
-    Page<CommunityPost> posts = postReader.readPostsByUserId(userId, PageRequest.of(page, size));
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<CommunityPost> posts = postReader.readPostsByUserId(userId, pageable);
     List<PostDto> postDtoList = postManager.toPostDtoList(posts.getContent());
-    Pagination pagination = Pagination.builder()
-                                      .currentPage(posts.getNumber())
-                                      .totalPages(posts.getTotalPages())
-                                      .build();
 
-    return UserPostsResponse.from(postDtoList, pagination);
+    return UserPostsResponse.from(postDtoList, posts.getNumber(), posts.getTotalPages(), posts.getTotalElements());
   }
 
   @Transactional
