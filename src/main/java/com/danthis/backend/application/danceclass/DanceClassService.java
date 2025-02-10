@@ -85,37 +85,21 @@ public class DanceClassService {
       throw new BusinessException(ErrorCode.ACCESS_DENIED);
     }
 
-    if (request.getClassName() != null) {
-      danceClass.updateClassName(request.getClassName());
-    }
-    if (request.getPricePerSession() != null) {
-      danceClass.updatePrice(request.getPricePerSession());
-    }
-    if (request.getDifficulty() != null) {
-      danceClass.updateDifficulty(request.getDifficulty());
-    }
-    if (request.getGenre() != null) {
-      Genre genre = danceClassReader.readGenreById(request.getGenre());
-      danceClass.updateGenre(genre);
-    }
-    if (request.getDescription() != null) {
-      danceClass.updateDescription(request.getDescription());
-    }
-    if (request.getTargetAudience() != null) {
-      danceClass.updateTargetAudience(request.getTargetAudience());
-    }
-    if (request.getVideoUrl() != null) {
-      danceClass.updateVideoUrl(request.getVideoUrl());
-    }
+    danceClass.updateClassName(request.getClassName());
+    danceClass.updatePrice(request.getPricePerSession());
+    danceClass.updateDifficulty(request.getDifficulty());
 
-    if (request.getHashtags() != null) {
-      Set<Hashtag> hashtags = danceClassReader.readHashtagsByIds(request.getHashtags());
-      danceClassHashtagManager.updateHashtags(danceClass, hashtags);
-    }
+    Genre genre = danceClassReader.readGenreById(request.getGenre());
+    danceClass.updateGenre(genre);
 
-    if (request.getImages() != null) {
-      danceClassImageManager.updateImages(danceClass, request.getImages());
-    }
+    danceClass.updateDescription(request.getDescription());
+    danceClass.updateTargetAudience(request.getTargetAudience());
+    danceClass.updateVideoUrl(request.getVideoUrl());
+
+    Set<Hashtag> hashtags = danceClassReader.readHashtagsByIds(request.getHashtags());
+    danceClassHashtagManager.updateHashtags(danceClass, hashtags);
+
+    danceClassImageManager.updateImages(danceClass, request.getImages());
 
     danceClassManager.saveDanceClass(danceClass);
   }
