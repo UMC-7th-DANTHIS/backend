@@ -55,13 +55,4 @@ public class DancerManager {
                          .totalPages(totalPages)
                          .build();
   }
-
-  public DancerSummaryListResponse createDancerSummaryListResponse(
-      List<DancerSummaryResponse> dancers,
-      PaginationInfo pagination) {
-    return DancerSummaryListResponse.builder()
-                                    .dancers(dancers)
-                                    .pagination(pagination)
-                                    .build();
-  }
 }

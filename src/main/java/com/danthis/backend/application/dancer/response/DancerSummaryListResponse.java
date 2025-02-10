@@ -9,5 +9,17 @@ import lombok.Getter;
 public class DancerSummaryListResponse {
 
   private List<DancerSummaryResponse> dancers;
-  private PaginationInfo pagination;
+  private Integer currentPage;
+  private Integer totalPages;
+  private Long totalElements;
+
+  public static DancerSummaryListResponse from(final List<DancerSummaryResponse> dancers,
+      final Integer currentPage, final Integer totalPages, final Long totalElements) {
+    return DancerSummaryListResponse.builder()
+                                    .dancers(dancers)
+                                    .currentPage(currentPage + 1)
+                                    .totalPages(totalPages)
+                                    .totalElements(totalElements)
+                                    .build();
+  }
 }

@@ -103,10 +103,6 @@ public class DancerService {
 
     List<Dancer> candidates = dancerReader.readByDancerGenre(pages.getContent());
     List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(candidates);
-    PaginationInfo pagination = dancerManager.createPagination(
-        pages.getNumber(),
-        pages.getTotalPages());
-
-    return dancerManager.createDancerSummaryListResponse(dancerInfos, pagination);
+    return DancerSummaryListResponse.from(dancerInfos, pages.getNumber(), pages.getTotalPages(), pages.getTotalElements());
   }
 }

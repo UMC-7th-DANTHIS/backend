@@ -11,6 +11,7 @@ import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,8 +60,8 @@ public class DancerController {
   @GetMapping("/genres/{genreId}")
   public ApiResponse<DancerSummaryListResponse> getDancersByGenre(
       @PathVariable("genreId") Long genreId,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "9") Integer size) {
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "9") @Min(1) Integer size) {
     DancerSummaryListResponse response = dancerService.getDancersByGenre(genreId, page, size);
     return ApiResponse.OK(response);
   }
