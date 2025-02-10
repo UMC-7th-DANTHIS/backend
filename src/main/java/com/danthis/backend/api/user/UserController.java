@@ -2,6 +2,7 @@ package com.danthis.backend.api.user;
 
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
+import com.danthis.backend.application.danceclass.DanceClassService;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
 import com.danthis.backend.application.user.UserService;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final UserService userService;
+  private final DanceClassService danceClassService;
 
   @Operation(summary = "유저 정보 수정 API", description = "유저의 정보를 수정합니다.")
   @PutMapping
@@ -108,6 +110,18 @@ public class UserController {
       @RequestParam(defaultValue = "9") @Min(1) Integer size) {
     DanceClassListServiceResponse response = userService.getWishList(
         userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "유저가 수강한 댄스수업 목록 조회 API", description = "유저가 수강한 댄스수업 목록을 조회합니다.")
+  @GetMapping("/dance-classes")
+  @AssignCurrentUserInfo
+  public ApiResponse<DanceClassListServiceResponse> getUserLearningClasses(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "9") @Min(1) int size) {
+
+    DanceClassListServiceResponse response = danceClassService.getUserLearningClasses(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 

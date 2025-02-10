@@ -3,6 +3,8 @@ package com.danthis.backend.api.dancer;
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.dancer.request.DancerAddRequest;
 import com.danthis.backend.api.dancer.request.DancerUpdateRequest;
+import com.danthis.backend.application.danceclass.DanceClassService;
+import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.dancer.DancerService;
 import com.danthis.backend.application.dancer.response.DancerInfoResponse;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DancerController {
 
   private final DancerService dancerService;
+  private final DanceClassService danceClassService;
 
   @Operation(summary = "댄서 정보 등록 API", description = "댄서의 정보를 새로 등록합니다.")
   @PostMapping
@@ -63,6 +66,18 @@ public class DancerController {
       @RequestParam(defaultValue = "1") @Min(1) Integer page,
       @RequestParam(defaultValue = "9") @Min(1) Integer size) {
     DancerSummaryListResponse response = dancerService.getDancersByGenre(genreId, page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "댄서가 생성한 댄스수업 목록 조회 API", description = "댄서가 생성한 댄스수업 목록을 조회합니다.")
+  @GetMapping("/dance-classes")
+  @AssignCurrentUserInfo
+  public ApiResponse<DanceClassListServiceResponse> getDancerClasses(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "9") @Min(1) int size) {
+
+    DanceClassListServiceResponse response = danceClassService.getDancerClasses(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 }
