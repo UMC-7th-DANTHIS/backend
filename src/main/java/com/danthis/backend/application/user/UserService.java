@@ -2,6 +2,8 @@ package com.danthis.backend.application.user;
 
 import com.danthis.backend.application.community.implement.PostManager;
 import com.danthis.backend.application.community.implement.PostReader;
+import com.danthis.backend.application.danceclass.implement.DanceClassManager;
+import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerManager;
 import com.danthis.backend.application.dancer.implement.DancerReader;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
@@ -18,7 +20,6 @@ import com.danthis.backend.application.user.implement.mapping.UserGenreReader;
 import com.danthis.backend.application.user.implement.mapping.WishListManager;
 import com.danthis.backend.application.user.implement.mapping.WishListReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
-import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse.Pagination;
@@ -42,7 +43,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -58,7 +58,6 @@ public class UserService {
   private final UserGenreReader userGenreReader;
   private final UserDancerManager userDancerManager;
   private final UserDancerReader userDancerReader;
-  private final WishListManager wishListManager;
   private final WishListReader wishListReader;
   private final PostReader postReader;
   private final PostManager postManager;
@@ -153,11 +152,11 @@ public class UserService {
   }
 
   @Transactional
-  public WishListResponse getWishList(Long userId, Integer page, Integer size) {
-    Pageable pageable = PageRequest.of(page, size);
+  public DanceClassListServiceResponse getWishList(Long userId, Integer page, Integer size) {
+    PageRequest pageable = PageRequest.of(page - 1, size);
 
-    Page<WishList> wishLists = wishListReader.readWishListByUserId(userId, pageable);
-    return WishListResponse.from(wishLists);
+    Page<WishList> wishlistPages = wishListReader.readWishListByUserId(userId, pageable);
+    return DanceClassListServiceResponse.from(wishlistPages.map(WishList::getDanceClass));
   }
 
   @Transactional

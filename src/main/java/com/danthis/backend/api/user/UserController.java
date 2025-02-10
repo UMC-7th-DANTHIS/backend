@@ -2,9 +2,9 @@ package com.danthis.backend.api.user;
 
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
+import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
 import com.danthis.backend.application.user.UserService;
-import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse;
 import com.danthis.backend.application.user.response.UserReviewResponse;
@@ -100,13 +100,13 @@ public class UserController {
   }
 
   @Operation(summary = "찜한 수업 조회 API", description = "유저가 찜한 수업 정보를 조회합니다.")
-  @GetMapping("/dance-classes")
+  @GetMapping("/wishlists")
   @AssignCurrentUserInfo
-  public ApiResponse<WishListResponse> getWishlist(
+  public ApiResponse<DanceClassListServiceResponse> getWishlist(
       CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "9") Integer size) {
-    WishListResponse response = userService.getWishList(
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "9") @Min(1) Integer size) {
+    DanceClassListServiceResponse response = userService.getWishList(
         userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
