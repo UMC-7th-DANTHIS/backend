@@ -1,10 +1,8 @@
 package com.danthis.backend.application.user.response;
 
-import com.danthis.backend.domain.communitypost.CommunityPost;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
 
 @Getter
 @Builder
@@ -32,13 +30,5 @@ public class UserPostsResponse {
     private String title;
     private String content;
     private List<String> images;
-  }
-
-  @Getter
-  @Builder
-  public static class Pagination {
-
-    private Integer currentPage;
-    private Integer totalPages;
   }
 }

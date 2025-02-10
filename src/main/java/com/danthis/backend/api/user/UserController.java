@@ -141,8 +141,8 @@ public class UserController {
   @AssignCurrentUserInfo
   public ApiResponse<UserReviewResponse> getUserReviews(
       CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "5") Integer size) {
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "5") @Min(1) Integer size) {
     UserReviewResponse response = userService.getUserReviews(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }

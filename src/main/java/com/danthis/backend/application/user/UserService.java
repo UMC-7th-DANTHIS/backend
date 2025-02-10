@@ -2,7 +2,6 @@ package com.danthis.backend.application.user;
 
 import com.danthis.backend.application.community.implement.PostManager;
 import com.danthis.backend.application.community.implement.PostReader;
-import com.danthis.backend.application.danceclass.implement.DanceClassManager;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerManager;
 import com.danthis.backend.application.dancer.implement.DancerReader;
@@ -17,12 +16,10 @@ import com.danthis.backend.application.user.implement.mapping.UserDancerManager;
 import com.danthis.backend.application.user.implement.mapping.UserDancerReader;
 import com.danthis.backend.application.user.implement.mapping.UserGenreManager;
 import com.danthis.backend.application.user.implement.mapping.UserGenreReader;
-import com.danthis.backend.application.user.implement.mapping.WishListManager;
 import com.danthis.backend.application.user.implement.mapping.WishListReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse;
-import com.danthis.backend.application.user.response.UserPostsResponse.Pagination;
 import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
 import com.danthis.backend.application.user.response.UserReviewResponse;
 import com.danthis.backend.application.user.response.UserReviewResponse.ReviewDto;
@@ -170,13 +167,10 @@ public class UserService {
 
   @Transactional
   public UserReviewResponse getUserReviews(Long userId, Integer page, Integer size) {
-    Page<ClassReview> reviews = reviewReader.readReviewsByUserId(userId, PageRequest.of(page, size));
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<ClassReview> reviews = reviewReader.readReviewsByUserId(userId, pageable);
     List<ReviewDto> reviewDtoList = reviewManager.toReviewDtoList(reviews.getContent());
-    Pagination pagination = Pagination.builder()
-                                      .currentPage(reviews.getNumber())
-                                      .totalPages(reviews.getTotalPages())
-                                      .build();
 
-    return UserReviewResponse.from(reviewDtoList, pagination);
+    return UserReviewResponse.from(reviewDtoList, reviews.getNumber(), reviews.getTotalPages(), reviews.getTotalElements());
   }
 }
