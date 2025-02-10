@@ -30,7 +30,7 @@ public class UserFavoriteResponse {
                                                       .toList();
 
       Pagination pagination = Pagination.builder()
-                                        .currentPage(userDancerPage.getNumber())
+                                        .currentPage(userDancerPage.getNumber() + 1)
                                         .totalPages(userDancerPage.getTotalPages())
                                         .build();
 

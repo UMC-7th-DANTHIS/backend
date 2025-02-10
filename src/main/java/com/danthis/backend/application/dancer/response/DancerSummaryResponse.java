@@ -10,5 +10,5 @@ public class DancerSummaryResponse {
 
   private Long id;
   private String dancerName;
-  private Set<String> imageUrlList;
+  private Set<String> images;
 }

@@ -2,7 +2,10 @@ package com.danthis.backend.application.user;
 
 import com.danthis.backend.application.community.implement.PostManager;
 import com.danthis.backend.application.community.implement.PostReader;
+import com.danthis.backend.application.dancer.implement.DancerManager;
 import com.danthis.backend.application.dancer.implement.DancerReader;
+import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
+import com.danthis.backend.application.dancer.response.DancerSummaryListResponse.DancerSummaryResponse;
 import com.danthis.backend.application.review.implement.ReviewManager;
 import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.user.implement.UserManager;
@@ -15,7 +18,6 @@ import com.danthis.backend.application.user.implement.mapping.UserGenreReader;
 import com.danthis.backend.application.user.implement.mapping.WishListManager;
 import com.danthis.backend.application.user.implement.mapping.WishListReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
-import com.danthis.backend.application.user.response.UserFavoriteResponse.FavoriteDancerListResponse;
 import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse;
@@ -62,6 +64,7 @@ public class UserService {
   private final PostManager postManager;
   private final ReviewReader reviewReader;
   private final ReviewManager reviewManager;
+  private final DancerManager dancerManager;
 
   @Transactional
   public void updateUserInfo(Long userId, UserUpdateServiceRequest request) {
@@ -140,11 +143,13 @@ public class UserService {
   }
 
   @Transactional
-  public FavoriteDancerListResponse getFavoriteDancers(Long userId, Integer page, Integer size) {
-    Pageable pageable = PageRequest.of(page, size);
+  public DancerSummaryListResponse getFavoriteDancers(Long userId, Integer page, Integer size) {
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<UserDancer> pages = userDancerReader.readDancersByUserId(userId, pageable);
 
-    Page<UserDancer> dancers = userDancerReader.readDancersByUserId(userId, pageable);
-    return FavoriteDancerListResponse.from(dancers);
+    List<Dancer> candidates = dancerReader.readDancerInUserDancer(pages.getContent());
+    List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(candidates);
+    return DancerSummaryListResponse.from(dancerInfos, pages.getNumber(), pages.getTotalPages(), pages.getTotalElements());
   }
 
   @Transactional

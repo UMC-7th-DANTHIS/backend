@@ -2,8 +2,8 @@ package com.danthis.backend.api.user;
 
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
+import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
 import com.danthis.backend.application.user.UserService;
-import com.danthis.backend.application.user.response.UserFavoriteResponse.FavoriteDancerListResponse;
 import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse;
@@ -13,6 +13,7 @@ import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -89,11 +90,11 @@ public class UserController {
   @Operation(summary = "찜한 댄서 조회 API", description = "유저가 찜한 댄서 정보를 조회합니다.")
   @GetMapping("/dancers")
   @AssignCurrentUserInfo
-  public ApiResponse<FavoriteDancerListResponse> getFavoriteDancers(
+  public ApiResponse<DancerSummaryListResponse> getFavoriteDancers(
       CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "9") Integer size) {
-    FavoriteDancerListResponse response = userService.getFavoriteDancers(
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "9") @Min(1) Integer size) {
+    DancerSummaryListResponse response = userService.getFavoriteDancers(
         userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
