@@ -10,7 +10,6 @@ import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.dancer.Dancer;
-import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
@@ -53,12 +52,11 @@ public class ChatService {
 
   @Transactional
   public UserChatListServiceResponse getUserChatList(Long userId, int page, int size) {
-    validateUserOrThrow(userId);
+    User user = chatReader.readUserById(userId);
 
-    User user = userReader.readUserById(userId);
-    Page<DanceClassBooking> chatBookings = chatReader.readBookingsByUser(user, page, size);
+    Page<DancerUserChat> chatDancersPage = chatReader.readChatsByUser(user, page, size);
 
-    return chatMapper.toUserChatListResponse(user, chatBookings);
+    return chatMapper.toUserChatListResponse(user, chatDancersPage);
   }
 
 

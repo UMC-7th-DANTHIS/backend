@@ -36,7 +36,7 @@ public class ChatController {
     return ApiResponse.OK(null);
   }
 
-  @Operation(summary = "댄서가 채팅한 유저 목록 조회 API", description = "댄서가 채팅한 유저 목록을 10개씩 페이지네이션하여 조회합니다.")
+  @Operation(summary = "댄서가 채팅한 유저 목록 조회 API", description = "댄서가 채팅한 유저 목록을 조회합니다.")
   @GetMapping("/dancer")
   @AssignCurrentUserInfo
   public ApiResponse<DancerChatListServiceResponse> getDancerChatUsers(
@@ -44,19 +44,20 @@ public class ChatController {
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "10") @Min(1) int size
   ) {
-    DancerChatListServiceResponse response = chatService.getDancerChatList(userInfo.getUserId(), page, size);
+    DancerChatListServiceResponse response = chatService.getDancerChatList(userInfo.getUserId(),
+        page, size);
     return ApiResponse.OK(response);
   }
 
-  @Operation(summary = "유저가 채팅한 댄서 목록 조회", description = "해당 유저가 채팅한 댄서들의 목록을 가져옵니다.")
-  @GetMapping("/user/{userId}")
+  @Operation(summary = "유저가 채팅한 댄서 목록 조회 API", description = "유저가 채팅한 댄서 목록을 조회합니다.")
+  @GetMapping("/user")
   @AssignCurrentUserInfo
   public ApiResponse<UserChatListServiceResponse> getUserChatList(
-      @PathVariable Long userId,
+      CurrentUserInfo userInfo,
       @RequestParam(defaultValue = "1") @Min(1) int page,
-      @RequestParam(defaultValue = "10") @Min(1) int size) {
-
-    UserChatListServiceResponse response = chatService.getUserChatList(userId, page, size);
+      @RequestParam(defaultValue = "10") @Min(1) int size
+  ) {
+    UserChatListServiceResponse response = chatService.getUserChatList(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 }

@@ -44,21 +44,20 @@ public class ChatMapper {
                                         .build();
   }
 
-  public UserChatListServiceResponse toUserChatListResponse(User user, Page<DanceClassBooking> chatBookings) {
-    List<UserChatListServiceResponse.ChatDancerSummary> dancers = chatBookings.getContent().stream()
-                                                                              .map(booking -> UserChatListServiceResponse.ChatDancerSummary.builder()
-                                                                                                                                           .chatId(booking.getId())
-                                                                                                                                           .dancerId(booking.getDanceClass().getDancer().getId())
-                                                                                                                                           .dancerName(booking.getDanceClass().getDancer().getDancerName())
-                                                                                                                                           .profileImage(booking.getDanceClass().getDancer().getProfileImage())
-                                                                                                                                           .build())
-                                                                              .toList();
+  public UserChatListServiceResponse toUserChatListResponse(User user, Page<DancerUserChat> chatPage) {
+    List<UserChatListServiceResponse.ChatDancerSummary> dancers = chatPage.getContent().stream()
+                                                                          .map(chat -> UserChatListServiceResponse.ChatDancerSummary.builder()
+                                                                                                                                    .dancerId(chat.getDancer().getId())
+                                                                                                                                    .dancerName(chat.getDancer().getDancerName())
+                                                                                                                                    .profileImage(chat.getDancer().getProfileImage())
+                                                                                                                                    .build())
+                                                                          .toList();
 
     return UserChatListServiceResponse.builder()
                                       .userId(user.getId())
-                                      .currentPage(chatBookings.getNumber() + 1)
-                                      .totalPages(chatBookings.getTotalPages())
-                                      .totalDancers((int) chatBookings.getTotalElements())
+                                      .currentPage(chatPage.getNumber() + 1)
+                                      .totalPages(chatPage.getTotalPages())
+                                      .totalDancers((int) chatPage.getTotalElements())
                                       .chatList(dancers)
                                       .build();
   }

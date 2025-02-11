@@ -49,6 +49,10 @@ public class ChatReader {
     return dancerUserChatRepository.findByDancer(dancer, PageRequest.of(page - 1, size));
   }
 
+  public Page<DancerUserChat> readChatsByUser(User user, int page, int size) {
+    return dancerUserChatRepository.findByUser(user, PageRequest.of(page - 1, size));
+  }
+
 
   //
   public DanceClass readDanceClassById(Long classId) {
