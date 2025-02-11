@@ -2,10 +2,8 @@ package com.danthis.backend.application.chat.implement;
 
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
-import com.danthis.backend.domain.danceclass.repository.DanceClassRepository;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.repository.DancerRepository;
-import com.danthis.backend.domain.mapping.danceclassbooking.repository.DanceClassBookingRepository;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.danceruserchat.repository.DancerUserChatRepository;
 import com.danthis.backend.domain.user.User;
@@ -20,9 +18,7 @@ import org.springframework.stereotype.Component;
 public class ChatReader {
 
   private final UserRepository userRepository;
-  private final DanceClassRepository danceClassRepository;
   private final DancerRepository dancerRepository;
-  private final DanceClassBookingRepository bookingRepository;
   private final DancerUserChatRepository dancerUserChatRepository;
 
   public User readUserById(Long userId) {

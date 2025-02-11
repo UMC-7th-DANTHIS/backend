@@ -1,7 +1,6 @@
 package com.danthis.backend.application.chat.implement;
 
 import com.danthis.backend.domain.dancer.Dancer;
-import com.danthis.backend.domain.mapping.danceclassbooking.repository.DanceClassBookingRepository;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.danceruserchat.repository.DancerUserChatRepository;
 import com.danthis.backend.domain.user.User;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChatManager {
 
-  private final DanceClassBookingRepository danceClassBookingRepository;
   private final DancerUserChatRepository dancerUserChatRepository;
 
   public void startChat(User user, Dancer dancer) {
