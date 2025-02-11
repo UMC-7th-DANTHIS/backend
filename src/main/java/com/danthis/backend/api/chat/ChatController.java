@@ -36,15 +36,15 @@ public class ChatController {
     return ApiResponse.OK(null);
   }
 
-  @Operation(summary = "댄서가 채팅한 유저 목록 조회", description = "댄서가 아닌 사용자는 접근할 수 없습니다.")
-  @GetMapping("/dancer/{dancerId}")
+  @Operation(summary = "댄서가 채팅한 유저 목록 조회 API", description = "댄서가 채팅한 유저 목록을 10개씩 페이지네이션하여 조회합니다.")
+  @GetMapping("/dancer")
   @AssignCurrentUserInfo
-  public ApiResponse<DancerChatListServiceResponse> getDancerChatList(
-      @PathVariable Long dancerId,
+  public ApiResponse<DancerChatListServiceResponse> getDancerChatUsers(
+      CurrentUserInfo userInfo,
       @RequestParam(defaultValue = "1") @Min(1) int page,
-      @RequestParam(defaultValue = "10") @Min(1) int size) {
-
-    DancerChatListServiceResponse response = chatService.getDancerChatList(dancerId, page, size);
+      @RequestParam(defaultValue = "10") @Min(1) int size
+  ) {
+    DancerChatListServiceResponse response = chatService.getDancerChatList(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 

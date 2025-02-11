@@ -1,6 +1,7 @@
 package com.danthis.backend.domain.dancer.repository;
 
 import com.danthis.backend.domain.dancer.Dancer;
+import com.danthis.backend.domain.user.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface DancerRepository extends JpaRepository<Dancer, Long>, DancerRepositoryCustom {
 
   Optional<Dancer> findByUserId(Long userId);
+
+  boolean existsByUser(User user);
 }

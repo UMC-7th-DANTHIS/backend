@@ -8,6 +8,8 @@ import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.repository.DancerRepository;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclassbooking.repository.DanceClassBookingRepository;
+import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
+import com.danthis.backend.domain.mapping.danceruserchat.repository.DancerUserChatRepository;
 import com.danthis.backend.domain.user.User;
 import com.danthis.backend.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class ChatReader {
   private final DanceClassRepository danceClassRepository;
   private final DancerRepository dancerRepository;
   private final DanceClassBookingRepository bookingRepository;
+  private final DancerUserChatRepository dancerUserChatRepository;
 
   public User readUserById(Long userId) {
     return userRepository.findById(userId)
@@ -35,13 +38,22 @@ public class ChatReader {
                            .orElseThrow(() -> new BusinessException(ErrorCode.DANCER_NOT_FOUND));
   }
 
+  public boolean isUserDancer(Long userId) {
+    User user = userRepository.findById(userId)
+                              .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+    return dancerRepository.existsByUser(user);
+  }
+
+  public Page<DancerUserChat> readChatsByDancer(Dancer dancer, int page, int size) {
+    return dancerUserChatRepository.findByDancer(dancer, PageRequest.of(page - 1, size));
+  }
+
+
+  //
   public DanceClass readDanceClassById(Long classId) {
     return danceClassRepository.findById(classId).orElseThrow(
         () -> new BusinessException(ErrorCode.DANCE_CLASS_NOT_FOUND));
-  }
-
-  public boolean isDancer(Long dancerId) {
-    return dancerRepository.existsById(dancerId);
   }
 
   public boolean isUser(Long userId) {

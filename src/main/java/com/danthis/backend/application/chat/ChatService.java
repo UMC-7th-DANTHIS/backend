@@ -11,6 +11,7 @@ import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
+import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,15 +38,17 @@ public class ChatService {
     chatManager.startChat(user, dancer);
   }
 
-
   @Transactional
-  public DancerChatListServiceResponse getDancerChatList(Long dancerId, int page, int size) {
-    validateDancerOrThrow(dancerId);
+  public DancerChatListServiceResponse getDancerChatList(Long userId, int page, int size) {
+    Dancer dancer = dancerReader.readDancerByUserId(userId);
 
-    Dancer dancer = dancerReader.readDancerById(dancerId);
-    Page<DanceClassBooking> chatBookings = chatReader.readBookingsByDancer(dancer, page, size);
+    if (dancer == null) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
 
-    return chatMapper.toDancerChatListResponse(dancer, chatBookings);
+    Page<DancerUserChat> chatUsersPage = chatReader.readChatsByDancer(dancer, page, size);
+
+    return chatMapper.toDancerChatListServiceResponse(dancer, chatUsersPage);
   }
 
   @Transactional
@@ -58,11 +61,6 @@ public class ChatService {
     return chatMapper.toUserChatListResponse(user, chatBookings);
   }
 
-  private void validateDancerOrThrow(Long dancerId) {
-    if (!chatReader.isDancer(dancerId)) {
-      throw new BusinessException(ErrorCode.ACCESS_DENIED);
-    }
-  }
 
   private void validateUserOrThrow(Long userId) {
     if (!chatReader.isUser(userId)) {
