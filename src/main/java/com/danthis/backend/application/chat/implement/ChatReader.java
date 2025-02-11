@@ -30,6 +30,11 @@ public class ChatReader {
                          .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
   }
 
+  public Dancer readDancerById(Long dancerId) {
+    return dancerRepository.findById(dancerId)
+                           .orElseThrow(() -> new BusinessException(ErrorCode.DANCER_NOT_FOUND));
+  }
+
   public DanceClass readDanceClassById(Long classId) {
     return danceClassRepository.findById(classId).orElseThrow(
         () -> new BusinessException(ErrorCode.DANCE_CLASS_NOT_FOUND));

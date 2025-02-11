@@ -1,17 +1,14 @@
 package com.danthis.backend.application.chat;
 
-import com.danthis.backend.api.chat.request.ChatBookingRequest;
 import com.danthis.backend.application.chat.implement.ChatManager;
 import com.danthis.backend.application.chat.implement.ChatMapper;
 import com.danthis.backend.application.chat.implement.ChatReader;
-import com.danthis.backend.application.chat.response.ChatBookingServiceResponse;
 import com.danthis.backend.application.chat.response.DancerChatListServiceResponse;
 import com.danthis.backend.application.chat.response.UserChatListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
-import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.user.User;
@@ -33,14 +30,13 @@ public class ChatService {
   private final UserReader userReader;
 
   @Transactional
-  public ChatBookingServiceResponse createChatBooking(ChatBookingRequest request) {
-    User user = chatReader.readUserById(request.getUserId());
-    DanceClass danceClass = chatReader.readDanceClassById(request.getClassId());
-    Dancer dancer = danceClass.getDancer();
+  public void startChatWithDancer(Long userId, Long dancerId) {
+    User user = chatReader.readUserById(userId);
+    Dancer dancer = chatReader.readDancerById(dancerId);
 
-    DanceClassBooking booking = chatManager.createBooking(user, danceClass, dancer);
-    return chatMapper.toChatBookingResponse(booking);
+    chatManager.startChat(user, dancer);
   }
+
 
   @Transactional
   public DancerChatListServiceResponse getDancerChatList(Long dancerId, int page, int size) {
