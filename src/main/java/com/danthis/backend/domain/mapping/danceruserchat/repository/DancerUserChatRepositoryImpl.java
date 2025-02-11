@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class DancerUserChatRepositoryImpl {
+public class DancerUserChatRepositoryImpl implements DancerUserChatRepositoryCustom {
 
 }

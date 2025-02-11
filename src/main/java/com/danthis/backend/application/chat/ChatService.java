@@ -6,7 +6,6 @@ import com.danthis.backend.application.chat.implement.ChatReader;
 import com.danthis.backend.application.chat.response.DancerChatListServiceResponse;
 import com.danthis.backend.application.chat.response.UserChatListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
-import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.dancer.Dancer;
@@ -27,7 +26,6 @@ public class ChatService {
   private final ChatManager chatManager;
   private final ChatMapper chatMapper;
   private final DancerReader dancerReader;
-  private final UserReader userReader;
 
   @Transactional
   public void startChatWithDancer(Long userId, Long dancerId) {
@@ -57,12 +55,5 @@ public class ChatService {
     Page<DancerUserChat> chatDancersPage = chatReader.readChatsByUser(user, page, size);
 
     return chatMapper.toUserChatListResponse(user, chatDancersPage);
-  }
-
-
-  private void validateUserOrThrow(Long userId) {
-    if (!chatReader.isUser(userId)) {
-      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
-    }
   }
 }

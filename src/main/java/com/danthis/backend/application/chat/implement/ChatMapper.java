@@ -1,10 +1,8 @@
 package com.danthis.backend.application.chat.implement;
 
-import com.danthis.backend.application.chat.response.ChatBookingServiceResponse;
 import com.danthis.backend.application.chat.response.DancerChatListServiceResponse;
 import com.danthis.backend.application.chat.response.UserChatListServiceResponse;
 import com.danthis.backend.domain.dancer.Dancer;
-import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.user.User;
 import java.util.List;
@@ -16,23 +14,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChatMapper {
 
-  public ChatBookingServiceResponse toChatBookingResponse(DanceClassBooking booking) {
-    return ChatBookingServiceResponse.builder()
-                                     .bookingId(booking.getId())
-                                     .userId(booking.getUser().getId())
-                                     .classId(booking.getDanceClass().getId())
-                                     .bookingDate(booking.getBookingDate())
-                                     .isApproved(booking.getIsApproved())
-                                     .build();
-  }
-
-  public DancerChatListServiceResponse toDancerChatListServiceResponse(Dancer dancer, Page<DancerUserChat> chatPage) {
+  public DancerChatListServiceResponse toDancerChatListServiceResponse(Dancer dancer,
+      Page<DancerUserChat> chatPage) {
     List<DancerChatListServiceResponse.ChatUserSummary> users = chatPage.getContent().stream()
                                                                         .map(chat -> DancerChatListServiceResponse.ChatUserSummary.builder()
-                                                                                                                                  .userId(chat.getUser().getId())
-                                                                                                                                  .nickname(chat.getUser().getNickname())
-                                                                                                                                  .profileImage(chat.getUser().getProfileImage())
-                                                                                                                                  .build())
+                                                                                                                                 .userId(chat.getUser().getId())
+                                                                                                                                 .nickname(chat.getUser().getNickname())
+                                                                                                                                 .profileImage(chat.getUser().getProfileImage())
+                                                                                                                                 .build())
                                                                         .toList();
 
     return DancerChatListServiceResponse.builder()
@@ -44,13 +33,14 @@ public class ChatMapper {
                                         .build();
   }
 
-  public UserChatListServiceResponse toUserChatListResponse(User user, Page<DancerUserChat> chatPage) {
+  public UserChatListServiceResponse toUserChatListResponse(User user,
+      Page<DancerUserChat> chatPage) {
     List<UserChatListServiceResponse.ChatDancerSummary> dancers = chatPage.getContent().stream()
                                                                           .map(chat -> UserChatListServiceResponse.ChatDancerSummary.builder()
-                                                                                                                                    .dancerId(chat.getDancer().getId())
-                                                                                                                                    .dancerName(chat.getDancer().getDancerName())
-                                                                                                                                    .profileImage(chat.getDancer().getProfileImage())
-                                                                                                                                    .build())
+                                                                                                                                   .dancerId(chat.getDancer().getId())
+                                                                                                                                   .dancerName(chat.getDancer().getDancerName())
+                                                                                                                                   .profileImage(chat.getDancer().getProfileImage())
+                                                                                                                                   .build())
                                                                           .toList();
 
     return UserChatListServiceResponse.builder()
