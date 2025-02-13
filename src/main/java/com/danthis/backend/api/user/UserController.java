@@ -2,9 +2,10 @@ package com.danthis.backend.api.user;
 
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
+import com.danthis.backend.application.danceclass.DanceClassService;
+import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
+import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
 import com.danthis.backend.application.user.UserService;
-import com.danthis.backend.application.user.response.UserFavoriteResponse.FavoriteDancerListResponse;
-import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse;
 import com.danthis.backend.application.user.response.UserReviewResponse;
@@ -13,6 +14,7 @@ import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final UserService userService;
+  private final DanceClassService danceClassService;
 
   @Operation(summary = "유저 정보 수정 API", description = "유저의 정보를 수정합니다.")
   @PutMapping
@@ -89,24 +92,36 @@ public class UserController {
   @Operation(summary = "찜한 댄서 조회 API", description = "유저가 찜한 댄서 정보를 조회합니다.")
   @GetMapping("/dancers")
   @AssignCurrentUserInfo
-  public ApiResponse<FavoriteDancerListResponse> getFavoriteDancers(
+  public ApiResponse<DancerSummaryListResponse> getFavoriteDancers(
       CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "9") Integer size) {
-    FavoriteDancerListResponse response = userService.getFavoriteDancers(
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "9") @Min(1) Integer size) {
+    DancerSummaryListResponse response = userService.getFavoriteDancers(
         userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 
   @Operation(summary = "찜한 수업 조회 API", description = "유저가 찜한 수업 정보를 조회합니다.")
+  @GetMapping("/wishlists")
+  @AssignCurrentUserInfo
+  public ApiResponse<DanceClassListServiceResponse> getWishlist(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "9") @Min(1) Integer size) {
+    DanceClassListServiceResponse response = userService.getWishList(
+        userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "유저가 수강한 댄스수업 목록 조회 API", description = "유저가 수강한 댄스수업 목록을 조회합니다.")
   @GetMapping("/dance-classes")
   @AssignCurrentUserInfo
-  public ApiResponse<WishListResponse> getWishlist(
+  public ApiResponse<DanceClassListServiceResponse> getUserLearningClasses(
       CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "9") Integer size) {
-    WishListResponse response = userService.getWishList(
-        userInfo.getUserId(), page, size);
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "9") @Min(1) int size) {
+
+    DanceClassListServiceResponse response = danceClassService.getUserLearningClasses(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 
@@ -115,8 +130,8 @@ public class UserController {
   @AssignCurrentUserInfo
   public ApiResponse<UserPostsResponse> getUserPosts(
       CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "5") Integer size) {
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "5") @Min(1) Integer size) {
     UserPostsResponse response = userService.getUserPosts(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
@@ -126,8 +141,8 @@ public class UserController {
   @AssignCurrentUserInfo
   public ApiResponse<UserReviewResponse> getUserReviews(
       CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "5") Integer size) {
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "5") @Min(1) Integer size) {
     UserReviewResponse response = userService.getUserReviews(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }

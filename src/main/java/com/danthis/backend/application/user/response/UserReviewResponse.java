@@ -1,6 +1,5 @@
 package com.danthis.backend.application.user.response;
 
-import com.danthis.backend.application.user.response.UserPostsResponse.Pagination;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -11,13 +10,17 @@ import lombok.Getter;
 @Builder
 public class UserReviewResponse {
 
-  List<ReviewDto> reviews;
-  Pagination pagination;
+  private List<ReviewDto> reviews;
+  private Integer currentPage;
+  private Integer totalPages;
+  private Long totalElements;
 
-  public static UserReviewResponse from(List<ReviewDto> reviews, Pagination pagination) {
+  public static UserReviewResponse from(List<ReviewDto> reviews, Integer currentPage, Integer totalPages, Long totalElements) {
     return UserReviewResponse.builder()
                              .reviews(reviews)
-                             .pagination(pagination)
+                             .currentPage(currentPage + 1)
+                             .totalPages(totalPages)
+                             .totalElements(totalElements)
                              .build();
   }
 
