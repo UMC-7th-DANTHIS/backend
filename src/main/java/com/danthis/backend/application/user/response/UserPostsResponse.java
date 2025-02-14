@@ -8,13 +8,17 @@ import lombok.Getter;
 @Builder
 public class UserPostsResponse {
 
-  List<PostDto> posts;
-  Pagination pagination;
+  private List<PostDto> posts;
+  private Integer currentPage;
+  private Integer totalPages;
+  private Long totalElements;
 
-  public static UserPostsResponse from(final List<PostDto> posts, final Pagination pagination) {
+  public static UserPostsResponse from(final List<PostDto> posts, Integer currentPage, Integer totalPages, Long totalElements) {
     return UserPostsResponse.builder()
                             .posts(posts)
-                            .pagination(pagination)
+                            .currentPage(currentPage + 1)
+                            .totalPages(totalPages)
+                            .totalElements(totalElements)
                             .build();
   }
 
@@ -26,13 +30,5 @@ public class UserPostsResponse {
     private String title;
     private String content;
     private List<String> images;
-  }
-
-  @Getter
-  @Builder
-  public static class Pagination {
-
-    private Integer currentPage;
-    private Integer totalPages;
   }
 }

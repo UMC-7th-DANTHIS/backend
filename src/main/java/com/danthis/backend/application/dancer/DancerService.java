@@ -11,8 +11,7 @@ import com.danthis.backend.application.dancer.request.DancerAddServiceRequest;
 import com.danthis.backend.application.dancer.request.DancerUpdateServiceRequest;
 import com.danthis.backend.application.dancer.response.DancerInfoResponse;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
-import com.danthis.backend.application.dancer.response.DancerSummaryResponse;
-import com.danthis.backend.application.dancer.response.PaginationInfo;
+import com.danthis.backend.application.dancer.response.DancerSummaryListResponse.DancerSummaryResponse;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
@@ -103,10 +102,6 @@ public class DancerService {
 
     List<Dancer> candidates = dancerReader.readByDancerGenre(pages.getContent());
     List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(candidates);
-    PaginationInfo pagination = dancerManager.createPagination(
-        pages.getNumber(),
-        pages.getTotalPages());
-
-    return dancerManager.createDancerSummaryListResponse(dancerInfos, pagination);
+    return DancerSummaryListResponse.from(dancerInfos, pages.getNumber(), pages.getTotalPages(), pages.getTotalElements());
   }
 }

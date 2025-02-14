@@ -5,6 +5,7 @@ import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.repository.DancerRepository;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
+import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,12 @@ public class DancerReader {
     return dancerGenreList.stream()
                           .map(DancerGenre::getDancer)
                           .toList();
+  }
+
+  public List<Dancer> readDancerInUserDancer(List<UserDancer> userDancerList) {
+    return userDancerList.stream()
+                         .map(UserDancer::getDancer)
+                         .toList();
   }
 
   public Dancer readDancerByUserId(Long userId) {

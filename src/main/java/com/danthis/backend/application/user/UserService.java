@@ -2,7 +2,11 @@ package com.danthis.backend.application.user;
 
 import com.danthis.backend.application.community.implement.PostManager;
 import com.danthis.backend.application.community.implement.PostReader;
+import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
+import com.danthis.backend.application.dancer.implement.DancerManager;
 import com.danthis.backend.application.dancer.implement.DancerReader;
+import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
+import com.danthis.backend.application.dancer.response.DancerSummaryListResponse.DancerSummaryResponse;
 import com.danthis.backend.application.review.implement.ReviewManager;
 import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.user.implement.UserManager;
@@ -12,14 +16,10 @@ import com.danthis.backend.application.user.implement.mapping.UserDancerManager;
 import com.danthis.backend.application.user.implement.mapping.UserDancerReader;
 import com.danthis.backend.application.user.implement.mapping.UserGenreManager;
 import com.danthis.backend.application.user.implement.mapping.UserGenreReader;
-import com.danthis.backend.application.user.implement.mapping.WishListManager;
 import com.danthis.backend.application.user.implement.mapping.WishListReader;
 import com.danthis.backend.application.user.request.UserUpdateServiceRequest;
-import com.danthis.backend.application.user.response.UserFavoriteResponse.FavoriteDancerListResponse;
-import com.danthis.backend.application.user.response.UserFavoriteResponse.WishListResponse;
 import com.danthis.backend.application.user.response.UserInfoResponse;
 import com.danthis.backend.application.user.response.UserPostsResponse;
-import com.danthis.backend.application.user.response.UserPostsResponse.Pagination;
 import com.danthis.backend.application.user.response.UserPostsResponse.PostDto;
 import com.danthis.backend.application.user.response.UserReviewResponse;
 import com.danthis.backend.application.user.response.UserReviewResponse.ReviewDto;
@@ -40,7 +40,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -56,12 +55,12 @@ public class UserService {
   private final UserGenreReader userGenreReader;
   private final UserDancerManager userDancerManager;
   private final UserDancerReader userDancerReader;
-  private final WishListManager wishListManager;
   private final WishListReader wishListReader;
   private final PostReader postReader;
   private final PostManager postManager;
   private final ReviewReader reviewReader;
   private final ReviewManager reviewManager;
+  private final DancerManager dancerManager;
 
   @Transactional
   public void updateUserInfo(Long userId, UserUpdateServiceRequest request) {
@@ -140,42 +139,38 @@ public class UserService {
   }
 
   @Transactional
-  public FavoriteDancerListResponse getFavoriteDancers(Long userId, Integer page, Integer size) {
-    Pageable pageable = PageRequest.of(page, size);
+  public DancerSummaryListResponse getFavoriteDancers(Long userId, Integer page, Integer size) {
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<UserDancer> pages = userDancerReader.readDancersByUserId(userId, pageable);
 
-    Page<UserDancer> dancers = userDancerReader.readDancersByUserId(userId, pageable);
-    return FavoriteDancerListResponse.from(dancers);
+    List<Dancer> candidates = dancerReader.readDancerInUserDancer(pages.getContent());
+    List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(candidates);
+    return DancerSummaryListResponse.from(dancerInfos, pages.getNumber(), pages.getTotalPages(), pages.getTotalElements());
   }
 
   @Transactional
-  public WishListResponse getWishList(Long userId, Integer page, Integer size) {
-    Pageable pageable = PageRequest.of(page, size);
+  public DanceClassListServiceResponse getWishList(Long userId, Integer page, Integer size) {
+    PageRequest pageable = PageRequest.of(page - 1, size);
 
-    Page<WishList> wishLists = wishListReader.readWishListByUserId(userId, pageable);
-    return WishListResponse.from(wishLists);
+    Page<WishList> wishlistPages = wishListReader.readWishListByUserId(userId, pageable);
+    return DanceClassListServiceResponse.from(wishlistPages.map(WishList::getDanceClass));
   }
 
   @Transactional
   public UserPostsResponse getUserPosts(Long userId, Integer page, Integer size) {
-    Page<CommunityPost> posts = postReader.readPostsByUserId(userId, PageRequest.of(page, size));
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<CommunityPost> posts = postReader.readPostsByUserId(userId, pageable);
     List<PostDto> postDtoList = postManager.toPostDtoList(posts.getContent());
-    Pagination pagination = Pagination.builder()
-                                      .currentPage(posts.getNumber())
-                                      .totalPages(posts.getTotalPages())
-                                      .build();
 
-    return UserPostsResponse.from(postDtoList, pagination);
+    return UserPostsResponse.from(postDtoList, posts.getNumber(), posts.getTotalPages(), posts.getTotalElements());
   }
 
   @Transactional
   public UserReviewResponse getUserReviews(Long userId, Integer page, Integer size) {
-    Page<ClassReview> reviews = reviewReader.readReviewsByUserId(userId, PageRequest.of(page, size));
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<ClassReview> reviews = reviewReader.readReviewsByUserId(userId, pageable);
     List<ReviewDto> reviewDtoList = reviewManager.toReviewDtoList(reviews.getContent());
-    Pagination pagination = Pagination.builder()
-                                      .currentPage(reviews.getNumber())
-                                      .totalPages(reviews.getTotalPages())
-                                      .build();
 
-    return UserReviewResponse.from(reviewDtoList, pagination);
+    return UserReviewResponse.from(reviewDtoList, reviews.getNumber(), reviews.getTotalPages(), reviews.getTotalElements());
   }
 }

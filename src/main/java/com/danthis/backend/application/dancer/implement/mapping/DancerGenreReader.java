@@ -8,7 +8,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,7 +17,7 @@ public class DancerGenreReader {
   private final DancerGenreRepository dancerGenreRepository;
 
   public Page<DancerGenre> readDancerGenresByGenreId(Long genreId, Integer page, Integer size) {
-    Pageable pageable = PageRequest.of(page, size);
+    PageRequest pageable = PageRequest.of(page - 1, size);
     return dancerGenreRepository.findByGenreId(genreId, pageable);
   }
 
