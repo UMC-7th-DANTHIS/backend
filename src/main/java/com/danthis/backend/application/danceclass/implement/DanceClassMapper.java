@@ -3,6 +3,7 @@ package com.danthis.backend.application.danceclass.implement;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
+import com.danthis.backend.application.danceclass.response.RegisteredUserListServiceResponse;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.classreview.classreviewimage.ClassReviewImage;
 import com.danthis.backend.domain.danceclass.DanceClass;
@@ -10,6 +11,7 @@ import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.hashtag.Hashtag;
+import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import java.util.List;
@@ -172,5 +174,28 @@ public class DanceClassMapper {
                                           .totalUsers(eligibleUsers.size())
                                           .users(eligibleUsers)
                                           .build();
+  }
+
+  public RegisteredUserListServiceResponse toRegisteredUserListResponse(
+      DanceClass danceClass, Page<DanceClassBooking> bookings) {
+
+    List<RegisteredUserListServiceResponse.UserSummary> users = bookings.getContent().stream()
+                                                                        .map(booking -> RegisteredUserListServiceResponse.UserSummary.builder()
+                                                                                                                                     .userId(booking.getUser().getId())
+                                                                                                                                     .nickname(booking.getUser().getNickname())
+                                                                                                                                     .profileImage(booking.getUser().getProfileImage())
+                                                                                                                                     .build())
+                                                                        .toList();
+
+    return RegisteredUserListServiceResponse.builder()
+                                            .classId(danceClass.getId())
+                                            .className(danceClass.getClassName())
+                                            .classImage(danceClass.getDanceClassImages().stream().findFirst()
+                                                                  .map(image -> image.getImageUrl()).orElse(null))
+                                            .currentPage(bookings.getNumber() + 1)
+                                            .totalPages(bookings.getTotalPages())
+                                            .totalUsers((int) bookings.getTotalElements())
+                                            .users(users)
+                                            .build();
   }
 }

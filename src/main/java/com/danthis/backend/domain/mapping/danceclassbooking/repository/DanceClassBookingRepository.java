@@ -19,4 +19,6 @@ public interface DanceClassBookingRepository extends JpaRepository<DanceClassBoo
   Page<DanceClassBooking> findByUser(User user, Pageable pageable);
 
   Optional<DanceClassBooking> findByDanceClassAndUser(DanceClass danceClass, User user);
+
+  Page<DanceClassBooking> findByDanceClass(DanceClass danceClass, Pageable pageable);
 }

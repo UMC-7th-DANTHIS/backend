@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -87,5 +88,9 @@ public class DanceClassReader {
 
   public boolean isUserAlreadyRegistered(DanceClass danceClass, User user) {
     return bookingRepository.findByDanceClassAndUser(danceClass, user).isPresent();
+  }
+
+  public Page<DanceClassBooking> readRegisteredUsersByClass(DanceClass danceClass, Pageable pageable) {
+    return bookingRepository.findByDanceClass(danceClass, pageable);
   }
 }

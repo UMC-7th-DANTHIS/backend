@@ -8,6 +8,7 @@ import com.danthis.backend.application.danceclass.response.DanceClassBookingServ
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
+import com.danthis.backend.application.danceclass.response.RegisteredUserListServiceResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -142,7 +143,7 @@ public class DanceClassController {
     return ApiResponse.OK(response);
   }
 
-  @Operation(summary = "댄스 클래스에 유저 등록 API", description = "댄서가 자신의 수업에 유저를 등록합니다.")
+  @Operation(summary = "댄스 수업에 유저 등록 API", description = "댄서가 자신의 수업에 유저를 등록합니다.")
   @PostMapping("/{classId}/bookings/{userId}")
   @AssignCurrentUserInfo
   public ApiResponse<Void> registerUserToClass(
@@ -152,5 +153,19 @@ public class DanceClassController {
 
     danceClassService.registerUserToClass(userInfo.getUserId(), classId, userId);
     return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "수업 등록 유저 목록 조회 API", description = "수업에 등록된 유저 목록을 조회합니다.")
+  @GetMapping("/{classId}/booking-users")
+  @AssignCurrentUserInfo
+  public ApiResponse<RegisteredUserListServiceResponse> getRegisteredUsers(
+      @PathVariable Long classId,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "5") @Min(1) int size,
+      CurrentUserInfo userInfo
+  ) {
+    RegisteredUserListServiceResponse response = danceClassService.getRegisteredUsers(classId,
+        userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
   }
 }

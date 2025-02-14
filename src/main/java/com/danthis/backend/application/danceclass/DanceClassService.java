@@ -9,6 +9,7 @@ import com.danthis.backend.application.danceclass.response.DanceClassBookingServ
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
+import com.danthis.backend.application.danceclass.response.RegisteredUserListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
 import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.user.implement.UserReader;
@@ -193,9 +194,9 @@ public class DanceClassService {
     List<DancerUserChat> chatUsers = danceClassReader.readChatUsersByDancer(dancer);
 
     List<Long> registeredUserIds = danceClassReader.readRegisteredUsersByDanceClass(danceClass)
-                                                  .stream()
-                                                  .map(booking -> booking.getUser().getId())
-                                                  .toList();
+                                                   .stream()
+                                                   .map(booking -> booking.getUser().getId())
+                                                   .toList();
 
     // 등록되지 않은 유저만 필터링 후 반환
     return danceClassMapper.toEligibleUserListResponse(dancer, chatUsers, registeredUserIds);
@@ -223,5 +224,22 @@ public class DanceClassService {
                                                  .build();
 
     danceClassManager.saveBooking(booking);
+  }
+
+  @Transactional
+  public RegisteredUserListServiceResponse getRegisteredUsers(Long classId, Long userId, int page
+      , int size) {
+
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    Dancer dancer = danceClass.getDancer();
+
+    if (!dancer.getUser().getId().equals(userId)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<DanceClassBooking> bookings = danceClassReader.readRegisteredUsersByClass(danceClass, pageable);
+
+    return danceClassMapper.toRegisteredUserListResponse(danceClass, bookings);
   }
 }
