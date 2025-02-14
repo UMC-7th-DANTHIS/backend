@@ -3,6 +3,7 @@ package com.danthis.backend.domain.mapping.danceruserchat.repository;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.user.User;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,6 @@ public interface DancerUserChatRepository extends JpaRepository<DancerUserChat, 
   Page<DancerUserChat> findByDancer(Dancer dancer, Pageable pageable);
 
   Page<DancerUserChat> findByUser(User user, Pageable pageable);
+
+  List<DancerUserChat> findAllByDancer(Dancer dancer);
 }

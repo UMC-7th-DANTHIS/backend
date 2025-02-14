@@ -7,6 +7,7 @@ import com.danthis.backend.application.danceclass.DanceClassService;
 import com.danthis.backend.application.danceclass.response.DanceClassBookingServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
+import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -126,5 +127,18 @@ public class DanceClassController {
       @PathVariable Long classId) {
     danceClassService.deleteFavoriteClass(userInfo.getUserId(), classId);
     return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "댄스 수업에 등록 가능한 유저 목록 조회 API",
+      description = "댄서와 채팅한 유저 중 아직 해당 수업에 등록되지 않은 유저 목록을 조회합니다.")
+  @GetMapping("/{classId}/eligible-users")
+  @AssignCurrentUserInfo
+  public ApiResponse<EligibleUserListServiceResponse> getEligibleUsersForDanceClass(
+      @PathVariable Long classId,
+      CurrentUserInfo userInfo
+  ) {
+    EligibleUserListServiceResponse response = danceClassService.getEligibleUsersForDanceClass(
+        classId, userInfo.getUserId());
+    return ApiResponse.OK(response);
   }
 }

@@ -8,6 +8,7 @@ import com.danthis.backend.application.danceclass.request.DanceClassCreateServic
 import com.danthis.backend.application.danceclass.response.DanceClassBookingServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
+import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
 import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.user.implement.UserReader;
@@ -23,6 +24,7 @@ import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
+import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.wishlist.WishList;
 import com.danthis.backend.domain.user.User;
 import java.util.List;
@@ -31,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -171,11 +172,32 @@ public class DanceClassService {
   }
 
   @Transactional
-  public DanceClassListServiceResponse getUserLearningClasses(Long userId, Integer page, Integer size) {
+  public DanceClassListServiceResponse getUserLearningClasses(Long userId, Integer page,
+      Integer size) {
     PageRequest pageable = PageRequest.of(page - 1, size);
     User user = userReader.readUserById(userId);
 
     Page<DanceClass> danceClasses = danceClassReader.readUserLearningClasses(user, pageable);
     return DanceClassListServiceResponse.from(danceClasses);
+  }
+
+  @Transactional
+  public EligibleUserListServiceResponse getEligibleUsersForDanceClass(Long classId, Long userId) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    Dancer dancer = danceClass.getDancer();
+
+    if (!dancer.getUser().getId().equals(userId)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    List<DancerUserChat> chatUsers = danceClassReader.readChatUsersByDancer(dancer);
+
+    List<Long> registeredUserIds = danceClassReader.readRegisteredUsersByDanceClass(danceClass)
+                                                  .stream()
+                                                  .map(booking -> booking.getUser().getId())
+                                                  .toList();
+
+    // 등록되지 않은 유저만 필터링 후 반환
+    return danceClassMapper.toEligibleUserListResponse(dancer, chatUsers, registeredUserIds);
   }
 }
