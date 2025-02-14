@@ -41,8 +41,4 @@ public class DanceClassBooking extends BaseEntity {
 
   @Column(nullable = false)
   private Boolean isApproved;
-
-  public void updatedApprove(boolean b) {
-    this.isApproved = true;
-  }
 }

@@ -1,11 +1,9 @@
 package com.danthis.backend.application.danceclass;
 
-import com.danthis.backend.api.danceclass.request.DanceClassBookingApproveRequest;
 import com.danthis.backend.application.danceclass.implement.DanceClassManager;
 import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
-import com.danthis.backend.application.danceclass.response.DanceClassBookingServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
@@ -108,37 +106,6 @@ public class DanceClassService {
   }
 
   @Transactional
-  public void approveBooking(Long requesterId, Long classId, Long userId,
-      DanceClassBookingApproveRequest request) {
-    if (!request.getIsApproved()) {
-      throw new BusinessException(ErrorCode.INVALID_BOOKING);
-    }
-
-    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
-    User user = userReader.readUserById(userId);
-    DanceClassBooking booking = danceClassReader.readBookingByClassAndUser(danceClass, user);
-
-    if (!danceClass.getDancer().getUser().getId().equals(requesterId)) {
-      throw new BusinessException(ErrorCode.DANCER_FORBIDDEN_ACCESS);
-    }
-
-    danceClassManager.approveBooking(booking);
-  }
-
-  @Transactional
-  public DanceClassBookingServiceResponse getApprovedBookings(Long classId) {
-    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
-    List<DanceClassBooking> approvedBookings = danceClassReader.readApprovedBookingsByClass(
-        danceClass);
-
-    if (approvedBookings.isEmpty()) {
-      throw new BusinessException(ErrorCode.NO_APPROVED_USERS);
-    }
-
-    return DanceClassBookingServiceResponse.from(classId, approvedBookings);
-  }
-
-  @Transactional
   public void addFavoriteClass(Long userId, Long classId) {
     if (wishListReader.readWishListByUserIdAndClassId(userId, classId) != null) {
       throw new BusinessException(ErrorCode.ALREADY_FAVORITE);
@@ -198,7 +165,6 @@ public class DanceClassService {
                                                    .map(booking -> booking.getUser().getId())
                                                    .toList();
 
-    // 등록되지 않은 유저만 필터링 후 반환
     return danceClassMapper.toEligibleUserListResponse(dancer, chatUsers, registeredUserIds);
   }
 

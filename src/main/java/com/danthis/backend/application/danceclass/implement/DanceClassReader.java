@@ -60,15 +60,6 @@ public class DanceClassReader {
     return danceClassRepository.findAll(pageable);
   }
 
-  public DanceClassBooking readBookingByClassAndUser(DanceClass danceClass, User user) {
-    return bookingRepository.findByDanceClassAndUser(danceClass, user)
-                            .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_BOOKING));
-  }
-
-  public List<DanceClassBooking> readApprovedBookingsByClass(DanceClass danceClass) {
-    return bookingRepository.findApprovedBookingsByClass(danceClass);
-  }
-
   public Page<DanceClass> readDancerClasses(Long dancerId, PageRequest pageable) {
     return danceClassRepository.findByDancerId(dancerId, pageable);
   }

@@ -1,7 +1,5 @@
 package com.danthis.backend.application.danceclass.implement;
 
-import com.danthis.backend.common.exception.BusinessException;
-import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.danceclass.danceclassimage.repository.DanceClassImageRepository;
@@ -33,17 +31,6 @@ public class DanceClassManager {
 
   public void saveDanceClassHashtags(Set<DanceClassHashtag> hashtags) {
     danceClassHashtagRepository.saveAll(hashtags);
-  }
-
-  public void approveBooking(DanceClassBooking booking) {
-
-    if (booking.getIsApproved()) {
-      throw new BusinessException(ErrorCode.INVALID_BOOKING);
-    }
-
-    booking.updatedApprove(true);
-
-    bookingRepository.save(booking);
   }
 
   public void saveBooking(DanceClassBooking booking) {
