@@ -45,4 +45,8 @@ public class DanceClassManager {
 
     bookingRepository.save(booking);
   }
+
+  public void saveBooking(DanceClassBooking booking) {
+    bookingRepository.save(booking);
+  }
 }

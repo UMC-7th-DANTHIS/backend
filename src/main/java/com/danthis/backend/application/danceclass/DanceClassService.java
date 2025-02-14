@@ -200,4 +200,28 @@ public class DanceClassService {
     // 등록되지 않은 유저만 필터링 후 반환
     return danceClassMapper.toEligibleUserListResponse(dancer, chatUsers, registeredUserIds);
   }
+
+  @Transactional
+  public void registerUserToClass(Long dancerId, Long classId, Long userId) {
+    Dancer dancer = dancerReader.readDancerByUserId(dancerId);
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    User user = userReader.readUserById(userId);
+
+    if (!danceClass.getDancer().equals(dancer)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    if (danceClassReader.isUserAlreadyRegistered(danceClass, user)) {
+      throw new BusinessException(ErrorCode.INVALID_BOOKING);
+    }
+
+    DanceClassBooking booking = DanceClassBooking.builder()
+                                                 .user(user)
+                                                 .danceClass(danceClass)
+                                                 .bookingDate(java.time.LocalDateTime.now())
+                                                 .isApproved(true)
+                                                 .build();
+
+    danceClassManager.saveBooking(booking);
+  }
 }

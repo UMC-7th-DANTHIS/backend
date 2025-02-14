@@ -141,4 +141,16 @@ public class DanceClassController {
         classId, userInfo.getUserId());
     return ApiResponse.OK(response);
   }
+
+  @Operation(summary = "댄스 클래스에 유저 등록 API", description = "댄서가 자신의 수업에 유저를 등록합니다.")
+  @PostMapping("/{classId}/bookings/{userId}")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> registerUserToClass(
+      @PathVariable Long classId,
+      @PathVariable Long userId,
+      CurrentUserInfo userInfo) {
+
+    danceClassService.registerUserToClass(userInfo.getUserId(), classId, userId);
+    return ApiResponse.OK(null);
+  }
 }

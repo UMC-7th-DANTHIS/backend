@@ -84,4 +84,8 @@ public class DanceClassReader {
   public List<DanceClassBooking> readRegisteredUsersByDanceClass(DanceClass danceClass) {
     return bookingRepository.findByDanceClass(danceClass);
   }
+
+  public boolean isUserAlreadyRegistered(DanceClass danceClass, User user) {
+    return bookingRepository.findByDanceClassAndUser(danceClass, user).isPresent();
+  }
 }
