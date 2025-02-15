@@ -19,8 +19,8 @@ public class SearchReader {
   private final DancerRepository dancerRepository;
   private final CommunityPostRepository communityPostRepository;
 
-  public Page<DanceClass> searchDanceClasses(String query, PageRequest pageable) {
-    return danceClassRepository.searchByClassName(query, pageable);
+  public Page<DanceClass> findClassesByTitleAndHashtag(String query, Long hashtagId, PageRequest pageable) {
+    return danceClassRepository.findByClassNameAndHashtag(query, hashtagId, pageable);
   }
 
   public Page<Dancer> searchDancers(String query, PageRequest pageable) {
