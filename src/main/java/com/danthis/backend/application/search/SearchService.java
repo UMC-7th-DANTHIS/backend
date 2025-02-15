@@ -24,13 +24,15 @@ public class SearchService {
   private final SearchReader searchReader;
 
   @Transactional
-  public ClassSearchServiceResponse searchDanceClassesFlexibly(String query, Long hashtagId, int page, int size) {
+  public ClassSearchServiceResponse searchDanceClassesFlexibly(String query, Long hashtagId,
+      int page, int size) {
     if ((query == null || query.trim().isEmpty()) && hashtagId == null) {
       throw new BusinessException(ErrorCode.INVALID_SEARCH_QUERY);
     }
 
     PageRequest pageable = PageRequest.of(page - 1, size);
-    Page<DanceClass> danceClassPage = searchReader.findClassesByTitleAndHashtag(query, hashtagId, pageable);
+    Page<DanceClass> danceClassPage = searchReader.findClassesByTitleAndHashtag(query, hashtagId,
+        pageable);
 
     return ClassSearchServiceResponse.from("Flexible Search", danceClassPage);
   }

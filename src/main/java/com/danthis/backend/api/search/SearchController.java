@@ -32,7 +32,8 @@ public class SearchController {
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "5") @Min(1) int size
   ) {
-    ClassSearchServiceResponse response = searchService.searchDanceClassesFlexibly(query, hashtagId, page, size);
+    ClassSearchServiceResponse response = searchService.searchDanceClassesFlexibly(query, hashtagId,
+        page, size);
     return ApiResponse.OK(response);
   }
 
