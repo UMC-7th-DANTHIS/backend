@@ -20,7 +20,7 @@ public class GetPresignedUrlResponse {
     return GetPresignedUrlResponse.builder()
                                   .presignedUrl(presignedUrl)
                                   .fileUrl(
-                                      "https://danthis/s3.ap-northeast-2.amazonaws.com/" + fileUrl)
+                                      "https://danthis.s3.ap-northeast-2.amazonaws.com/" + fileUrl)
                                   .build();
   }
 }
