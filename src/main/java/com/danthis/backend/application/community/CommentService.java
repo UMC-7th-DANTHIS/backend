@@ -13,6 +13,7 @@ import com.danthis.backend.domain.communitycomment.CommunityComment;
 import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -56,5 +57,11 @@ public class CommentService {
     }
 
     commentManager.deleteComment(comment);
+  }
+
+  @Transactional
+  public void deleteCommentsByPostId(Long postId) {
+    List<CommunityComment> comments = commentReader.readCommentsByPostId(postId);
+    comments.forEach(commentManager::deleteComment);
   }
 }

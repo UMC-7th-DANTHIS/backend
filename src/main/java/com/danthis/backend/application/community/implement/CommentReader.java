@@ -4,6 +4,7 @@ import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.communitycomment.CommunityComment;
 import com.danthis.backend.domain.communitycomment.repository.CommunityCommentRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,5 +23,9 @@ public class CommentReader {
   public CommunityComment readCommentById(Long commentId) {
     return communityCommentRepository.findById(commentId)
                                      .orElseThrow(() -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
+  }
+
+  public List<CommunityComment> readCommentsByPostId(Long postId) {
+    return communityCommentRepository.findByPostId(postId);
   }
 }

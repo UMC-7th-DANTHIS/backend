@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 @Builder
 public class ClassSearchServiceResponse {
 
-  private String query;
+  private String searchType;
   private List<DanceClassSummary> results;
   private Pagination pagination;
 
@@ -18,7 +18,7 @@ public class ClassSearchServiceResponse {
   @Builder
   public static class DanceClassSummary {
 
-    private Long id;
+    private Long classId;
     private String className;
     private String dancer;
     private Long genre;
@@ -36,11 +36,11 @@ public class ClassSearchServiceResponse {
     private long totalResults;
   }
 
-  public static ClassSearchServiceResponse from(String query, Page<DanceClass> danceClassPage) {
+  public static ClassSearchServiceResponse from(String searchType, Page<DanceClass> danceClassPage) {
     List<DanceClassSummary> danceClassSummaries = danceClassPage.getContent().stream()
                                                                 .map(
                                                                     danceClass -> DanceClassSummary.builder()
-                                                                                                   .id(danceClass.getId())
+                                                                                                   .classId(danceClass.getId())
                                                                                                    .className(danceClass.getClassName())
                                                                                                    .dancer(danceClass.getDancer().getDancerName())
                                                                                                    .genre(danceClass.getGenre().getId())
@@ -60,7 +60,7 @@ public class ClassSearchServiceResponse {
                                           .build();
 
     return ClassSearchServiceResponse.builder()
-                                     .query(query)
+                                     .searchType(searchType)
                                      .results(danceClassSummaries)
                                      .pagination(paginationInfo)
                                      .build();

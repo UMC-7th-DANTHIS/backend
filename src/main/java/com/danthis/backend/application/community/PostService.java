@@ -29,6 +29,7 @@ public class PostService {
   private final PostReader postReader;
   private final PostImageManager postImageManager;
   private final UserReader userReader;
+  private final CommentService commentService;
 
   @Transactional
   public void createPost(PostCreateServiceRequest request) {
@@ -63,6 +64,7 @@ public class PostService {
       throw new BusinessException(ErrorCode.ACCESS_DENIED);
     }
 
+    commentService.deleteCommentsByPostId(postId);
     postImageManager.deletePostImages(postId);
     postManager.deletePost(post);
   }
