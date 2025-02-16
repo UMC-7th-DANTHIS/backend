@@ -1,4 +1,4 @@
-package com.danthis.backend.application.chat.response;
+package com.danthis.backend.application.danceclass.response;
 
 import java.util.List;
 import lombok.Builder;
@@ -6,17 +6,15 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class DancerChatListServiceResponse {
+public class EligibleUserListServiceResponse {
 
   private Long dancerId;
-  private int currentPage;
-  private int totalPages;
   private int totalUsers;
-  private List<ChatUserSummary> chatUsers;
+  private List<UserSummary> users;
 
   @Getter
   @Builder
-  public static class ChatUserSummary {
+  public static class UserSummary {
 
     private Long userId;
     private String nickname;

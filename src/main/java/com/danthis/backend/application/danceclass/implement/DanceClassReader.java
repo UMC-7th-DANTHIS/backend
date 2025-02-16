@@ -4,12 +4,15 @@ import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.repository.DanceClassRepository;
+import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.genre.repository.GenreRepository;
 import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.hashtag.repository.HashtagRepository;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclassbooking.repository.DanceClassBookingRepository;
+import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
+import com.danthis.backend.domain.mapping.danceruserchat.repository.DancerUserChatRepository;
 import com.danthis.backend.domain.user.User;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +32,7 @@ public class DanceClassReader {
   private final HashtagRepository hashtagRepository;
   private final DanceClassRepository danceClassRepository;
   private final DanceClassBookingRepository bookingRepository;
+  private final DancerUserChatRepository dancerUserChatRepository;
 
   public Genre readGenreById(Long genreId) {
     return genreRepository.findById(genreId)
@@ -56,15 +60,6 @@ public class DanceClassReader {
     return danceClassRepository.findAll(pageable);
   }
 
-  public DanceClassBooking readBookingByClassAndUser(DanceClass danceClass, User user) {
-    return bookingRepository.findByDanceClassAndUser(danceClass, user)
-                            .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_BOOKING));
-  }
-
-  public List<DanceClassBooking> readApprovedBookingsByClass(DanceClass danceClass) {
-    return bookingRepository.findApprovedBookingsByClass(danceClass);
-  }
-
   public Page<DanceClass> readDancerClasses(Long dancerId, PageRequest pageable) {
     return danceClassRepository.findByDancerId(dancerId, pageable);
   }
@@ -72,5 +67,21 @@ public class DanceClassReader {
   public Page<DanceClass> readUserLearningClasses(User user, PageRequest pageable) {
     Page<DanceClassBooking> bookingClasses = bookingRepository.findByUser(user, pageable);
     return bookingClasses.map(DanceClassBooking::getDanceClass);
+  }
+
+  public List<DancerUserChat> readChatUsersByDancer(Dancer dancer) {
+    return dancerUserChatRepository.findAllByDancer(dancer);
+  }
+
+  public List<DanceClassBooking> readRegisteredUsersByDanceClass(DanceClass danceClass) {
+    return bookingRepository.findByDanceClass(danceClass);
+  }
+
+  public boolean isUserAlreadyRegistered(DanceClass danceClass, User user) {
+    return bookingRepository.findByDanceClassAndUser(danceClass, user).isPresent();
+  }
+
+  public Page<DanceClassBooking> readRegisteredUsersByClass(DanceClass danceClass, Pageable pageable) {
+    return bookingRepository.findByDanceClass(danceClass, pageable);
   }
 }

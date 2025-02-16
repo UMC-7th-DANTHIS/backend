@@ -17,7 +17,7 @@ public class UserChatListServiceResponse {
   @Getter
   @Builder
   public static class ChatDancerSummary {
-    private Long chatId;
+
     private Long dancerId;
     private String dancerName;
     private String profileImage;
