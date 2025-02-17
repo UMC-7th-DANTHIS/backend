@@ -53,9 +53,11 @@ public class DancerController {
 
   @Operation(summary = "단일 댄서 정보 조회 API", description = "댄서의 정보를 조회합니다.")
   @GetMapping("/{dancerId}")
+  @AssignCurrentUserInfo
   public ApiResponse<DancerInfoResponse> getDancerInfo(
+      CurrentUserInfo userInfo,
       @PathVariable("dancerId") Long dancerId) {
-    DancerInfoResponse response = dancerService.getDancerInfo(dancerId);
+    DancerInfoResponse response = dancerService.getDancerInfo(userInfo.getUserId(), dancerId);
     return ApiResponse.OK(response);
   }
 
