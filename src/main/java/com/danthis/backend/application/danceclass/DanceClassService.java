@@ -3,12 +3,16 @@ package com.danthis.backend.application.danceclass;
 import com.danthis.backend.application.danceclass.implement.DanceClassManager;
 import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
+import com.danthis.backend.application.danceclass.implement.mapping.DanceClassHashtagManager;
+import com.danthis.backend.application.danceclass.implement.mapping.DanceClassImageManager;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
+import com.danthis.backend.application.danceclass.request.DanceClassUpdateServiceRequest;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
 import com.danthis.backend.application.danceclass.response.RegisteredUserListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
+import com.danthis.backend.application.review.implement.ReviewManager;
 import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.user.implement.mapping.WishListManager;
@@ -48,6 +52,9 @@ public class DanceClassService {
   private final UserReader userReader;
   private final WishListManager wishListManager;
   private final WishListReader wishListReader;
+  private final DanceClassImageManager danceClassImageManager;
+  private final DanceClassHashtagManager danceClassHashtagManager;
+  private final ReviewManager reviewManager;
 
   @Transactional
   public void createDanceClass(DanceClassCreateServiceRequest request, Long userId) {
@@ -69,6 +76,51 @@ public class DanceClassService {
       Set<DanceClassImage> images = danceClassMapper.mapToImages(danceClass, request.getImages());
       danceClassManager.saveDanceClassImages(images);
     }
+  }
+
+  @Transactional
+  public void updateDanceClass(DanceClassUpdateServiceRequest request) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(request.getClassId());
+    Dancer dancer = dancerReader.readDancerByUserId(request.getUserId());
+
+    if (!danceClass.getDancer().equals(dancer)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    danceClass.updateClassName(request.getClassName());
+    danceClass.updatePrice(request.getPricePerSession());
+    danceClass.updateDifficulty(request.getDifficulty());
+
+    Genre genre = danceClassReader.readGenreById(request.getGenre());
+    danceClass.updateGenre(genre);
+
+    danceClass.updateDescription(request.getDescription());
+    danceClass.updateTargetAudience(request.getTargetAudience());
+    danceClass.updateVideoUrl(request.getVideoUrl());
+
+    Set<Hashtag> hashtags = danceClassReader.readHashtagsByIds(request.getHashtags());
+    danceClassHashtagManager.updateHashtags(danceClass, hashtags);
+
+    danceClassImageManager.updateImages(danceClass, request.getImages());
+
+    danceClassManager.saveDanceClass(danceClass);
+  }
+
+  @Transactional
+  public void deleteDanceClass(Long classId, Long userId) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    Dancer dancer = dancerReader.readDancerByUserId(userId);
+
+    if (!danceClass.getDancer().equals(dancer)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    danceClassImageManager.deleteImagesByDanceClass(danceClass);
+    danceClassHashtagManager.deleteHashtagsByDanceClass(danceClass);
+    danceClassManager.deleteDanceClassBookings(danceClass);
+    reviewManager.deleteReviewsByDanceClass(danceClass);
+
+    danceClassManager.deleteDanceClass(danceClass);
   }
 
   @Transactional

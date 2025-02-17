@@ -3,6 +3,7 @@ package com.danthis.backend.domain.classreview.repository;
 import static com.danthis.backend.domain.classreview.QClassReview.classReview;
 
 import com.danthis.backend.domain.classreview.ClassReview;
+import com.danthis.backend.domain.classreview.QClassReview;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
@@ -45,5 +46,12 @@ public class ClassReviewRepositoryImpl implements ClassReviewRepositoryCustom {
                                  .orElse(0L);
 
     return new PageImpl<>(reviews, pageable, totalElements);
+  }
+
+  @Override
+  public void deleteByDanceClassId(Long classId) {
+    jpaQueryFactory.delete(QClassReview.classReview)
+                   .where(QClassReview.classReview.danceClass.id.eq(classId))
+                   .execute();
   }
 }

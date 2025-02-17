@@ -80,4 +80,32 @@ public class DanceClass extends BaseEntity {
 
   @OneToMany(mappedBy = "danceClass", fetch = FetchType.LAZY)
   private Set<WishList> wishLists;
+
+  public void updateClassName(String className) {
+    this.className = className;
+  }
+
+  public void updatePrice(Integer price) {
+    this.pricePerSession = price;
+  }
+
+  public void updateDifficulty(Integer difficulty) {
+    this.difficulty = difficulty;
+  }
+
+  public void updateGenre(Genre genre) {
+    this.genre = genre;
+  }
+
+  public void updateDescription(String description) {
+    this.classDescription = description;
+  }
+
+  public void updateTargetAudience(String targetAudience) {
+    this.targetAudience = targetAudience;
+  }
+
+  public void updateVideoUrl(String videoUrl) {
+    this.classVideoUrl = videoUrl;
+  }
 }

@@ -1,18 +1,19 @@
 package com.danthis.backend.application.review.implement;
 
-import com.danthis.backend.application.user.response.UserReviewResponse.ReviewDto;
+import com.danthis.backend.application.review.implement.mapping.ReviewImageManager;
 import com.danthis.backend.application.review.request.ReviewCreateServiceRequest;
+import com.danthis.backend.application.user.response.UserReviewResponse.ReviewDto;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.classreview.classreviewimage.ClassReviewImage;
-import java.util.List;
 import com.danthis.backend.domain.classreview.classreviewimage.repository.ClassReviewImageRepository;
 import com.danthis.backend.domain.classreview.repository.ClassReviewRepository;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.repository.DanceClassRepository;
 import com.danthis.backend.domain.user.User;
 import com.danthis.backend.domain.user.repository.UserRepository;
+import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ public class ReviewManager {
   private final ClassReviewImageRepository classReviewImageRepository;
   private final DanceClassRepository danceClassRepository;
   private final UserRepository userRepository;
+  private final ReviewImageManager reviewImageManager;
 
   public DanceClass getDanceClassById(Long classId) {
     return danceClassRepository.findById(classId)
@@ -75,5 +77,10 @@ public class ReviewManager {
                                                         .collect(Collectors.toSet()))
                                           .build())
                   .toList();
+  }
+
+  public void deleteReviewsByDanceClass(DanceClass danceClass) {
+    reviewImageManager.deleteReviewImagesByDanceClass(danceClass);
+    classReviewRepository.deleteByDanceClassId(danceClass.getId());
   }
 }
