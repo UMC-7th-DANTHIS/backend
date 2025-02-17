@@ -1,5 +1,6 @@
 package com.danthis.backend.application.user.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class UserPostsResponse {
     private Long postId;
     private String title;
     private String content;
+    private LocalDateTime createdAt;
     private List<String> images;
   }
 }
