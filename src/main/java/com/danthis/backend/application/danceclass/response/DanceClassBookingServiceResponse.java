@@ -29,7 +29,8 @@ public class DanceClassBookingServiceResponse {
     return DanceClassBookingServiceResponse.builder()
                                            .classId(classId)
                                            .approvedUsers(
-                                               bookings.getContent().stream()
+                                               bookings.getContent()
+                                                       .stream()
                                                        .map(booking -> UserSummary.builder()
                                                                                   .userId(booking.getUser().getId())
                                                                                   .nickname(booking.getUser().getNickname())

@@ -51,8 +51,7 @@ public class DanceClassBookingRepositoryImpl implements DanceClassBookingReposit
     jpaQueryFactory.delete(QDanceClassBooking.danceClassBooking)
                    .where(QDanceClassBooking.danceClassBooking.danceClass.eq(danceClass)
                                                                          .and(
-                                                                             danceClassBooking.isActive.eq(
-                                                                                 true)))
+                                                                             danceClassBooking.isActive.eq(true)))
                    .execute();
   }
 }
