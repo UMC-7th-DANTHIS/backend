@@ -85,6 +85,28 @@ public class DancerService {
   }
 
   @Transactional
+  public DancerInfoResponse getMyDancerInfo(Long userId) {
+    User user = userReader.readUserById(userId);
+    Dancer dancer = dancerReader.readDancerByUserId(userId);
+
+    // 이미 찜이 된 경우 true, 찜이 안되어 있으면 false 저장
+    // 내가 만든 댄서를 내가 찜하는 경우가 있을까..?
+    boolean isFavorite = userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null;
+
+    return DancerInfoResponse.builder()
+                             .id(dancer.getId())
+                             .dancerName(dancer.getDancerName())
+                             .instargramId(dancer.getInstargramId())
+                             .bio(dancer.getBio())
+                             .history(dancer.getHistory())
+                             .isFavorite(isFavorite)
+                             .openChatUrl(dancer.getOpenChatUrl())
+                             .favoriteGenres(dancerGenreReader.findGenreIdByDancer(dancer))
+                             .imageUrlList(dancerImageReader.findImageUrlByDancer(dancer))
+                             .build();
+  }
+
+  @Transactional
   public DancerInfoResponse getDancerInfo(Long userId, Long dancerId) {
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
