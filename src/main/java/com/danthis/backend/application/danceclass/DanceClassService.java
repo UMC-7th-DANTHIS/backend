@@ -180,9 +180,13 @@ public class DanceClassService {
   }
 
   @Transactional
-  public DanceClassListServiceResponse getDancerClasses(Long userId, Integer page, Integer size) {
+  public DanceClassListServiceResponse getDancerClasses(Long userId, Long dancerId, Integer page, Integer size) {
     PageRequest pageable = PageRequest.of(page - 1, size);
     Dancer dancer = dancerReader.readDancerByUserId(userId);
+    if (dancerId != 0) {
+      dancer = dancerReader.readDancerById(dancerId);
+    }
+
     if (dancer == null) {
       throw new BusinessException(ErrorCode.DANCER_NOT_FOUND);
     }

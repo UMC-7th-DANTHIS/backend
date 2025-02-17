@@ -85,10 +85,11 @@ public class DancerController {
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassListServiceResponse> getDancerClasses(
       CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "0") @Min(0) long dancerId,
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "9") @Min(1) int size) {
 
-    DanceClassListServiceResponse response = danceClassService.getDancerClasses(userInfo.getUserId(), page, size);
+    DanceClassListServiceResponse response = danceClassService.getDancerClasses(userInfo.getUserId(), dancerId, page, size);
     return ApiResponse.OK(response);
   }
 }
