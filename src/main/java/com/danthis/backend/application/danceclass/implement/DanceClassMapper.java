@@ -2,6 +2,8 @@ package com.danthis.backend.application.danceclass.implement;
 
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
+import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
+import com.danthis.backend.application.danceclass.response.RegisteredUserListServiceResponse;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.classreview.classreviewimage.ClassReviewImage;
 import com.danthis.backend.domain.danceclass.DanceClass;
@@ -9,7 +11,10 @@ import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.hashtag.Hashtag;
+import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
+import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -150,5 +155,47 @@ public class DanceClassMapper {
                                                 : 0.0)
                                         .totalReviews(totalReviews)
                                         .build();
+  }
+
+  public EligibleUserListServiceResponse toEligibleUserListResponse(Dancer dancer,
+      List<DancerUserChat> chatUsers, List<Long> registeredUserIds) {
+
+    List<EligibleUserListServiceResponse.UserSummary> eligibleUsers = chatUsers.stream()
+                                                                               .filter(chat -> !registeredUserIds.contains(chat.getUser().getId()))
+                                                                               .map(chat -> EligibleUserListServiceResponse.UserSummary.builder()
+                                                                                                                                       .userId(chat.getUser().getId())
+                                                                                                                                       .nickname(chat.getUser().getNickname())
+                                                                                                                                       .profileImage(chat.getUser().getProfileImage())
+                                                                                                                                       .build())
+                                                                               .toList();
+
+    return EligibleUserListServiceResponse.builder()
+                                          .dancerId(dancer.getId())
+                                          .totalUsers(eligibleUsers.size())
+                                          .users(eligibleUsers)
+                                          .build();
+  }
+
+  public RegisteredUserListServiceResponse toRegisteredUserListResponse(
+      DanceClass danceClass, Page<DanceClassBooking> bookings) {
+
+    List<RegisteredUserListServiceResponse.UserSummary> users = bookings.getContent().stream()
+                                                                        .map(booking -> RegisteredUserListServiceResponse.UserSummary.builder()
+                                                                                                                                     .userId(booking.getUser().getId())
+                                                                                                                                     .nickname(booking.getUser().getNickname())
+                                                                                                                                     .profileImage(booking.getUser().getProfileImage())
+                                                                                                                                     .build())
+                                                                        .toList();
+
+    return RegisteredUserListServiceResponse.builder()
+                                            .classId(danceClass.getId())
+                                            .className(danceClass.getClassName())
+                                            .classImage(danceClass.getDanceClassImages().stream().findFirst()
+                                                                  .map(image -> image.getImageUrl()).orElse(null))
+                                            .currentPage(bookings.getNumber() + 1)
+                                            .totalPages(bookings.getTotalPages())
+                                            .totalUsers((int) bookings.getTotalElements())
+                                            .users(users)
+                                            .build();
   }
 }

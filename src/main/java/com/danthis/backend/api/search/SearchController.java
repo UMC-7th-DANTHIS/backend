@@ -24,18 +24,16 @@ public class SearchController {
 
   private final SearchService searchService;
 
-  @Operation(summary = "댄스 수업 검색 API", description = "검색어를 포함한 댄스 수업 목록을 조회합니다.")
+  @Operation(summary = "댄스 수업 검색 API(제목, 해시태그, 또는 둘 다)", description = "제목과 해시태그를 기반으로 댄스 수업을 조회합니다.")
   @GetMapping("/dance-classes")
   public ApiResponse<ClassSearchServiceResponse> searchDanceClasses(
-      @RequestParam String query,
+      @RequestParam(required = false) String query,
+      @RequestParam(required = false) Long hashtagId,
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "5") @Min(1) int size
   ) {
-    if (query.trim().isEmpty()) {
-      throw new BusinessException(ErrorCode.INVALID_SEARCH_QUERY);
-    }
-
-    ClassSearchServiceResponse response = searchService.searchDanceClasses(query, page, size);
+    ClassSearchServiceResponse response = searchService.searchDanceClassesFlexibly(query, hashtagId,
+        page, size);
     return ApiResponse.OK(response);
   }
 

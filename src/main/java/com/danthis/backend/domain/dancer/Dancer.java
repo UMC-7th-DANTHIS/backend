@@ -4,6 +4,7 @@ import com.danthis.backend.domain.BaseEntity;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
+import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.user.User;
 import jakarta.persistence.Column;
@@ -64,6 +65,9 @@ public class Dancer extends BaseEntity {
 
   @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
   private Set<UserDancer> userDancers;
+
+  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
+  private Set<DancerUserChat> dancerUserChats;
 
   public void updateDancerName(String dancerName) {
     this.dancerName = dancerName;

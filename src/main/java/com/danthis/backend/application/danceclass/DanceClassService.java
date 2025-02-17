@@ -1,6 +1,5 @@
 package com.danthis.backend.application.danceclass;
 
-import com.danthis.backend.api.danceclass.request.DanceClassBookingApproveRequest;
 import com.danthis.backend.application.danceclass.implement.DanceClassManager;
 import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
@@ -8,9 +7,10 @@ import com.danthis.backend.application.danceclass.implement.mapping.DanceClassHa
 import com.danthis.backend.application.danceclass.implement.mapping.DanceClassImageManager;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
 import com.danthis.backend.application.danceclass.request.DanceClassUpdateServiceRequest;
-import com.danthis.backend.application.danceclass.response.DanceClassBookingServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
+import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
+import com.danthis.backend.application.danceclass.response.RegisteredUserListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
 import com.danthis.backend.application.review.implement.ReviewManager;
 import com.danthis.backend.application.review.implement.ReviewReader;
@@ -27,8 +27,10 @@ import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
+import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.wishlist.WishList;
 import com.danthis.backend.domain.user.User;
+import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -156,37 +158,6 @@ public class DanceClassService {
   }
 
   @Transactional
-  public void approveBooking(Long requesterId, Long classId, Long userId,
-      DanceClassBookingApproveRequest request) {
-    if (!request.getIsApproved()) {
-      throw new BusinessException(ErrorCode.INVALID_BOOKING);
-    }
-
-    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
-    User user = userReader.readUserById(userId);
-    DanceClassBooking booking = danceClassReader.readBookingByClassAndUser(danceClass, user);
-
-    if (!danceClass.getDancer().getUser().getId().equals(requesterId)) {
-      throw new BusinessException(ErrorCode.DANCER_FORBIDDEN_ACCESS);
-    }
-
-    danceClassManager.approveBooking(booking);
-  }
-
-  @Transactional
-  public DanceClassBookingServiceResponse getApprovedBookings(Long classId, int page, int size) {
-    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
-    PageRequest pageable = PageRequest.of(page - 1, size);
-    Page<DanceClassBooking> approvedBookings = danceClassReader.readApprovedBookingsByClass(danceClass, pageable);
-
-    if (approvedBookings.isEmpty()) {
-      throw new BusinessException(ErrorCode.NO_APPROVED_USERS);
-    }
-
-    return DanceClassBookingServiceResponse.from(classId, approvedBookings);
-  }
-
-  @Transactional
   public void addFavoriteClass(Long userId, Long classId) {
     if (wishListReader.readWishListByUserIdAndClassId(userId, classId) != null) {
       throw new BusinessException(ErrorCode.ALREADY_FAVORITE);
@@ -228,5 +199,65 @@ public class DanceClassService {
 
     Page<DanceClass> danceClasses = danceClassReader.readUserLearningClasses(user, pageable);
     return DanceClassListServiceResponse.from(danceClasses);
+  }
+
+  @Transactional
+  public EligibleUserListServiceResponse getEligibleUsersForDanceClass(Long classId, Long userId) {
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    Dancer dancer = danceClass.getDancer();
+
+    if (!dancer.getUser().getId().equals(userId)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    List<DancerUserChat> chatUsers = danceClassReader.readChatUsersByDancer(dancer);
+
+    List<Long> registeredUserIds = danceClassReader.readRegisteredUsersByDanceClass(danceClass)
+                                                   .stream()
+                                                   .map(booking -> booking.getUser().getId())
+                                                   .toList();
+
+    return danceClassMapper.toEligibleUserListResponse(dancer, chatUsers, registeredUserIds);
+  }
+
+  @Transactional
+  public void registerUserToClass(Long dancerId, Long classId, Long userId) {
+    Dancer dancer = dancerReader.readDancerByUserId(dancerId);
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    User user = userReader.readUserById(userId);
+
+    if (!danceClass.getDancer().equals(dancer)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    if (danceClassReader.isUserAlreadyRegistered(danceClass, user)) {
+      throw new BusinessException(ErrorCode.INVALID_BOOKING);
+    }
+
+    DanceClassBooking booking = DanceClassBooking.builder()
+                                                 .user(user)
+                                                 .danceClass(danceClass)
+                                                 .bookingDate(java.time.LocalDateTime.now())
+                                                 .isApproved(true)
+                                                 .build();
+
+    danceClassManager.saveBooking(booking);
+  }
+
+  @Transactional
+  public RegisteredUserListServiceResponse getRegisteredUsers(Long classId, Long userId, int page
+      , int size) {
+
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    Dancer dancer = danceClass.getDancer();
+
+    if (!dancer.getUser().getId().equals(userId)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    PageRequest pageable = PageRequest.of(page - 1, size);
+    Page<DanceClassBooking> bookings = danceClassReader.readRegisteredUsersByClass(danceClass, pageable);
+
+    return danceClassMapper.toRegisteredUserListResponse(danceClass, bookings);
   }
 }

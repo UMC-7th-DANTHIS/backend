@@ -5,6 +5,7 @@ import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.communitycomment.CommunityComment;
 import com.danthis.backend.domain.communitypost.CommunityPost;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
+import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import com.danthis.backend.domain.mapping.usergenre.UserGenre;
 import com.danthis.backend.domain.mapping.wishlist.WishList;
@@ -68,6 +69,9 @@ public class User extends BaseEntity {
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   private Set<WishList> wishLists;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<DancerUserChat> dancerUserChats;
 
   public void updateNickname(String nickname) {
     this.nickname = nickname;

@@ -1,19 +1,15 @@
 package com.danthis.backend.application.chat;
 
-import com.danthis.backend.api.chat.request.ChatBookingRequest;
 import com.danthis.backend.application.chat.implement.ChatManager;
 import com.danthis.backend.application.chat.implement.ChatMapper;
 import com.danthis.backend.application.chat.implement.ChatReader;
-import com.danthis.backend.application.chat.response.ChatBookingServiceResponse;
 import com.danthis.backend.application.chat.response.DancerChatListServiceResponse;
 import com.danthis.backend.application.chat.response.UserChatListServiceResponse;
 import com.danthis.backend.application.dancer.implement.DancerReader;
-import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
-import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.dancer.Dancer;
-import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
+import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,47 +26,34 @@ public class ChatService {
   private final ChatManager chatManager;
   private final ChatMapper chatMapper;
   private final DancerReader dancerReader;
-  private final UserReader userReader;
 
   @Transactional
-  public ChatBookingServiceResponse createChatBooking(ChatBookingRequest request) {
-    User user = chatReader.readUserById(request.getUserId());
-    DanceClass danceClass = chatReader.readDanceClassById(request.getClassId());
-    Dancer dancer = danceClass.getDancer();
+  public void startChatWithDancer(Long userId, Long dancerId) {
+    User user = chatReader.readUserById(userId);
+    Dancer dancer = chatReader.readDancerById(dancerId);
 
-    DanceClassBooking booking = chatManager.createBooking(user, danceClass, dancer);
-    return chatMapper.toChatBookingResponse(booking);
+    chatManager.startChat(user, dancer);
   }
 
   @Transactional
-  public DancerChatListServiceResponse getDancerChatList(Long dancerId, int page, int size) {
-    validateDancerOrThrow(dancerId);
+  public DancerChatListServiceResponse getDancerChatList(Long userId, int page, int size) {
+    Dancer dancer = dancerReader.readDancerByUserId(userId);
 
-    Dancer dancer = dancerReader.readDancerById(dancerId);
-    Page<DanceClassBooking> chatBookings = chatReader.readBookingsByDancer(dancer, page, size);
+    if (dancer == null) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
 
-    return chatMapper.toDancerChatListResponse(dancer, chatBookings);
+    Page<DancerUserChat> chatUsersPage = chatReader.readChatsByDancer(dancer, page, size);
+
+    return chatMapper.toDancerChatListServiceResponse(dancer, chatUsersPage);
   }
 
   @Transactional
   public UserChatListServiceResponse getUserChatList(Long userId, int page, int size) {
-    validateUserOrThrow(userId);
+    User user = chatReader.readUserById(userId);
 
-    User user = userReader.readUserById(userId);
-    Page<DanceClassBooking> chatBookings = chatReader.readBookingsByUser(user, page, size);
+    Page<DancerUserChat> chatDancersPage = chatReader.readChatsByUser(user, page, size);
 
-    return chatMapper.toUserChatListResponse(user, chatBookings);
-  }
-
-  private void validateDancerOrThrow(Long dancerId) {
-    if (!chatReader.isDancer(dancerId)) {
-      throw new BusinessException(ErrorCode.ACCESS_DENIED);
-    }
-  }
-
-  private void validateUserOrThrow(Long userId) {
-    if (!chatReader.isUser(userId)) {
-      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
-    }
+    return chatMapper.toUserChatListResponse(user, chatDancersPage);
   }
 }

@@ -2,8 +2,7 @@ package com.danthis.backend.application.dancer.implement;
 
 import com.danthis.backend.application.dancer.request.DancerAddServiceRequest;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
-import com.danthis.backend.application.dancer.response.DancerSummaryResponse;
-import com.danthis.backend.application.dancer.response.PaginationInfo;
+import com.danthis.backend.application.dancer.response.DancerSummaryListResponse.DancerSummaryResponse;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.dancer.repository.DancerRepository;
@@ -36,32 +35,16 @@ public class DancerManager {
     dancerRepository.save(dancer);
   }
 
-  public List<DancerSummaryResponse> toSummaryInfo(List<Dancer> dancers) {
+  public List<DancerSummaryListResponse.DancerSummaryResponse> toSummaryInfo(List<Dancer> dancers) {
     return dancers.stream()
                   .map(dancer -> DancerSummaryResponse.builder()
                                                       .id(dancer.getId())
                                                       .dancerName(dancer.getDancerName())
-                                                      .imageUrlList(
+                                                      .images(
                                                           dancer.getDancerImages().stream()
                                                                 .map(DancerImage::getImageUrl)
                                                                 .collect(Collectors.toSet()))
                                                       .build())
                   .toList();
-  }
-
-  public PaginationInfo createPagination(Integer number, Integer totalPages) {
-    return PaginationInfo.builder()
-                         .currentPage(number)
-                         .totalPages(totalPages)
-                         .build();
-  }
-
-  public DancerSummaryListResponse createDancerSummaryListResponse(
-      List<DancerSummaryResponse> dancers,
-      PaginationInfo pagination) {
-    return DancerSummaryListResponse.builder()
-                                    .dancers(dancers)
-                                    .pagination(pagination)
-                                    .build();
   }
 }

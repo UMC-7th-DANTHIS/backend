@@ -1,13 +1,13 @@
 package com.danthis.backend.api.danceclass;
 
 import com.danthis.backend.api.ApiResponse;
-import com.danthis.backend.api.danceclass.request.DanceClassBookingApproveRequest;
 import com.danthis.backend.api.danceclass.request.DanceClassCreateRequest;
 import com.danthis.backend.api.danceclass.request.DanceClassUpdateRequest;
 import com.danthis.backend.application.danceclass.DanceClassService;
-import com.danthis.backend.application.danceclass.response.DanceClassBookingServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
+import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
+import com.danthis.backend.application.danceclass.response.RegisteredUserListServiceResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +17,6 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -109,31 +108,6 @@ public class DanceClassController {
     return ApiResponse.OK(response);
   }
 
-  @Operation(summary = "댄스 수업 예약 승인 API", description = "댄서가 유저의 예약을 승인합니다.")
-  @PatchMapping("/{classId}/bookings/{userId}/approve")
-  @AssignCurrentUserInfo
-  public ApiResponse<Void> approveBooking(
-      @PathVariable Long classId,
-      @PathVariable Long userId,
-      @Valid @RequestBody DanceClassBookingApproveRequest request,
-      CurrentUserInfo userInfo
-  ) {
-    danceClassService.approveBooking(userInfo.getUserId(), classId, userId, request);
-    return ApiResponse.OK(null);
-  }
-
-  @Operation(summary = "댄스 수업 예약 승인된 유저 목록 조회 API", description = "해당 댄스 수업에 예약이 승인된 유저 목록을 조회합니다.")
-  @GetMapping("/{classId}/bookings")
-  @AssignCurrentUserInfo
-  public ApiResponse<DanceClassBookingServiceResponse> getApprovedBookings(
-      @PathVariable Long classId,
-      @RequestParam(defaultValue = "1") @Min(1) int page,
-      @RequestParam(defaultValue = "5") @Min(1) int size) {
-    DanceClassBookingServiceResponse response = danceClassService.getApprovedBookings(classId,
-        page, size);
-    return ApiResponse.OK(response);
-  }
-
   @Operation(summary = "댄스 수업 찜 등록 API", description = "해당 댄스수업을 찜 매핑테이블에 추가합니다.")
   @PostMapping("/{classId}/favorite")
   @AssignCurrentUserInfo
@@ -154,28 +128,41 @@ public class DanceClassController {
     return ApiResponse.OK(null);
   }
 
-  @Operation(summary = "유저가 수강한 댄스수업 목록 조회 API", description = "유저가 수강한 댄스수업 목록을 조회합니다.")
-  @GetMapping("/users")
+  @Operation(summary = "댄스 수업에 등록 가능한 유저 목록 조회 API",
+      description = "댄서와 채팅한 유저 중 아직 해당 수업에 등록되지 않은 유저 목록을 조회합니다.")
+  @GetMapping("/{classId}/eligible-users")
   @AssignCurrentUserInfo
-  public ApiResponse<DanceClassListServiceResponse> getUserLearningClasses(
-      CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "1") @Min(1) int page,
-      @RequestParam(defaultValue = "9") @Min(1) int size) {
-
-    DanceClassListServiceResponse response = danceClassService.getUserLearningClasses(
-        userInfo.getUserId(), page, size);
+  public ApiResponse<EligibleUserListServiceResponse> getEligibleUsersForDanceClass(
+      @PathVariable Long classId,
+      CurrentUserInfo userInfo
+  ) {
+    EligibleUserListServiceResponse response = danceClassService.getEligibleUsersForDanceClass(
+        classId, userInfo.getUserId());
     return ApiResponse.OK(response);
   }
 
-  @Operation(summary = "댄서가 생성한 댄스수업 목록 조회 API", description = "댄서가 생성한 댄스수업 목록을 조회합니다.")
-  @GetMapping("/dancers")
+  @Operation(summary = "댄스 수업에 유저 등록 API", description = "댄서가 자신의 수업에 유저를 등록합니다.")
+  @PostMapping("/{classId}/bookings/{userId}")
   @AssignCurrentUserInfo
-  public ApiResponse<DanceClassListServiceResponse> getDancerClasses(
-      CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "1") @Min(1) int page,
-      @RequestParam(defaultValue = "9") @Min(1) int size) {
+  public ApiResponse<Void> registerUserToClass(
+      @PathVariable Long classId,
+      @PathVariable Long userId,
+      CurrentUserInfo userInfo) {
 
-    DanceClassListServiceResponse response = danceClassService.getDancerClasses(
+    danceClassService.registerUserToClass(userInfo.getUserId(), classId, userId);
+    return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "수업 등록 유저 목록 조회 API", description = "수업에 등록된 유저 목록을 조회합니다.")
+  @GetMapping("/{classId}/booking-users")
+  @AssignCurrentUserInfo
+  public ApiResponse<RegisteredUserListServiceResponse> getRegisteredUsers(
+      @PathVariable Long classId,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "5") @Min(1) int size,
+      CurrentUserInfo userInfo
+  ) {
+    RegisteredUserListServiceResponse response = danceClassService.getRegisteredUsers(classId,
         userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }

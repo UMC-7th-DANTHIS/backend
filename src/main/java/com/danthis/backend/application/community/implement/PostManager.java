@@ -22,6 +22,7 @@ public class PostManager {
                                                       .postId(communityPost.getId())
                                                       .title(communityPost.getTitle())
                                                       .content(communityPost.getContent())
+                                                      .createdAt(communityPost.getCreatedAt())
                                                       .images(communityPost.getCommunityPostImages()
                                                                            .stream()
                                                                            .map(CommunityPostImage::getUrl)

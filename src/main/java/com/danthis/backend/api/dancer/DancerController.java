@@ -3,6 +3,8 @@ package com.danthis.backend.api.dancer;
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.dancer.request.DancerAddRequest;
 import com.danthis.backend.api.dancer.request.DancerUpdateRequest;
+import com.danthis.backend.application.danceclass.DanceClassService;
+import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.dancer.DancerService;
 import com.danthis.backend.application.dancer.response.DancerInfoResponse;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
@@ -11,6 +13,7 @@ import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DancerController {
 
   private final DancerService dancerService;
+  private final DanceClassService danceClassService;
 
   @Operation(summary = "댄서 정보 등록 API", description = "댄서의 정보를 새로 등록합니다.")
   @PostMapping
@@ -47,11 +51,22 @@ public class DancerController {
     return ApiResponse.OK(dancerId);
   }
 
+  @Operation(summary = "자신의 댄서 정보 조회 API", description = "자기 자신의 댄서 정보를 조회합니다.")
+  @GetMapping()
+  @AssignCurrentUserInfo
+  public ApiResponse<DancerInfoResponse> getMyDancerInfo(
+      CurrentUserInfo userInfo) {
+    DancerInfoResponse response = dancerService.getMyDancerInfo(userInfo.getUserId());
+    return ApiResponse.OK(response);
+  }
+
   @Operation(summary = "단일 댄서 정보 조회 API", description = "댄서의 정보를 조회합니다.")
   @GetMapping("/{dancerId}")
+  @AssignCurrentUserInfo
   public ApiResponse<DancerInfoResponse> getDancerInfo(
+      CurrentUserInfo userInfo,
       @PathVariable("dancerId") Long dancerId) {
-    DancerInfoResponse response = dancerService.getDancerInfo(dancerId);
+    DancerInfoResponse response = dancerService.getDancerInfo(userInfo.getUserId(), dancerId);
     return ApiResponse.OK(response);
   }
 
@@ -59,9 +74,21 @@ public class DancerController {
   @GetMapping("/genres/{genreId}")
   public ApiResponse<DancerSummaryListResponse> getDancersByGenre(
       @PathVariable("genreId") Long genreId,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "9") Integer size) {
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "9") @Min(1) Integer size) {
     DancerSummaryListResponse response = dancerService.getDancersByGenre(genreId, page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "댄서가 생성한 댄스수업 목록 조회 API", description = "댄서가 생성한 댄스수업 목록을 조회합니다.")
+  @GetMapping("/dance-classes")
+  @AssignCurrentUserInfo
+  public ApiResponse<DanceClassListServiceResponse> getDancerClasses(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "9") @Min(1) int size) {
+
+    DanceClassListServiceResponse response = danceClassService.getDancerClasses(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 }
