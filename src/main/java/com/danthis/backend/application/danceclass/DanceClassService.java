@@ -128,9 +128,13 @@ public class DanceClassService {
   }
 
   @Transactional
-  public DanceClassListServiceResponse getDancerClasses(Long userId, Integer page, Integer size) {
+  public DanceClassListServiceResponse getDancerClasses(Long userId, Long dancerId, Integer page, Integer size) {
     PageRequest pageable = PageRequest.of(page - 1, size);
-    Dancer dancer = dancerReader.readDancerByUserId(userId);
+
+    Dancer dancer = (dancerId == 0)
+        ? dancerReader.readDancerByUserId(userId) // 댄서 아이디가 0인 경우, 유저의 댄서 정보 조회
+        : dancerReader.readDancerById(dancerId);  // 댄서 아이디가 있는 경우, 해당 댄서의 정보 조회
+
     if (dancer == null) {
       throw new BusinessException(ErrorCode.DANCER_NOT_FOUND);
     }
