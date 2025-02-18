@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,5 +45,17 @@ public class ReviewController {
       @PathVariable Long reviewId) {
     ReviewReadServiceResponse response = reviewService.getReview(classId, reviewId);
     return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "리뷰 삭제 API", description = "리뷰를 삭제합니다.")
+  @DeleteMapping("dance-classes/{classId}/reviews/{reviewId}")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> deleteReview(
+      CurrentUserInfo userInfo,
+      @PathVariable Long classId,
+      @PathVariable Long reviewId
+  ) {
+    reviewService.deleteReview(userInfo.getUserId(), classId, reviewId);
+    return ApiResponse.OK(null);
   }
 }

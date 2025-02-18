@@ -39,6 +39,7 @@ public class DanceClassReadServiceResponse {
     private String targetAudience;
     private List<Long> hashtags;
     private List<String> danceClassImages;
+    private Long dancerId;
   }
 
   @Getter
@@ -47,6 +48,7 @@ public class DanceClassReadServiceResponse {
 
     private Long id;
     private String author;
+    private String authorProfileImage;
     private String title;
     private String content;
     private Integer rating;

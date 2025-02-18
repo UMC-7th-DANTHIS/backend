@@ -11,9 +11,6 @@ import lombok.Getter;
 @Getter
 public class DancerUpdateRequest {
 
-  @NotNull(message = "댄서 ID는 필수 입력값입니다.")
-  private Long id;
-
   @NotBlank(message = "댄서 이름은 필수 입력값입니다.")
   @Size(max = 50, message = "댄서 이름은 최대 50자까지 가능합니다.")
   private String dancerName;
@@ -38,7 +35,6 @@ public class DancerUpdateRequest {
 
   public DancerUpdateServiceRequest toServiceRequest() {
     return DancerUpdateServiceRequest.builder()
-                                     .id(id)
                                      .dancerName(dancerName)
                                      .instargramId(instargramId)
                                      .openChatUrl(openChatUrl)

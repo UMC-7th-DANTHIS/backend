@@ -111,6 +111,7 @@ public class DanceClassMapper {
                                                                             .map(
                                                                                 DanceClassImage::getImageUrl)
                                                                             .toList())
+                                                .dancerId(danceClass.getDancer().getId())
                                                 .build();
   }
 
@@ -118,6 +119,7 @@ public class DanceClassMapper {
     return DanceClassReadServiceResponse.ClassReview.builder()
                                                     .id(review.getId())
                                                     .author(review.getUser().getNickname())
+                                                    .authorProfileImage(review.getUser().getProfileImage())
                                                     .title(review.getTitle())
                                                     .content(review.getContent())
                                                     .rating(review.getRating())

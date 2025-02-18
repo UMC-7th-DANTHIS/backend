@@ -45,9 +45,11 @@ public class DancerController {
 
   @Operation(summary = "댄서 정보 수정 API", description = "댄서의 정보를 수정합니다.")
   @PutMapping
+  @AssignCurrentUserInfo
   public ApiResponse<Long> updateDancer(
+      CurrentUserInfo userInfo,
       @RequestBody @Valid DancerUpdateRequest request) {
-    Long dancerId = dancerService.updateDancerInfo(request.toServiceRequest());
+    Long dancerId = dancerService.updateDancerInfo(userInfo.getUserId(), request.toServiceRequest());
     return ApiResponse.OK(dancerId);
   }
 
@@ -85,9 +87,9 @@ public class DancerController {
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassListServiceResponse> getDancerClasses(
       CurrentUserInfo userInfo,
-      @RequestParam(defaultValue = "0") @Min(0) long dancerId,
-      @RequestParam(defaultValue = "1") @Min(1) int page,
-      @RequestParam(defaultValue = "9") @Min(1) int size) {
+      @RequestParam(required = false) @Min(1) Long dancerId,
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "9") @Min(1) Integer size) {
 
     DanceClassListServiceResponse response = danceClassService.getDancerClasses(userInfo.getUserId(), dancerId, page, size);
     return ApiResponse.OK(response);
