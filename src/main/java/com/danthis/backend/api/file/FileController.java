@@ -74,7 +74,7 @@ public class FileController {
   }
 
   @Operation(summary = "리뷰 사진 presignedURL 발급")
-  @PostMapping("/reviews/post")
+  @PostMapping("/images/review")
   public List<GetPresignedUrlResponse> getReviewImagesPresignedUrls(
       @RequestParam List<String> fileExtensions) {
 
