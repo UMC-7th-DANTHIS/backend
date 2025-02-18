@@ -45,9 +45,11 @@ public class DancerController {
 
   @Operation(summary = "댄서 정보 수정 API", description = "댄서의 정보를 수정합니다.")
   @PutMapping
+  @AssignCurrentUserInfo
   public ApiResponse<Long> updateDancer(
+      CurrentUserInfo userInfo,
       @RequestBody @Valid DancerUpdateRequest request) {
-    Long dancerId = dancerService.updateDancerInfo(request.toServiceRequest());
+    Long dancerId = dancerService.updateDancerInfo(userInfo.getUserId(), request.toServiceRequest());
     return ApiResponse.OK(dancerId);
   }
 

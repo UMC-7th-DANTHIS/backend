@@ -14,6 +14,8 @@ import com.danthis.backend.application.dancer.response.DancerSummaryListResponse
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse.DancerSummaryResponse;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.application.user.implement.mapping.UserDancerReader;
+import com.danthis.backend.common.exception.BusinessException;
+import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.genre.Genre;
@@ -59,8 +61,11 @@ public class DancerService {
   }
 
   @Transactional
-  public Long updateDancerInfo(DancerUpdateServiceRequest request) {
-    Dancer dancer = dancerReader.readDancerById(request.getId());
+  public Long updateDancerInfo(Long userId, DancerUpdateServiceRequest request) {
+    Dancer dancer = dancerReader.readDancerByUserId(userId);
+    if (dancer == null) {
+      throw new BusinessException(ErrorCode.DANCER_NOT_FOUND);
+    }
 
     dancer.updateDancerName(request.getDancerName());
     dancer.updateInstargramId(request.getInstargramId());
