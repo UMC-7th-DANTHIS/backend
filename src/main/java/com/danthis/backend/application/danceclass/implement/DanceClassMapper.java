@@ -111,6 +111,7 @@ public class DanceClassMapper {
                                                                             .map(
                                                                                 DanceClassImage::getImageUrl)
                                                                             .toList())
+                                                .dancerId(danceClass.getDancer().getId())
                                                 .build();
   }
 
