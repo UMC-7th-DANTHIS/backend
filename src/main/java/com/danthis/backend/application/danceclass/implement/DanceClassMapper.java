@@ -15,6 +15,7 @@ import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -160,16 +161,17 @@ public class DanceClassMapper {
   }
 
   public EligibleUserListServiceResponse toEligibleUserListResponse(Dancer dancer,
-      List<DancerUserChat> chatUsers, List<Long> registeredUserIds) {
+      List<DancerUserChat> chatUsers, Map<Long, Boolean> registrationStatus) {
 
     List<EligibleUserListServiceResponse.UserSummary> eligibleUsers = chatUsers.stream()
-                                                                               .filter(chat -> !registeredUserIds.contains(chat.getUser().getId()))
                                                                                .map(chat -> EligibleUserListServiceResponse.UserSummary.builder()
                                                                                                                                        .userId(chat.getUser().getId())
                                                                                                                                        .nickname(chat.getUser().getNickname())
                                                                                                                                        .profileImage(chat.getUser().getProfileImage())
+                                                                                                                                       .isApproved(registrationStatus.getOrDefault(chat.getUser().getId(), false))
                                                                                                                                        .build())
                                                                                .toList();
+
 
     return EligibleUserListServiceResponse.builder()
                                           .dancerId(dancer.getId())

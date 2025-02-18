@@ -72,4 +72,18 @@ public class FileController {
 
     return presignedUrls;
   }
+
+  @Operation(summary = "리뷰 사진 presignedURL 발급")
+  @PostMapping("/images/review")
+  public List<GetPresignedUrlResponse> getReviewImagesPresignedUrls(
+      @RequestParam List<String> fileExtensions) {
+
+    List<GetPresignedUrlResponse> presignedUrls = new ArrayList<>();
+
+    for (String fileExtension : fileExtensions) {
+      presignedUrls.add(fileService.getPresignedUrl("review", fileExtension));
+    }
+
+    return presignedUrls;
+  }
 }

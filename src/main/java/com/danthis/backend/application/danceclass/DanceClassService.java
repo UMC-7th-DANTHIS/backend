@@ -31,7 +31,9 @@ import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.wishlist.WishList;
 import com.danthis.backend.domain.user.User;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -180,7 +182,8 @@ public class DanceClassService {
   }
 
   @Transactional
-  public DanceClassListServiceResponse getDancerClasses(Long userId, Long dancerId, Integer page, Integer size) {
+  public DanceClassListServiceResponse getDancerClasses(Long userId, Long dancerId, Integer page,
+      Integer size) {
     PageRequest pageable = PageRequest.of(page - 1, size);
     Dancer dancer = dancerReader.readDancerByUserId(userId);
     if (dancerId != null) {
@@ -216,12 +219,15 @@ public class DanceClassService {
 
     List<DancerUserChat> chatUsers = danceClassReader.readChatUsersByDancer(dancer);
 
-    List<Long> registeredUserIds = danceClassReader.readRegisteredUsersByDanceClass(danceClass)
-                                                   .stream()
-                                                   .map(booking -> booking.getUser().getId())
-                                                   .toList();
+    List<DanceClassBooking> registeredBookings = danceClassReader.readRegisteredUsersByDanceClass(
+        danceClass);
+    Map<Long, Boolean> registrationStatus = registeredBookings.stream()
+                                                              .collect(Collectors.toMap(
+                                                                  booking -> booking.getUser().getId(),
+                                                                  DanceClassBooking::getIsApproved
+                                                              ));
 
-    return danceClassMapper.toEligibleUserListResponse(dancer, chatUsers, registeredUserIds);
+    return danceClassMapper.toEligibleUserListResponse(dancer, chatUsers, registrationStatus);
   }
 
   @Transactional
@@ -260,7 +266,8 @@ public class DanceClassService {
     }
 
     PageRequest pageable = PageRequest.of(page - 1, size);
-    Page<DanceClassBooking> bookings = danceClassReader.readRegisteredUsersByClass(danceClass, pageable);
+    Page<DanceClassBooking> bookings = danceClassReader.readRegisteredUsersByClass(danceClass,
+        pageable);
 
     return danceClassMapper.toRegisteredUserListResponse(danceClass, bookings);
   }
