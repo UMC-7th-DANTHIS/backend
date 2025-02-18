@@ -83,4 +83,12 @@ public class ReviewManager {
     reviewImageManager.deleteReviewImagesByDanceClass(danceClass);
     classReviewRepository.deleteByDanceClassId(danceClass.getId());
   }
+
+  public void deleteReviewImagesByReviewId(Long reviewId) {
+    classReviewImageRepository.deleteByReviewId(reviewId);
+  }
+
+  public void deleteReview(ClassReview review) {
+    classReviewRepository.delete(review);
+  }
 }

@@ -18,4 +18,12 @@ public class ClassReviewImageRepositoryImpl implements ClassReviewImageRepositor
                        .and(QClassReviewImage.classReviewImage.isActive.eq(true)))
                    .execute();
   }
+
+  @Override
+  public void deleteByReviewId(Long reviewId) {
+    jpaQueryFactory.delete(QClassReviewImage.classReviewImage)
+                   .where(QClassReviewImage.classReviewImage.classReview.id.eq(reviewId)
+                       .and(QClassReviewImage.classReviewImage.isActive.eq(true)))
+                   .execute();
+  }
 }
