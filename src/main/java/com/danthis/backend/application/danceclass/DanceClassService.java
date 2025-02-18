@@ -183,7 +183,7 @@ public class DanceClassService {
   public DanceClassListServiceResponse getDancerClasses(Long userId, Long dancerId, Integer page, Integer size) {
     PageRequest pageable = PageRequest.of(page - 1, size);
     Dancer dancer = dancerReader.readDancerByUserId(userId);
-    if (dancerId != 0) {
+    if (dancerId != null) {
       dancer = dancerReader.readDancerById(dancerId);
     }
 
