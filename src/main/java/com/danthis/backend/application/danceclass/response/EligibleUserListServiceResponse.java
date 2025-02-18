@@ -19,5 +19,6 @@ public class EligibleUserListServiceResponse {
     private Long userId;
     private String nickname;
     private String profileImage;
+    private Boolean isApproved;
   }
 }
