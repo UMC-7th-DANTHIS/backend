@@ -1,5 +1,6 @@
 package com.danthis.backend.application.danceclass.request;
 
+import java.util.List;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,6 @@ public class DanceClassUpdateServiceRequest {
   private String description;
   private String targetAudience;
   private Set<Long> hashtags;
-  private Set<String> images;
+  private List<String> images;
   private String videoUrl;
 }
