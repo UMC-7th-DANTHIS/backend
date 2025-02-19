@@ -50,7 +50,7 @@ public class DanceClassMapper {
                    .collect(Collectors.toSet());
   }
 
-  public List<DanceClassImage> mapToImages(DanceClass danceClass, Set<String> imageUrls) {
+  public List<DanceClassImage> mapToImages(DanceClass danceClass, List<String> imageUrls) {
     return imageUrls.stream()
                     .map(url -> DanceClassImage.builder()
                                                .danceClass(danceClass)

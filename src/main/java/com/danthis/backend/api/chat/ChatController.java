@@ -1,6 +1,7 @@
 package com.danthis.backend.api.chat;
 
 import com.danthis.backend.api.ApiResponse;
+import com.danthis.backend.api.chat.response.ChatStartResponse;
 import com.danthis.backend.application.chat.ChatService;
 import com.danthis.backend.application.chat.response.DancerChatListServiceResponse;
 import com.danthis.backend.application.chat.response.UserChatListServiceResponse;
@@ -28,12 +29,12 @@ public class ChatController {
   @Operation(summary = "댄서와 1:1 채팅 시작 API", description = "유저가 특정 댄서와 1:1 채팅을 시작합니다.")
   @PostMapping("/{dancerId}/start")
   @AssignCurrentUserInfo
-  public ApiResponse<Void> startChatWithDancer(
+  public ApiResponse<ChatStartResponse> startChatWithDancer(
       @PathVariable Long dancerId,
       CurrentUserInfo userInfo
   ) {
-    chatService.startChatWithDancer(userInfo.getUserId(), dancerId);
-    return ApiResponse.OK(null);
+    ChatStartResponse response = chatService.startChatWithDancer(userInfo.getUserId(), dancerId);
+    return ApiResponse.OK(response);
   }
 
   @Operation(summary = "댄서가 채팅한 유저 목록 조회 API", description = "댄서가 채팅한 유저 목록을 조회합니다.")

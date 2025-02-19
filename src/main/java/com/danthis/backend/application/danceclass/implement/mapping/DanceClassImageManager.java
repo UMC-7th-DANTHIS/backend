@@ -5,7 +5,6 @@ import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import com.danthis.backend.domain.danceclass.danceclassimage.repository.DanceClassImageRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +15,7 @@ public class DanceClassImageManager {
   private final DanceClassImageRepository danceClassImageRepository;
 
   @Transactional
-  public void updateImages(DanceClass danceClass, Set<String> imageUrls) {
+  public void updateImages(DanceClass danceClass, List<String> imageUrls) {
     danceClassImageRepository.deleteByDanceClassId(danceClass.getId());
 
     List<DanceClassImage> newImages = imageUrls.stream()

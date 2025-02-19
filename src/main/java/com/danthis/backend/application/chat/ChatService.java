@@ -1,5 +1,6 @@
 package com.danthis.backend.application.chat;
 
+import com.danthis.backend.api.chat.response.ChatStartResponse;
 import com.danthis.backend.application.chat.implement.ChatManager;
 import com.danthis.backend.application.chat.implement.ChatMapper;
 import com.danthis.backend.application.chat.implement.ChatReader;
@@ -28,11 +29,17 @@ public class ChatService {
   private final DancerReader dancerReader;
 
   @Transactional
-  public void startChatWithDancer(Long userId, Long dancerId) {
+  public ChatStartResponse startChatWithDancer(Long userId, Long dancerId) {
     User user = chatReader.readUserById(userId);
     Dancer dancer = chatReader.readDancerById(dancerId);
 
     chatManager.startChat(user, dancer);
+
+    return ChatStartResponse.builder()
+                            .dancerId(dancerId)
+                            .dancerName(dancer.getDancerName())
+                            .openChatUrl(dancer.getOpenChatUrl())
+                            .build();
   }
 
   @Transactional

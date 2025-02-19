@@ -4,6 +4,7 @@ import com.danthis.backend.application.danceclass.request.DanceClassUpdateServic
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 
@@ -30,7 +31,7 @@ public class DanceClassUpdateRequest {
   @Size(max = 3, message = "해시태그는 최대 3개까지 선택 가능합니다.")
   private Set<Long> hashtags;
 
-  private Set<String> images;
+  private List<String> images;
 
   private String videoUrl;
 
