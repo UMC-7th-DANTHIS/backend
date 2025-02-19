@@ -14,6 +14,7 @@ import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -109,8 +110,8 @@ public class DanceClassMapper {
                                                                     .toList())
                                                 .danceClassImages(danceClass.getDanceClassImages()
                                                                             .stream()
-                                                                            .map(
-                                                                                DanceClassImage::getImageUrl)
+                                                                            .sorted(Comparator.comparing(DanceClassImage::getId)) // ID 기준으로 정렬
+                                                                            .map(DanceClassImage::getImageUrl)
                                                                             .toList())
                                                 .dancerId(danceClass.getDancer().getId())
                                                 .build();
