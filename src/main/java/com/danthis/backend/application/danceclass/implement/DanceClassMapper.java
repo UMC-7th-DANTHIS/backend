@@ -50,13 +50,13 @@ public class DanceClassMapper {
                    .collect(Collectors.toSet());
   }
 
-  public Set<DanceClassImage> mapToImages(DanceClass danceClass, Set<String> imageUrls) {
+  public List<DanceClassImage> mapToImages(DanceClass danceClass, Set<String> imageUrls) {
     return imageUrls.stream()
                     .map(url -> DanceClassImage.builder()
                                                .danceClass(danceClass)
                                                .imageUrl(url)
                                                .build())
-                    .collect(Collectors.toSet());
+                    .toList();
   }
 
   public DanceClassReadServiceResponse toDanceClassDetailsResponse(DanceClass danceClass) {

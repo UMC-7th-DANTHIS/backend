@@ -8,6 +8,7 @@ import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclassbooking.repository.DanceClassBookingRepository;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import com.danthis.backend.domain.mapping.danceclasshashtag.repository.DanceClassHashtagRepository;
+import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ public class DanceClassManager {
     danceClassRepository.save(danceClass);
   }
 
-  public void saveDanceClassImages(Set<DanceClassImage> images) {
+  public void saveDanceClassImages(List<DanceClassImage> images) {
     danceClassImageRepository.saveAll(images);
   }
 
