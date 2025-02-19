@@ -75,7 +75,7 @@ public class DanceClassService {
     danceClassManager.saveDanceClassHashtags(hashtagMappings);
 
     if (request.getImages() != null) {
-      Set<DanceClassImage> images = danceClassMapper.mapToImages(danceClass, request.getImages());
+      List<DanceClassImage> images = danceClassMapper.mapToImages(danceClass, request.getImages());
       danceClassManager.saveDanceClassImages(images);
     }
   }
