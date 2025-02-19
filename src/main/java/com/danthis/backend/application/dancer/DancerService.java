@@ -106,7 +106,7 @@ public class DancerService {
                              .history(dancer.getHistory())
                              .isFavorite(isFavorite)
                              .openChatUrl(dancer.getOpenChatUrl())
-                             .favoriteGenres(dancerGenreReader.findGenreIdByDancer(dancer))
+                             .preferredGenres(dancerGenreReader.findGenreIdByDancer(dancer))
                              .dancerImages(dancerImageReader.findImageUrlByDancer(dancer))
                              .build();
   }
@@ -127,7 +127,7 @@ public class DancerService {
                              .history(dancer.getHistory())
                              .isFavorite(isFavorite)
                              .openChatUrl(dancer.getOpenChatUrl())
-                             .favoriteGenres(dancerGenreReader.findGenreIdByDancer(dancer))
+                             .preferredGenres(dancerGenreReader.findGenreIdByDancer(dancer))
                              .dancerImages(dancerImageReader.findImageUrlByDancer(dancer))
                              .build();
   }

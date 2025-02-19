@@ -15,6 +15,6 @@ public class DancerInfoResponse {
   private String history;
   private String openChatUrl;
   private Boolean isFavorite;
-  private List<Long> favoriteGenres;
+  private List<Long> preferredGenres;
   private List<String> dancerImages;
 }
