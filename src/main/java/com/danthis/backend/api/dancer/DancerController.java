@@ -8,12 +8,14 @@ import com.danthis.backend.application.danceclass.response.DanceClassListService
 import com.danthis.backend.application.dancer.DancerService;
 import com.danthis.backend.application.dancer.response.DancerInfoResponse;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
+import com.danthis.backend.application.dancer.response.DancerSummaryListResponse.DancerSummaryResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
 import com.danthis.backend.common.security.aop.CurrentUserInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -92,6 +94,13 @@ public class DancerController {
       @RequestParam(defaultValue = "9") @Min(1) Integer size) {
 
     DanceClassListServiceResponse response = danceClassService.getDancerClasses(userInfo.getUserId(), dancerId, page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "모든 댄서 정보 조회 API", description = "모든 댄서의 정보를 조회합니다.")
+  @GetMapping("/all")
+  public ApiResponse<List<DancerSummaryResponse>> getAllDancers() {
+    List<DancerSummaryResponse> response = dancerService.getAllDancers();
     return ApiResponse.OK(response);
   }
 }

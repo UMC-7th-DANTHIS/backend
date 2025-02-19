@@ -107,7 +107,7 @@ public class DancerService {
                              .isFavorite(isFavorite)
                              .openChatUrl(dancer.getOpenChatUrl())
                              .favoriteGenres(dancerGenreReader.findGenreIdByDancer(dancer))
-                             .imageUrlList(dancerImageReader.findImageUrlByDancer(dancer))
+                             .dancerImages(dancerImageReader.findImageUrlByDancer(dancer))
                              .build();
   }
 
@@ -128,7 +128,7 @@ public class DancerService {
                              .isFavorite(isFavorite)
                              .openChatUrl(dancer.getOpenChatUrl())
                              .favoriteGenres(dancerGenreReader.findGenreIdByDancer(dancer))
-                             .imageUrlList(dancerImageReader.findImageUrlByDancer(dancer))
+                             .dancerImages(dancerImageReader.findImageUrlByDancer(dancer))
                              .build();
   }
 
@@ -139,5 +139,11 @@ public class DancerService {
     List<Dancer> candidates = dancerReader.readByDancerGenre(pages.getContent());
     List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(candidates);
     return DancerSummaryListResponse.from(dancerInfos, pages.getNumber(), pages.getTotalPages(), pages.getTotalElements());
+  }
+
+  @Transactional
+  public List<DancerSummaryResponse> getAllDancers() {
+    List<Dancer> dancers = dancerReader.readAllDancers();
+    return dancerManager.toSummaryInfo(dancers);
   }
 }
