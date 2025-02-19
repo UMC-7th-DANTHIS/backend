@@ -140,4 +140,10 @@ public class DancerService {
     List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(candidates);
     return DancerSummaryListResponse.from(dancerInfos, pages.getNumber(), pages.getTotalPages(), pages.getTotalElements());
   }
+
+  @Transactional
+  public List<DancerSummaryResponse> getAllDancers() {
+    List<Dancer> dancers = dancerReader.readAllDancers();
+    return dancerManager.toSummaryInfo(dancers);
+  }
 }

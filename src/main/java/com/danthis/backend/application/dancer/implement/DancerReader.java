@@ -36,4 +36,8 @@ public class DancerReader {
   public Dancer readDancerByUserId(Long userId) {
     return dancerRepository.findByUserId(userId).orElse(null);
   }
+
+  public List<Dancer> readAllDancers() {
+    return dancerRepository.findAll();
+  }
 }
