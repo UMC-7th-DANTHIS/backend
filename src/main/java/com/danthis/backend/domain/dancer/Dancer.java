@@ -93,7 +93,7 @@ public class Dancer extends BaseEntity {
 
   public void updateIsApproved(Boolean permission) {
     this.isApproved = permission;
-  }
+  } // TODO 추후 개발
 
   public void updateDancerGenres(Set<DancerGenre> genres) {
     this.dancerGenres.clear();
