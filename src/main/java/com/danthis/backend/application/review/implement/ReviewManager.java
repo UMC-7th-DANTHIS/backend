@@ -63,6 +63,7 @@ public class ReviewManager {
       );
     }
   }
+
   public List<ReviewDto> toReviewDtoList(List<ClassReview> reviews) {
     return reviews.stream()
                   .map(review -> ReviewDto.builder()
