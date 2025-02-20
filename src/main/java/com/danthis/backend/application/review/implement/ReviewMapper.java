@@ -19,7 +19,7 @@ public class ReviewMapper {
                                     .content(review.getContent())
                                     .author(review.getUser().getNickname())
                                     .createdAt(review.getCreatedAt())
-                                    .images(mapReviewImages(review))
+                                    .reviewImages(mapReviewImages(review))
                                     .build();
   }
 
