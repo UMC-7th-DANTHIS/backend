@@ -61,13 +61,12 @@ public class UserController {
     return ApiResponse.OK(isAvailable);
   }
 
-  @Operation(summary = "이메일 존재 여부 확인 API", description = "해당 이메일이 이미 등록된 계정인지 확인합니다.")
-  @GetMapping("/check-email")
-  public ApiResponse<Boolean> checkEmailAvailability(@RequestParam String email) {
-    boolean isRegistered = userService.isEmailRegistered(email);
+  @Operation(summary = "전화번호 등록 여부 확인 API", description = "해당 이메일이 등록된 계정이며, 전화번호가 존재하는지 확인합니다.")
+  @GetMapping("/check-phone-by-email")
+  public ApiResponse<Boolean> checkPhoneNumberByEmail(@RequestParam String email) {
+    boolean isRegistered = userService.hasPhoneNumberByEmail(email);
     return ApiResponse.OK(isRegistered);
   }
-
 
   @Operation(summary = "댄서 찜 등록 API", description = "댄서를 찜 리스트에 등록합니다.")
   @PostMapping("/{dancerId}/favorite")

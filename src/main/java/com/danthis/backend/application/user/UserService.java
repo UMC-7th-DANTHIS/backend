@@ -105,8 +105,8 @@ public class UserService {
   }
 
   @Transactional
-  public boolean isEmailRegistered(String email) {
-    return userReader.existsByEmail(email);
+  public boolean hasPhoneNumberByEmail(String email) {
+    return userReader.hasPhoneNumberByEmail(email);
   }
 
   @Transactional
