@@ -3,6 +3,7 @@ package com.danthis.backend.domain.dancer;
 import com.danthis.backend.domain.BaseEntity;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
+import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
@@ -17,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -108,5 +110,11 @@ public class Dancer extends BaseEntity {
                        .findFirst()
                        .map(DancerImage::getImageUrl)
                        .orElse(null);
+  }
+
+  public Set<Genre> getGenres() {
+    return dancerGenres.stream()
+                       .map(DancerGenre::getGenre)
+                       .collect(Collectors.toSet());
   }
 }
