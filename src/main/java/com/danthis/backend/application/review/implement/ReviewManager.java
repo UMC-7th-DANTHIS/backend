@@ -2,6 +2,7 @@ package com.danthis.backend.application.review.implement;
 
 import com.danthis.backend.application.review.implement.mapping.ReviewImageManager;
 import com.danthis.backend.application.review.request.ReviewCreateServiceRequest;
+import com.danthis.backend.application.review.request.ReviewUpdateServiceRequest;
 import com.danthis.backend.application.user.response.UserReviewResponse.ReviewDto;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
@@ -90,5 +91,25 @@ public class ReviewManager {
 
   public void deleteReview(ClassReview review) {
     classReviewRepository.delete(review);
+  }
+
+  public void updateReview(ClassReview review, ReviewUpdateServiceRequest request) {
+    review.updateTitle(request.getTitle());
+    review.updateContent(request.getContent());
+    review.updateRating(request.getRating());
+
+    // 기존 이미지 삭제 후 새 이미지 등록
+    reviewImageManager.deleteReviewImagesByReviewId(review.getId());
+
+    if (request.getReviewImages() != null && !request.getReviewImages().isEmpty()) {
+      classReviewImageRepository.saveAll(
+          request.getReviewImages().stream()
+                 .map(imageUrl -> ClassReviewImage.builder()
+                                                  .classReview(review)
+                                                  .imageUrl(imageUrl)
+                                                  .build())
+                 .collect(Collectors.toSet())
+      );
+    }
   }
 }

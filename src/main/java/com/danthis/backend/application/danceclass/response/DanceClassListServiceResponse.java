@@ -2,6 +2,7 @@ package com.danthis.backend.application.danceclass.response;
 
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import lombok.Builder;
@@ -39,15 +40,19 @@ public class DanceClassListServiceResponse {
                                                                                                         .id(danceClass.getId())
                                                                                                         .className(danceClass.getClassName())
                                                                                                         .dancerName(danceClass.getDancer().getDancerName())
-                                                                                                        .thumbnailImage(danceClass.getDanceClassImages()
-                                                                                                                                  .stream()
-                                                                                                                                  .findFirst()
-                                                                                                                                  .map(DanceClassImage::getImageUrl)
-                                                                                                                                  .orElse(null))
+                                                                                                        .thumbnailImage(getFixedThumbnailImage(danceClass))
                                                                                                         .genre(danceClass.getGenre().getName())
                                                                                                         .hashtagIds(danceClass.getHashtagIds())
                                                                                                         .build())
                                                                     .toList())
                                         .build();
+  }
+
+  private static String getFixedThumbnailImage(DanceClass danceClass) {
+    return danceClass.getDanceClassImages().stream()
+                     .sorted(Comparator.comparing(DanceClassImage::getId))
+                     .map(DanceClassImage::getImageUrl)
+                     .findFirst()
+                     .orElse(null);
   }
 }

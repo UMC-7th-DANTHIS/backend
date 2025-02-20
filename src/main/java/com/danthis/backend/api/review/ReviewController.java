@@ -2,6 +2,7 @@ package com.danthis.backend.api.review;
 
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.review.request.ReviewCreateRequest;
+import com.danthis.backend.api.review.request.ReviewUpdateRequest;
 import com.danthis.backend.application.review.ReviewService;
 import com.danthis.backend.application.review.response.ReviewReadServiceResponse;
 import com.danthis.backend.common.security.aop.AssignCurrentUserInfo;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,6 +58,19 @@ public class ReviewController {
       @PathVariable Long reviewId
   ) {
     reviewService.deleteReview(userInfo.getUserId(), classId, reviewId);
+    return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "리뷰 수정 API", description = "리뷰를 수정합니다.")
+  @PutMapping("dance-classes/{classId}/reviews/{reviewId}")
+  @AssignCurrentUserInfo
+  public ApiResponse<Void> updateReview(
+      CurrentUserInfo userInfo,
+      @PathVariable Long classId,
+      @PathVariable Long reviewId,
+      @RequestBody ReviewUpdateRequest request
+  ) {
+    reviewService.updateReview(userInfo.getUserId(), classId, request.toServiceRequest(reviewId));
     return ApiResponse.OK(null);
   }
 }
