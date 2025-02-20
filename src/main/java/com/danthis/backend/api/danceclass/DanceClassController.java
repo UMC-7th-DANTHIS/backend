@@ -34,7 +34,7 @@ public class DanceClassController {
   private final DanceClassService danceClassService;
 
   @Operation(summary = "댄스 수업 등록 API", description = "새로운 댄스 수업을 등록합니다. 댄서만 등록할 수 있습니다.")
-  @PostMapping()
+  @PostMapping
   @AssignCurrentUserInfo
   public ApiResponse<Void> registerDanceClass(
       @RequestBody @Valid DanceClassCreateRequest request,
@@ -96,18 +96,6 @@ public class DanceClassController {
     return ApiResponse.OK(response);
   }
 
-  @Operation(summary = "댄스 수업 목록 조회 API", description = "장르를 필터링하여 댄스 수업 목록을 조회합니다.")
-  @GetMapping()
-  @AssignCurrentUserInfo
-  public ApiResponse<DanceClassListServiceResponse> getDanceClasses(
-      @RequestParam(required = false) Long genre,
-      @RequestParam(defaultValue = "1") @Min(1) int page,
-      @RequestParam(defaultValue = "9") @Min(1) int size) {
-
-    DanceClassListServiceResponse response = danceClassService.getDanceClassList(genre, page, size);
-    return ApiResponse.OK(response);
-  }
-
   @Operation(summary = "댄스 수업 찜 등록 API", description = "해당 댄스수업을 찜 매핑테이블에 추가합니다.")
   @PostMapping("/{classId}/favorite")
   @AssignCurrentUserInfo
@@ -164,6 +152,18 @@ public class DanceClassController {
   ) {
     RegisteredUserListServiceResponse response = danceClassService.getRegisteredUsers(classId,
         userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "댄스 수업 목록 조회 API", description = "장르를 필터링하여 댄스 수업 목록을 조회합니다.")
+  @GetMapping("/all")
+  @AssignCurrentUserInfo
+  public ApiResponse<DanceClassListServiceResponse> getDanceClasses(
+      @RequestParam(required = false) Long genre,
+      @RequestParam(defaultValue = "1") @Min(1) int page,
+      @RequestParam(defaultValue = "9") @Min(1) int size) {
+
+    DanceClassListServiceResponse response = danceClassService.getDanceClassList(genre, page, size);
     return ApiResponse.OK(response);
   }
 }

@@ -95,7 +95,6 @@ public class DancerService {
     Dancer dancer = dancerReader.readDancerByUserId(userId);
 
     // 이미 찜이 된 경우 true, 찜이 안되어 있으면 false 저장
-    // 내가 만든 댄서를 내가 찜하는 경우가 있을까..?
     boolean isFavorite = userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null;
 
     return DancerInfoResponse.builder()
@@ -142,8 +141,15 @@ public class DancerService {
   }
 
   @Transactional
-  public List<DancerSummaryResponse> getAllDancers() {
+  public DancerSummaryListResponse getAllDancers() {
     List<Dancer> dancers = dancerReader.readAllDancers();
-    return dancerManager.toSummaryInfo(dancers);
+    List<DancerSummaryResponse> dancerResponses = dancerManager.toSummaryInfo(dancers);
+
+    return DancerSummaryListResponse.from(
+        dancerResponses,
+        0,
+        1,
+        (long) dancerResponses.size()
+    );
   }
 }

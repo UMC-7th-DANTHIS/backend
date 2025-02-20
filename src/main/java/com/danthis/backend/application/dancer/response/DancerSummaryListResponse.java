@@ -27,9 +27,9 @@ public class DancerSummaryListResponse {
   @Getter
   @Builder
   public static class DancerSummaryResponse {
-
     private Long id;
     private String dancerName;
+    private Set<String> genres;
     private Set<String> images;
   }
 }
