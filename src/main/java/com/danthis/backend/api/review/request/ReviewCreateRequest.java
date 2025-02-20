@@ -25,14 +25,14 @@ public class ReviewCreateRequest {
   private Integer rating;
 
   @Size(max = 4, message = "이미지는 최대 4장까지 등록할 수 있습니다.")
-  private Set<String> images;
+  private Set<String> reviewImages;
 
   public ReviewCreateServiceRequest toServiceRequest() {
     return ReviewCreateServiceRequest.builder()
                                      .title(title)
                                      .content(content)
                                      .rating(rating)
-                                     .reviewImages(images)
+                                     .reviewImages(reviewImages)
                                      .build();
   }
 }

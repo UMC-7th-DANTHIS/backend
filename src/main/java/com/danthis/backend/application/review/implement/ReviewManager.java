@@ -28,6 +28,7 @@ public class ReviewManager {
   private final DanceClassRepository danceClassRepository;
   private final UserRepository userRepository;
   private final ReviewImageManager reviewImageManager;
+  private final ReviewMapper reviewMapper;
 
   public DanceClass getDanceClassById(Long classId) {
     return danceClassRepository.findById(classId)
@@ -63,6 +64,7 @@ public class ReviewManager {
       );
     }
   }
+
   public List<ReviewDto> toReviewDtoList(List<ClassReview> reviews) {
     return reviews.stream()
                   .map(review -> ReviewDto.builder()

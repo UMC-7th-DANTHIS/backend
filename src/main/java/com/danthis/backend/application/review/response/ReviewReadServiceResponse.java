@@ -15,5 +15,5 @@ public class ReviewReadServiceResponse {
   private String content;
   private String author;
   private LocalDateTime createdAt;
-  private Set<String> images;
+  private Set<String> reviewImages;
 }
