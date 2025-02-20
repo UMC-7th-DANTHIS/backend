@@ -32,9 +32,4 @@ public class ClassReviewImage extends BaseEntity {
 
   @Column(nullable = false)
   private String imageUrl;
-
-  public ClassReviewImage(ClassReview classReview, String imageUrl) {
-    this.classReview = classReview;
-    this.imageUrl = imageUrl;
-  }
 }

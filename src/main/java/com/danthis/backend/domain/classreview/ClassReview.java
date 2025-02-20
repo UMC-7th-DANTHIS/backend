@@ -61,8 +61,4 @@ public class ClassReview extends BaseEntity {
   public void updateRating(Integer rating) {
     this.rating = rating;
   }
-
-  public void setClassReviewImages(Set<ClassReviewImage> classReviewImages) {
-    this.classReviewImages = classReviewImages;
-  }
 }

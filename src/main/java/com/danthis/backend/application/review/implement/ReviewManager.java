@@ -15,7 +15,6 @@ import com.danthis.backend.domain.danceclass.repository.DanceClassRepository;
 import com.danthis.backend.domain.user.User;
 import com.danthis.backend.domain.user.repository.UserRepository;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,7 @@ public class ReviewManager {
   private final DanceClassRepository danceClassRepository;
   private final UserRepository userRepository;
   private final ReviewImageManager reviewImageManager;
+  private final ReviewMapper reviewMapper;
 
   public DanceClass getDanceClassById(Long classId) {
     return danceClassRepository.findById(classId)
@@ -54,14 +54,15 @@ public class ReviewManager {
     );
 
     if (request.getReviewImages() != null && !request.getReviewImages().isEmpty()) {
-      Set<ClassReviewImage> reviewImages = request.getReviewImages().stream()
-                                                  .map(imageUrl -> new ClassReviewImage(classReview, imageUrl))
-                                                  .collect(Collectors.toSet());
-
-      classReview.setClassReviewImages(reviewImages);
+      classReviewImageRepository.saveAll(
+          request.getReviewImages().stream()
+                 .map(imageUrl -> ClassReviewImage.builder()
+                                                  .classReview(classReview)
+                                                  .imageUrl(imageUrl)
+                                                  .build())
+                 .collect(Collectors.toSet())
+      );
     }
-
-    classReviewRepository.save(classReview);
   }
 
   public List<ReviewDto> toReviewDtoList(List<ClassReview> reviews) {
