@@ -92,6 +92,14 @@ public class JwtFilter extends OncePerRequestFilter {
       return true;
     }
 
+    if (request.getRequestURI().startsWith("/dancers/all")) {
+      return true;
+    }
+
+    if (request.getRequestURI().startsWith("/dance-classes/all")) {
+      return true;
+    }
+
     return false;
   }
 
