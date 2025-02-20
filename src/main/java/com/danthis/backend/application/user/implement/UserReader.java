@@ -22,7 +22,9 @@ public class UserReader {
     return !userRepository.existsByNickname(nickname);
   }
 
-  public boolean existsByEmail(String email) {
-    return userRepository.existsByEmail(email);
+  public boolean hasPhoneNumberByEmail(String email) {
+    return userRepository.findByEmail(email)
+                         .map(user -> user.getPhoneNumber() != null)
+                         .orElse(false);
   }
 }
