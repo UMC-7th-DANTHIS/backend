@@ -2,6 +2,7 @@ package com.danthis.backend.application.review.implement;
 
 import com.danthis.backend.application.review.response.ReviewReadServiceResponse;
 import com.danthis.backend.domain.classreview.ClassReview;
+import com.danthis.backend.domain.classreview.classreviewimage.ClassReviewImage;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class ReviewMapper {
 
   private Set<String> mapReviewImages(ClassReview review) {
     return review.getClassReviewImages().stream()
-                 .map(image -> image.getImageUrl())
+                 .map(ClassReviewImage::getImageUrl)
                  .collect(Collectors.toSet());
   }
 }
