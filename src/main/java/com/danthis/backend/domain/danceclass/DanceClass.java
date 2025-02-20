@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -107,5 +108,11 @@ public class DanceClass extends BaseEntity {
 
   public void updateVideoUrl(String videoUrl) {
     this.classVideoUrl = videoUrl;
+  }
+
+  public Set<Long> getHashtagIds() {
+    return danceClassHashtags.stream()
+                             .map(danceClassHashtag -> danceClassHashtag.getHashtag().getId()) // Hashtag ID 추출
+                             .collect(Collectors.toSet());
   }
 }

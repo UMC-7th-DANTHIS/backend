@@ -4,6 +4,7 @@ import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,8 @@ public class DanceClassListServiceResponse {
     private String className;
     private String dancerName;
     private String thumbnailImage;
+    private String genre;
+    private Set<Long> hashtagIds;
   }
 
   public static DanceClassListServiceResponse from(Page<DanceClass> danceClassPage) {
@@ -38,6 +41,8 @@ public class DanceClassListServiceResponse {
                                                                                                         .className(danceClass.getClassName())
                                                                                                         .dancerName(danceClass.getDancer().getDancerName())
                                                                                                         .thumbnailImage(getFixedThumbnailImage(danceClass))
+                                                                                                        .genre(danceClass.getGenre().getName())
+                                                                                                        .hashtagIds(danceClass.getHashtagIds())
                                                                                                         .build())
                                                                     .toList())
                                         .build();
