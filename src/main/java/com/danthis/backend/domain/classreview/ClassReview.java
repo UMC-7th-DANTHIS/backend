@@ -49,4 +49,16 @@ public class ClassReview extends BaseEntity {
 
   @OneToMany(mappedBy = "classReview", fetch = FetchType.LAZY)
   private Set<ClassReviewImage> classReviewImages;
+
+  public void updateTitle(String title) {
+    this.title = title;
+  }
+
+  public void updateContent(String content) {
+    this.content = content;
+  }
+
+  public void updateRating(Integer rating) {
+    this.rating = rating;
+  }
 }

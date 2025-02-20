@@ -4,6 +4,7 @@ import com.danthis.backend.application.review.implement.ReviewManager;
 import com.danthis.backend.application.review.implement.ReviewMapper;
 import com.danthis.backend.application.review.implement.ReviewReader;
 import com.danthis.backend.application.review.request.ReviewCreateServiceRequest;
+import com.danthis.backend.application.review.request.ReviewUpdateServiceRequest;
 import com.danthis.backend.application.review.response.ReviewReadServiceResponse;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
@@ -48,5 +49,16 @@ public class ReviewService {
 
     reviewManager.deleteReviewImagesByReviewId(reviewId);
     reviewManager.deleteReview(review);
+  }
+
+  @Transactional
+  public void updateReview(Long userId, Long classId, ReviewUpdateServiceRequest request) {
+    ClassReview review = reviewReader.readReviewByIdAndClassId(request.getReviewId(), classId);
+
+    if (!review.getUser().getId().equals(userId)) {
+      throw new BusinessException(ErrorCode.ACCESS_DENIED);
+    }
+
+    reviewManager.updateReview(review, request);
   }
 }

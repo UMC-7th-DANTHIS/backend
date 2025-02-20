@@ -16,4 +16,9 @@ public class ReviewImageManager {
   public void deleteReviewImagesByDanceClass(DanceClass danceClass) {
     classReviewImageRepository.deleteByDanceClassId(danceClass.getId());
   }
+
+  @Transactional
+  public void deleteReviewImagesByReviewId(Long reviewId) {
+    classReviewImageRepository.deleteByReviewId(reviewId);
+  }
 }
