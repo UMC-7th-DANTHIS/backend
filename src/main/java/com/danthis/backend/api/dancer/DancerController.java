@@ -101,4 +101,12 @@ public class DancerController {
     DancerSummaryListResponse response = dancerService.getAllDancers();
     return ApiResponse.OK(response);
   }
+
+  @Operation(summary = "사용자 장르 맞춤 댄서 추천 API", description = "사용자의 선호 장르를 기반으로 해당 장르를 주장르로 하는 댄서를 조회합니다.")
+  @GetMapping("/recommendations")
+  @AssignCurrentUserInfo
+  public ApiResponse<DancerSummaryListResponse> getRecommendationDancers(CurrentUserInfo userInfo) {
+    DancerSummaryListResponse response = dancerService.getRecommendationDancers(userInfo.getUserId());
+    return ApiResponse.OK(response);
+  }
 }

@@ -20,10 +20,12 @@ import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
+import com.danthis.backend.domain.mapping.usergenre.UserGenre;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -151,5 +153,16 @@ public class DancerService {
         1,
         (long) dancerResponses.size()
     );
+  }
+
+  @Transactional
+  public DancerSummaryListResponse getRecommendationDancers(Long userId) {
+    User user = userReader.readUserById(userId);
+    Set<Long> genreList = user.getUserGenres().stream()
+                              .map(userGenre -> userGenre.getGenre().getId())
+                              .collect(Collectors.toSet());
+    List<Dancer> dancers = dancerReader.readDancerByGenre(genreList);
+    List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(dancers);
+    return DancerSummaryListResponse.from(dancerInfos, 0, 0, 4L);
   }
 }
