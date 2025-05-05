@@ -1,6 +1,7 @@
 package com.danthis.backend.domain.user;
 
 import com.danthis.backend.domain.BaseEntity;
+import com.danthis.backend.domain.chat.ChatMessage;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.communitycomment.CommunityComment;
 import com.danthis.backend.domain.communitypost.CommunityPost;
@@ -72,6 +73,9 @@ public class User extends BaseEntity {
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   private Set<DancerUserChat> dancerUserChats;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<ChatMessage> chatMessages;
 
   public void updateNickname(String nickname) {
     this.nickname = nickname;
