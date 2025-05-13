@@ -76,7 +76,7 @@ jobs:
       - name: Get Runner Public IP
         id: runner_ip
         run: |
-          echo "::set-output name=ipv4::$(curl -s ifconfig.me)"
+          echo "ipv4=$(curl -s ifconfig.me)" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -90,54 +90,41 @@ jobs:
           aws ec2 authorize-security-group-ingress \
             --group-id ${{ secrets.AWS_SG_ID }} \
             --protocol tcp --port 22 \
-            --cidr ${{ steps.runner_ip.outputs.ipv4 }}/32
+            --cidr ${ipv4}/32
 
-      - name: Prepare remote directory & check permissions
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: 22
-          script: |
-            REMOTE_DIR="/home/${{ secrets.EC2_USERNAME }}/danthis"
-            echo "====> Creating and fixing permissions on $REMOTE_DIR"
-            mkdir -p "$REMOTE_DIR"
-            sudo chown -R $USER:$USER "$REMOTE_DIR"
-            chmod -R u+rw "$REMOTE_DIR"
-            echo "====> Listing contents before upload:"
-            ls -al "$(dirname "$REMOTE_DIR")"
-            ls -al "$REMOTE_DIR"
+      - name: Prepare remote directory & permissions
+        run: |
+          ssh -i ${{ secrets.KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} \
+            "mkdir -p ~/danthis && sudo chown -R \$USER:\$USER ~/danthis && chmod -R u+rw ~/danthis"
 
-      - name: Upload docker-compose via SSH (base64 방식)
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: 22
-          script: |
-            mkdir -p ~/danthis
-            echo "$(base64 -w0 < docker-compose.yml)" | base64 -d > ~/danthis/docker-compose.yml
-            echo "▶︎ docker-compose.yml 업로드 완료"
+      - name: Upload docker-compose.yml via SSH (base64 방식)
+        env:
+          SSH_KEY: ${{ secrets.KEY }}
+        run: |
+          # SSH 환경 준비
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+          # 로컬에서 base64 인코딩 후, SSH로 디코딩하여 원격에 저장
+          base64 -w0 docker-compose.yml | \
+            ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "base64 -d > ~/danthis/docker-compose.yml"
+
+          echo "▶︎ docker-compose.yml 업로드 완료"
 
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: 22
-          script: |
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
             cd ~/danthis
-            sudo docker-compose down
-            sudo docker-compose pull
-            sudo docker-compose up -d
-            sudo docker image prune -f
+            docker-compose pull
+            docker-compose up -d --force-recreate
+            docker image prune -f
+          EOF
 
       - name: Remove Runner IP from Security Group
         run: |
           aws ec2 revoke-security-group-ingress \
             --group-id ${{ secrets.AWS_SG_ID }} \
             --protocol tcp --port 22 \
-            --cidr ${{ steps.runner_ip.outputs.ipv4 }}/32
+            --cidr ${ipv4}/32
