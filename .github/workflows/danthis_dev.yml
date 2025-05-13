@@ -105,29 +105,11 @@ jobs:
             mkdir -p "$REMOTE_DIR"
             sudo chown -R $USER:$USER "$REMOTE_DIR"
             chmod -R u+rw "$REMOTE_DIR"
-            echo "====> Listing contents:"
+            echo "====> Listing contents before upload:"
             ls -al "$(dirname "$REMOTE_DIR")"
             ls -al "$REMOTE_DIR"
 
-      - name: Copy docker-compose.yml to EC2
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: 22
-          source: "./docker-compose.yml"
-          # 디렉토리로 지정 (마지막에 슬래시)
-          target: "/home/${{ secrets.EC2_USERNAME }}/danthis/"
-          # 기존 danthis 폴더를 삭제한 뒤 복사
-          rm: true
-          # 덮어쓰기 허용
-          overwrite: true
-          # tar 안의 최상위 경로(./) 제거하고 추출
-          strip_components: 1
-          debug: true
-
-      - name: Verify file arrived (remote listing)
+      - name: Upload docker-compose via SSH (base64 방식)
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -135,8 +117,9 @@ jobs:
           key: ${{ secrets.KEY }}
           port: 22
           script: |
-            echo "====> After SCP, contents of /home/${{ secrets.EC2_USERNAME }}/danthis:"
-            ls -al "/home/${{ secrets.EC2_USERNAME }}/danthis"
+            mkdir -p ~/danthis
+            echo "$(base64 -w0 < docker-compose.yml)" | base64 -d > ~/danthis/docker-compose.yml
+            echo "▶︎ docker-compose.yml 업로드 완료"
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.6
@@ -146,7 +129,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: 22
           script: |
-            cd /home/${{ secrets.EC2_USERNAME }}/danthis
+            cd ~/danthis
             sudo docker-compose down
             sudo docker-compose pull
             sudo docker-compose up -d
