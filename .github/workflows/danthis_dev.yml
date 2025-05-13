@@ -2,27 +2,27 @@ name: danthis_dev
 
 on:
   push:
-    branches:
-      - develop
+    branches: [ "develop" ]
   pull_request:
-    branches:
-      - develop
+    branches: [ "develop" ]
 
 jobs:
   develop:
+    # 실행 환경
     runs-on: ubuntu-22.04
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: 17
-          distribution: temurin
+          java-version: '17'
+          distribution: 'temurin'
 
-      - name: Cache Gradle
+      # Gradle Caching
+      - name: Gradle Caching
         uses: actions/cache@v3
         with:
           path: |
@@ -32,100 +32,103 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Decode Dev Secret
+      # application-dev.yml
+      - name: Copy dev Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_DEV_YML }}
-        run: |
-          mkdir -p src/main/resources
-          echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-dev.yml
+          DEV_SECRET_DIR: src/main/resources
+          DEV_SECRET_DIR_FILE_NAME: application-dev.yml
+        run: echo $DEV_SECRET | base64 --decode >> $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
 
-      - name: Decode OAuth Secret
+      # application-oauth.yml
+      - name: Copy oauth Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_OAUTH_YML }}
-        run: |
-          mkdir -p src/main/resources
-          echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-oauth.yml
+          DEV_SECRET_DIR: src/main/resources
+          DEV_SECRET_DIR_FILE_NAME: application-oauth.yml
+        run: echo $DEV_SECRET | base64 --decode >> $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
 
-      - name: Decode JWT Secret
+      # application-jwt.yml
+      - name: Copy jwt Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_JWT_YML }}
-        run: |
-          mkdir -p src/main/resources
-          echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-jwt.yml
+          DEV_SECRET_DIR: src/main/resources
+          DEV_SECRET_DIR_FILE_NAME: application-jwt.yml
+        run: echo $DEV_SECRET | base64 --decode >> $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
 
-      - name: Decode S3 Secret
+      # application-s3.yml
+      - name: Copy s3 Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_S3_YML }}
-        run: |
-          mkdir -p src/main/resources
-          echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-s3.yml
+          DEV_SECRET_DIR: src/main/resources
+          DEV_SECRET_DIR_FILE_NAME: application-s3.yml
+        run: echo $DEV_SECRET | base64 --decode >> $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
 
-      - name: Grant Gradlew Execute
+      # ./gradlew 권한 설정
+      - name: ./gradlew 권한 설정
         run: chmod +x ./gradlew
 
+      # Gradle Build
       - name: Build with Gradle
-        run: ./gradlew clean compileJava build
+        run: |
+          ./gradlew clean
+          ./gradlew compileJava
+          ./gradlew build
         env:
           SPRING_PROFILES_ACTIVE: dev
 
-      - name: Docker Build & Push
+      # Docker Build하고 DockerHub에 Push
+      - name: Docker Build & Push to DockerHub
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker build -t "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest" .
-          docker push "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest"
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
 
-      - name: Get Runner IP
-        run: echo "RUNNER_IP=$(curl -s ifconfig.me)" >> $GITHUB_ENV
+      # GitHub IP를 요청
+      - name: Get GitHub IP
+        id: ip
+        uses: haythem/public-ip@v1.2
 
-      - name: Configure AWS Credentials
+      # AWS 세팅
+      - name: AWS Setting
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Open SSH Port
+      # GitHub IP를 AWS에 추가
+      - name: Add GitHub IP to AWS
         run: |
-          aws ec2 authorize-security-group-ingress \
-            --group-id ${{ secrets.AWS_SG_ID }} \
-            --protocol tcp \
-            --port 22 \
-            --cidr "${{ env.RUNNER_IP }}/32"
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
-      - name: Prepare SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+      # docker-compose.yml 파일 EC2로 복사
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: 22
+          source: "./docker-compose.yml"
+          target: "./danthis"
 
-      - name: Prepare Remote Directory
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-            rm -f ~/*.tar.gz
-            mkdir -p ~/danthis
-            sudo chown -R $(whoami):$(whoami) ~/danthis
-            chmod -R u+rw ~/danthis
-          EOF
+      # SSH Key로 서버에 접속하고 docker-compose image를 pull 받고 실행하기
+      - name: Access Server with SSH Key, pull and execute docker-compose image
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: 22
+          script: |
+            cd danthis
+            sudo docker-compose down
+            sudo docker-compose pull
+            sudo docker-compose up -d
+            sudo docker image prune -f
 
-      - name: Upload docker-compose via SSH
+      # Security Group에서 Github IP를 삭제
+      - name: Remove Github IP From Security Group
         run: |
-          base64 -w0 docker-compose.yml | \
-            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} \
-              'base64 -d > ~/danthis/docker-compose.yml'
-
-      - name: Deploy on EC2
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-            cd ~/danthis
-            docker-compose pull
-            docker-compose up -d --force-recreate
-          EOF
-
-      - name: Close SSH Port
-        run: |
-          aws ec2 revoke-security-group-ingress \
-            --group-id ${{ secrets.AWS_SG_ID }} \
-            --protocol tcp \
-            --port 22 \
-            --cidr "${{ env.RUNNER_IP }}/32"
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
