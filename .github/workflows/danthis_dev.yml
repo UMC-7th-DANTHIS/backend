@@ -109,7 +109,7 @@ jobs:
             ls -al "$(dirname "$REMOTE_DIR")"
             ls -al "$REMOTE_DIR"
 
-      - name: Copy docker-compose.yml to EC2 (overwrite + unlinkFirst)
+      - name: Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -117,12 +117,15 @@ jobs:
           key: ${{ secrets.KEY }}
           port: 22
           source: "./docker-compose.yml"
-          # 디렉토리가 아닌 파일 전체 경로로 지정
-          target: "/home/${{ secrets.EC2_USERNAME }}/danthis/docker-compose.yml"
+          # 디렉토리로 지정 (마지막에 슬래시)
+          target: "/home/${{ secrets.EC2_USERNAME }}/danthis/"
+          # 기존 danthis 폴더를 삭제한 뒤 복사
+          rm: true
+          # 덮어쓰기 허용
           overwrite: true
-          unlinkFirst: true
+          # tar 안의 최상위 경로(./) 제거하고 추출
+          strip_components: 1
           debug: true
-
 
       - name: Verify file arrived (remote listing)
         uses: appleboy/ssh-action@v0.1.6
