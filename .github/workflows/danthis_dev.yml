@@ -2,9 +2,9 @@ name: danthis_dev
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ["develop"]
   pull_request:
-    branches: [ "develop" ]
+    branches: ["develop"]
 
 jobs:
   develop:
@@ -26,45 +26,40 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
       - name: Decode Dev Secret
-        env:
-          DEV_SECRET: ${{ secrets.APPLICATION_DEV_YML }}
+        env: { DEV_SECRET: ${{ secrets.APPLICATION_DEV_YML }} }
         run: |
           mkdir -p src/main/resources
           echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-dev.yml
 
       - name: Decode OAuth Secret
-        env:
-          DEV_SECRET: ${{ secrets.APPLICATION_OAUTH_YML }}
+        env: { DEV_SECRET: ${{ secrets.APPLICATION_OAUTH_YML }} }
         run: |
           mkdir -p src/main/resources
           echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-oauth.yml
 
       - name: Decode JWT Secret
-        env:
-          DEV_SECRET: ${{ secrets.APPLICATION_JWT_YML }}
+        env: { DEV_SECRET: ${{ secrets.APPLICATION_JWT_YML }} }
         run: |
           mkdir -p src/main/resources
           echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-jwt.yml
 
       - name: Decode S3 Secret
-        env:
-          DEV_SECRET: ${{ secrets.APPLICATION_S3_YML }}
+        env: { DEV_SECRET: ${{ secrets.APPLICATION_S3_YML }} }
         run: |
           mkdir -p src/main/resources
           echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-s3.yml
 
-      - name: Grant Gradlew Execute
+      - name: Grant Gradlew
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
         run: ./gradlew clean compileJava build
-        env:
-          SPRING_PROFILES_ACTIVE: dev
+        env: { SPRING_PROFILES_ACTIVE: dev }
 
       - name: Docker Build & Push
         run: |
@@ -72,7 +67,7 @@ jobs:
           docker build -t "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest" .
           docker push "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest"
 
-      - name: Get Runner Public IP
+      - name: Get Runner IP
         run: echo "RUNNER_IP=$(curl -s ifconfig.me)" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
@@ -92,16 +87,20 @@ jobs:
       - name: Prepare SSH Key
         run: |
           mkdir -p ~/.ssh
-          # 비밀키를 파일로 저장
           printf '%s\n' "${{ secrets.KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          # 호스트 키 자동 등록
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
       - name: Prepare Remote Directory
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} \
-            "mkdir -p ~/danthis && sudo chown -R \$USER:\$USER ~/danthis && chmod -R u+rw ~/danthis"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+            # 홈 디렉토리 불필요한 tar 파일 전부 삭제
+            rm -f ~/ *.tar.gz
+            # 애플리케이션 디렉토리 정리 및 권한 설정
+            mkdir -p ~/danthis
+            sudo chown -R \$USER:\$USER ~/danthis
+            chmod -R u+rw ~/danthis
+          EOF
 
       - name: Upload docker-compose via SSH (base64)
         run: |
