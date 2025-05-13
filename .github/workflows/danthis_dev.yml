@@ -20,7 +20,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Gradle Caching
+      - name: Cache Gradle
         uses: actions/cache@v3
         with:
           path: |
@@ -30,53 +30,50 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Copy Dev Secret
+      - name: Decode Dev Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_DEV_YML }}
         run: |
           mkdir -p src/main/resources
           echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-dev.yml
 
-      - name: Copy OAuth Secret
+      - name: Decode OAuth Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_OAUTH_YML }}
         run: |
           mkdir -p src/main/resources
           echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-oauth.yml
 
-      - name: Copy JWT Secret
+      - name: Decode JWT Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_JWT_YML }}
         run: |
           mkdir -p src/main/resources
           echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-jwt.yml
 
-      - name: Copy S3 Secret
+      - name: Decode S3 Secret
         env:
           DEV_SECRET: ${{ secrets.APPLICATION_S3_YML }}
         run: |
           mkdir -p src/main/resources
           echo "$DEV_SECRET" | base64 --decode > src/main/resources/application-s3.yml
 
-      - name: Grant Gradlew Permission
+      - name: Grant Gradlew Execute
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: |
-          ./gradlew clean compileJava build
+        run: ./gradlew clean compileJava build
         env:
           SPRING_PROFILES_ACTIVE: dev
 
-      - name: Docker Build & Push to DockerHub
+      - name: Docker Build & Push
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker build -t "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest" .
           docker push "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest"
 
       - name: Get Runner Public IP
-        id: runner_ip
-        run: |
-          echo "ipv4=$(curl -s ifconfig.me)" >> $GITHUB_ENV
+        run: echo "RUNNER_IP=$(curl -s ifconfig.me)" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -85,35 +82,32 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Add Runner IP to Security Group
+      - name: Open SSH Port
         run: |
           aws ec2 authorize-security-group-ingress \
             --group-id ${{ secrets.AWS_SG_ID }} \
             --protocol tcp --port 22 \
-            --cidr ${ipv4}/32
+            --cidr ${RUNNER_IP}/32
 
-      - name: Prepare remote directory & permissions
+      - name: Prepare Remote Directory
         run: |
           ssh -i ${{ secrets.KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} \
             "mkdir -p ~/danthis && sudo chown -R \$USER:\$USER ~/danthis && chmod -R u+rw ~/danthis"
 
-      - name: Upload docker-compose.yml via SSH (base64 방식)
-        env:
-          SSH_KEY: ${{ secrets.KEY }}
+      - name: Upload docker-compose via SSH (base64)
         run: |
-          # SSH 환경 준비
+          # SSH 키 파일 생성
           mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          printf '%s\n' "${{ secrets.KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-          # 로컬에서 base64 인코딩 후, SSH로 디코딩하여 원격에 저장
+          # base64 파이프 전송
           base64 -w0 docker-compose.yml | \
-            ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "base64 -d > ~/danthis/docker-compose.yml"
+            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} \
+              "base64 -d > ~/danthis/docker-compose.yml"
 
-          echo "▶︎ docker-compose.yml 업로드 완료"
-
-      - name: Deploy via SSH
+      - name: Deploy on EC2
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
             cd ~/danthis
@@ -122,9 +116,9 @@ jobs:
             docker image prune -f
           EOF
 
-      - name: Remove Runner IP from Security Group
+      - name: Close SSH Port
         run: |
           aws ec2 revoke-security-group-ingress \
             --group-id ${{ secrets.AWS_SG_ID }} \
             --protocol tcp --port 22 \
-            --cidr ${ipv4}/32
+            --cidr ${RUNNER_IP}/32
