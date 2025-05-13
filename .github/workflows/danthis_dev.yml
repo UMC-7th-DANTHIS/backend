@@ -89,23 +89,25 @@ jobs:
             --protocol tcp --port 22 \
             --cidr ${RUNNER_IP}/32
 
+      - name: Prepare SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          # 비밀키를 파일로 저장
+          printf '%s\n' "${{ secrets.KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # 호스트 키 자동 등록
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
       - name: Prepare Remote Directory
         run: |
-          ssh -i ${{ secrets.KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} \
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} \
             "mkdir -p ~/danthis && sudo chown -R \$USER:\$USER ~/danthis && chmod -R u+rw ~/danthis"
 
       - name: Upload docker-compose via SSH (base64)
         run: |
-          # SSH 키 파일 생성
-          mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-
-          # base64 파이프 전송
           base64 -w0 docker-compose.yml | \
             ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} \
-              "base64 -d > ~/danthis/docker-compose.yml"
+              "base64 -d > ~/danthis/docker-compose.yml && echo '▶ docker-compose.yml 업로드 완료'"
 
       - name: Deploy on EC2
         run: |
