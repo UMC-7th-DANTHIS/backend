@@ -41,12 +41,16 @@ public class SecurityConfig {
         .oauth2Login(oauth -> oauth
             .userInfoEndpoint(config -> config.userService(kakaoUserDetailsService))
         )
-        .authorizeHttpRequests(request -> request
-            .requestMatchers("/actuator/health").permitAll()
-            .requestMatchers("/auth/**", "/exception/**",
-                "/dance-classes/all", "/dancers/all")
-            .permitAll()
-            .anyRequest().authenticated()
+        .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/",
+                    "/actuator/health",
+                    "/auth/**",
+                    "/exception/**",
+                    "/dance-classes/all",
+                    "/dancers/all")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
         )
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling(ex -> {
