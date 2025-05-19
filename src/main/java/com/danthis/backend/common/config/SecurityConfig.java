@@ -9,6 +9,7 @@ import com.danthis.backend.common.security.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,31 +32,28 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.formLogin(AbstractHttpConfigurer::disable)
+    http
+        .formLogin(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable)
         .csrf(AbstractHttpConfigurer::disable)
         .cors(withDefaults())
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::disable))
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .oauth2Login(
-            oauth -> oauth.userInfoEndpoint(config -> config.userService(kakaoUserDetailsService)))
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .oauth2Login(oauth -> oauth
+            .userInfoEndpoint(config -> config.userService(kakaoUserDetailsService))
+        )
         .authorizeHttpRequests(request -> request
-            .requestMatchers("/auth/**").permitAll()
-            .requestMatchers("/exception/**").permitAll()
-            .requestMatchers("/dance-classes/all").permitAll()
-            .requestMatchers("/dancers/all").permitAll()
-//            .requestMatchers("/swagger-ui/**").permitAll()
-//            .requestMatchers("/api-docs/**").permitAll()
-//            .requestMatchers(HttpMethod.POST, "/posts").permitAll()
-//            .requestMatchers(HttpMethod.GET, "/posts/*").permitAll()
-//            .requestMatchers(HttpMethod.PATCH, "/posts/*/summary").permitAll()
+            .requestMatchers("/actuator/health").permitAll()
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .requestMatchers("/auth/**", "/exception/**",
+                "/dance-classes/all", "/dancers/all")
+            .permitAll()
             .anyRequest().authenticated()
         )
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-        .exceptionHandling(exceptionHandling -> {
-          exceptionHandling.authenticationEntryPoint(jwtAuthenticationFailEntryPoint);
-          exceptionHandling.accessDeniedHandler(jwtAccessDeniedHandler);
+        .exceptionHandling(ex -> {
+          ex.authenticationEntryPoint(jwtAuthenticationFailEntryPoint);
+          ex.accessDeniedHandler(jwtAccessDeniedHandler);
         });
 
     return http.build();
