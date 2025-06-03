@@ -44,6 +44,22 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - springboot
+    networks:
+      -my_network:
+    restart: always
+
 networks:
   my_network:
     driver: bridge
