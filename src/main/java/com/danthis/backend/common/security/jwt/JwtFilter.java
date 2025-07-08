@@ -100,6 +100,16 @@ public class JwtFilter extends OncePerRequestFilter {
       return true;
     }
 
+    // 최상위 index
+    if ("/".equals(request.getRequestURI())) {
+      return true;
+    }
+
+    // Actuator health 엔드포인트 예외 처리
+    if (request.getRequestURI().startsWith("/actuator/health")) {
+      return true;
+    }
+
     return false;
   }
 
