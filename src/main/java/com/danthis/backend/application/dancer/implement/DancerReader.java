@@ -4,9 +4,11 @@ import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.repository.DancerRepository;
+import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.mapping.userdancer.UserDancer;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -39,5 +41,9 @@ public class DancerReader {
 
   public List<Dancer> readAllDancers() {
     return dancerRepository.findAll();
+  }
+
+  public List<Dancer> readDancerByGenre(Set<Long> genreList) {
+    return dancerRepository.findByGenres(genreList);
   }
 }
