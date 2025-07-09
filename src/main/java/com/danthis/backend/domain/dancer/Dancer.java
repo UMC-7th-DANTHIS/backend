@@ -1,6 +1,7 @@
 package com.danthis.backend.domain.dancer;
 
 import com.danthis.backend.domain.BaseEntity;
+import com.danthis.backend.domain.chat.ChatRoom;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.genre.Genre;
@@ -70,6 +71,9 @@ public class Dancer extends BaseEntity {
 
   @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
   private Set<DancerUserChat> dancerUserChats;
+
+  @OneToMany(mappedBy = "dancer", fetch = FetchType.LAZY)
+  private Set<ChatRoom> chatRooms;
 
   public void updateDancerName(String dancerName) {
     this.dancerName = dancerName;
