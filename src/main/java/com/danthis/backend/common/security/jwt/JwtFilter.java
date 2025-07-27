@@ -33,32 +33,43 @@ public class JwtFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request,
       @Nullable HttpServletResponse response,
       @Nullable FilterChain filterChain) throws ServletException, IOException {
-    log.info("HttpMethod = {}, URI = {}", request.getMethod(), request.getRequestURI());
 
+    String uri = request.getRequestURI();
+    String method = request.getMethod();
+    log.info("Request - Method: {}, URI: {}", method, uri);
+
+    // Pass URI 체크
     if (isRequestPassURI(request)) {
+      log.debug("Pass URI detected: {}", uri);
       Objects.requireNonNull(filterChain).doFilter(request, response);
       return;
     }
 
+    // 액세스 토큰 추출
     String accessToken = extractAccessToken(request).orElse(null);
 
-    // 토큰이 없거나 유효하지 않은 경우 401 반환
-    if (accessToken == null || !tokenProvider.validate(accessToken)) {
+    // 토큰 검증
+    if (accessToken == null) {
+      log.warn("No access token found for URI: {}", uri);
       setErrorResponse(response);
       return;
     }
 
-    // 토큰이 만료된 경우 401 반환 (또는 별도의 만료 처리)
+    if (!tokenProvider.validate(accessToken)) {
+      log.warn("Invalid access token for URI: {}", uri);
+      setErrorResponse(response);
+      return;
+    }
+
     if (!tokenProvider.validateExpired(accessToken)) {
+      log.warn("Expired access token for URI: {}", uri);
       setErrorResponse(response);
       return;
     }
 
-    // 토큰이 유효한 경우 SecurityContext에 인증 정보 설정
-    if (tokenProvider.validateExpired(accessToken) && tokenProvider.validate(accessToken)) {
-      SecurityContextHolder.getContext()
-                           .setAuthentication(tokenProvider.getAuthentication(accessToken));
-    }
+    // 인증 정보 설정
+    SecurityContextHolder.getContext()
+                         .setAuthentication(tokenProvider.getAuthentication(accessToken));
 
     Objects.requireNonNull(filterChain).doFilter(request, response);
   }
@@ -76,39 +87,47 @@ public class JwtFilter extends OncePerRequestFilter {
   }
 
   private static boolean isRequestPassURI(HttpServletRequest request) {
-    if (request.getRequestURI().equals("/")) {
+    String uri = request.getRequestURI();
+    String method = request.getMethod();
+
+    // 최상위 경로
+    if ("/".equals(uri)) {
       return true;
     }
 
-    if (request.getRequestURI().equals("/auth/withdraw")) {
-      return false;
-    }
-
-    if (request.getRequestURI().startsWith("/auth")) {
+    // Actuator health
+    if (uri.startsWith("/actuator/health")) {
       return true;
     }
 
-    if (request.getRequestURI().startsWith("/exception")) {
+    // 예외 처리 경로
+    if (uri.startsWith("/exception")) {
       return true;
     }
 
-    if (request.getRequestURI().startsWith("/dancers/all")) {
+    // 공개 API (GET)
+    if ("GET".equals(method)) {
+      if (uri.startsWith("/dancers/all") ||
+          uri.startsWith("/dance-classes/all") ||
+          uri.equals("/auth/reissue")) {
+        return true;
+      }
+    }
+
+    // 인증 관련 경로 (POST)
+    if ("POST".equals(method)) {
+      if (uri.equals("/auth/login/kakao") ||
+          uri.equals("/auth/logout")) {
+        return true;
+      }
+    }
+
+    // OPTIONS 요청은 모두 통과
+    if ("OPTIONS".equals(method)) {
       return true;
     }
 
-    if (request.getRequestURI().startsWith("/dance-classes/all")) {
-      return true;
-    }
-
-    // 최상위 index
-    if ("/".equals(request.getRequestURI())) {
-      return true;
-    }
-
-    // Actuator health 엔드포인트 예외 처리
-    if (request.getRequestURI().startsWith("/actuator/health")) {
-      return true;
-    }
+    // 회원 탈퇴는 인증 필요 (DELETE /auth/withdraw)
 
     return false;
   }
