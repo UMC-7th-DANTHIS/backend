@@ -55,15 +55,21 @@ public class SecurityConfig {
             )
         )
         .authorizeHttpRequests(auth -> auth
-            // 4) 콜백 URI(GET)를 포함해 /auth/** 전체를 공개
+            // GET 요청 허용
             .requestMatchers(HttpMethod.GET,
                 "/",
                 "/actuator/health",
-                "/auth/**",
+                "/auth/reissue",
                 "/exception/**",
                 "/dance-classes/all",
                 "/dancers/all"
             ).permitAll()
+            // POST 요청 허용 (로그인, 로그아웃)
+            .requestMatchers(HttpMethod.POST,
+                "/auth/login/kakao",
+                "/auth/logout"
+            ).permitAll()
+            // DELETE 요청은 인증 필요 (회원 탈퇴)
             .requestMatchers(HttpMethod.OPTIONS, "/**/*").permitAll()
             .anyRequest().authenticated()
         )
