@@ -1,7 +1,9 @@
 package com.danthis.backend.api;
 
 import com.danthis.backend.application.auth.implement.TokenProvider;
-import com.danthis.backend.application.chat.ChatService;
+import com.danthis.backend.application.chat.ChatMessageService;
+import com.danthis.backend.application.chat.request.ChatMessageDTO;
+import com.danthis.backend.domain.user.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,83 +14,103 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WebSocketChatHandler implements WebSocketHandler {
+public class WebSocketChatHandler extends TextWebSocketHandler {
 
   private final ObjectMapper objectMapper;
   private final TokenProvider tokenProvider;
-  private final ChatService chatService;
+  private final ChatMessageService chatMessageService;
 
-  // 모든 세션
   private final Set<WebSocketSession> sessions = new HashSet<>();
-
-  // 방별 세션
   private final Map<Long, Set<WebSocketSession>> chatRoomSessions = new HashMap<>();
 
   @Override
-  public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-    log.info("✅ 연결됨: {}", session.getId());
+  public void afterConnectionEstablished(WebSocketSession session) {
+    log.info("✅ WebSocket 연결됨: {}", session.getId());
     sessions.add(session);
   }
 
   @Override
   protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     String payload = message.getPayload();
-    log.info("💬 받은 메시지 payload: {}", payload);
+    log.info("💬 받은 메시지: {}", payload);
 
-    // JSON -> DTO 변환
-    ChatDTO.Message chatMessage = objectMapper.readValue(payload, ChatDTO.Message.class);
-    log.info("💬 파싱된 ChatMessage: {}", chatMessage);
+    ChatMessageDTO incoming = objectMapper.readValue(payload, ChatMessageDTO.class);
 
-    // 인증 추출 (JWT 토큰)
     String authorization = session.getHandshakeHeaders().getFirst("Authorization");
     Long userId = tokenProvider.getUserIdFromToken(authorization.replace("Bearer ", ""));
-    chatMessage = chatMessage.toBuilder().senderId(userId).build();
+    User sender = chatMessageService.getUserById(userId);
 
-    handleChatMessage(session, chatMessage);
+    handleChatMessage(session, incoming, sender);
   }
 
-  private void handleChatMessage(WebSocketSession session, ChatDTO.Message chatMessage) {
-    Long roomId = chatMessage.getChatRoomId();
+  private void handleChatMessage(WebSocketSession session, ChatMessageDTO message, User sender) {
+    Long roomId = message.getChatRoomId();
 
-    chatRoomSessions.putIfAbsent(roomId, new HashSet<>());
-    Set<WebSocketSession> roomSessions = chatRoomSessions.get(roomId);
-    roomSessions.add(session);
-
-    // 메시지 타입 분기
-    switch (chatMessage.getType()) {
+    switch (message.getType()) {
       case ENTER -> {
-        chatMessage = chatMessage.toBuilder()
-                                 .message(chatMessage.getSenderName() + "님이 입장했습니다.")
-                                 .build();
+        log.info("✅ ENTER 요청 - userId={}, dancerId={}", sender.getId(), message.getOpponentId());
+
+        if (roomId == null) {
+          roomId = chatMessageService.ensureChatRoomExists(sender.getId(), message.getOpponentId());
+        }
+
+        chatRoomSessions.putIfAbsent(roomId, new HashSet<>());
+        chatRoomSessions.get(roomId).add(session);
+
+        ChatMessageDTO enterMsg = ChatMessageDTO.builder()
+                                                .type(ChatMessageDTO.MessageType.TALK)
+                                                .chatRoomId(roomId)
+                                                .message(sender.getNickname() + "님이 입장했습니다.")
+                                                .build();
+
+        sendMessageToRoom(roomId, enterMsg);
       }
-      case OUT -> {
-        chatMessage = chatMessage.toBuilder()
-                                 .message(chatMessage.getSenderName() + "님이 퇴장했습니다.")
-                                 .build();
-        roomSessions.remove(session);
-      }
+
       case TALK -> {
-        // 저장
-        chatService.saveMessage(chatMessage);
+        log.info("✅ TALK 메시지 저장");
+        chatMessageService.saveMessage(sender, roomId, message.getMessage());
+
+        ChatMessageDTO talkMsg = ChatMessageDTO.builder()
+                                               .type(ChatMessageDTO.MessageType.TALK)
+                                               .chatRoomId(roomId)
+                                               .message(message.getMessage())
+                                               .build();
+
+        sendMessageToRoom(roomId, talkMsg);
+      }
+
+      case OUT -> {
+        log.info("✅ OUT 처리");
+        if (roomId != null) {
+          chatRoomSessions.getOrDefault(roomId, new HashSet<>()).remove(session);
+        }
+
+        ChatMessageDTO outMsg = ChatMessageDTO.builder()
+                                              .type(ChatMessageDTO.MessageType.TALK)
+                                              .chatRoomId(roomId)
+                                              .message(sender.getNickname() + "님이 퇴장했습니다.")
+                                              .build();
+
+        sendMessageToRoom(roomId, outMsg);
       }
     }
-
-    // 같은 방의 모든 세션에 전달
-    sendMessageToRoom(roomId, chatMessage);
   }
 
-  private void sendMessageToRoom(Long roomId, ChatDTO.Message message) {
+  private void sendMessageToRoom(Long roomId, ChatMessageDTO message) {
     try {
       String json = objectMapper.writeValueAsString(message);
-      for (WebSocketSession ws : chatRoomSessions.get(roomId)) {
-        if (ws.isOpen()) {
-          ws.sendMessage(new TextMessage(json));
+      Set<WebSocketSession> roomSessions = chatRoomSessions.get(roomId);
+      if (roomSessions != null) {
+        for (WebSocketSession ws : roomSessions) {
+          if (ws.isOpen()) {
+            ws.sendMessage(new TextMessage(json));
+          }
         }
       }
     } catch (Exception e) {
@@ -97,11 +119,9 @@ public class WebSocketChatHandler implements WebSocketHandler {
   }
 
   @Override
-  public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-    log.info("❎ 연결 끊김: {}", session.getId());
+  public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    log.info("❎ 연결 종료: {}", session.getId());
     sessions.remove(session);
-
-    // 모든 방에서 제거
     for (Set<WebSocketSession> room : chatRoomSessions.values()) {
       room.remove(session);
     }
