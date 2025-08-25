@@ -45,6 +45,7 @@ public class PostMapper {
                                                               .map(post -> PostListServiceResponse.PostSummary.builder()
                                                                                                              .postId(post.getId())
                                                                                                              .title(post.getTitle())
+                                                                                                             .hasPhoto(!post.getCommunityPostImages().isEmpty())
                                                                                                              .createdAt(post.getCreatedAt())
                                                                                                              .commentCount(post.getCommunityComments().size())
                                                                                                              .build())
