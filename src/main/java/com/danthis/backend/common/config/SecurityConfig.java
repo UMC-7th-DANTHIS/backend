@@ -40,29 +40,19 @@ public class SecurityConfig {
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::disable))
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .oauth2Login(oauth -> oauth
-            // 1) 인가 요청 시작 경로 변경
-            .authorizationEndpoint(authz ->
-                authz.baseUri("/auth/authorize/kakao")
-            )
-            // 2) 카카오 인가 코드 콜백 경로 변경
-            .redirectionEndpoint(redir ->
-                redir.baseUri("/auth/login/kakao")
-            )
-            // 3) 사용자 정보 조회 서비스
-            .userInfoEndpoint(userInfo ->
-                userInfo.userService(kakaoUserDetailsService)
-            )
-        )
+        // OAuth2 로그인 설정 완전 제거
         .authorizeHttpRequests(auth -> auth
-            // 4) 콜백 URI(GET)를 포함해 /auth/** 전체를 공개
             .requestMatchers(HttpMethod.GET,
                 "/",
                 "/actuator/health",
-                "/auth/**",
+                "/auth/reissue",
                 "/exception/**",
                 "/dance-classes/all",
                 "/dancers/all"
+            ).permitAll()
+            .requestMatchers(HttpMethod.POST,
+                "/auth/login/kakao",
+                "/auth/logout"
             ).permitAll()
             .requestMatchers(HttpMethod.OPTIONS, "/**/*").permitAll()
             .anyRequest().authenticated()
