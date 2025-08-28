@@ -72,7 +72,6 @@ public class CommunityController {
     return ApiResponse.OK(postService.getPostById(postId));
   }
 
-  // todo: 이번 브랜치의 목표
   @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회합니다.")
   @GetMapping("/posts")
   public ApiResponse<PostListServiceResponse> getPosts(
