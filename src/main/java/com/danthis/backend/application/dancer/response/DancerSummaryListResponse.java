@@ -24,6 +24,12 @@ public class DancerSummaryListResponse {
                                     .build();
   }
 
+  public static DancerSummaryListResponse from(final List<DancerSummaryResponse> dancers) {
+    return  DancerSummaryListResponse.builder()
+                                     .dancers(dancers)
+                                     .build();
+  }
+
   @Getter
   @Builder
   public static class DancerSummaryResponse {
