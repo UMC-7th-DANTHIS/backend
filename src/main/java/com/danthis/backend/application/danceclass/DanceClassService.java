@@ -274,7 +274,7 @@ public class DanceClassService {
 
   public DanceClassListServiceResponse getRandomDanceCalssList(int size, long averRate) {
 
-    Page<DanceClass> danceClasses = danceClassReader.readRandomDanceClasses(size);
+    List<DanceClass> danceClasses = danceClassReader.readRandomDanceClasses(size);
     return DanceClassListServiceResponse.from(danceClasses);
   }
 }
