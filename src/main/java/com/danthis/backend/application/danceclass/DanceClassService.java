@@ -271,4 +271,10 @@ public class DanceClassService {
 
     return danceClassMapper.toRegisteredUserListResponse(danceClass, bookings);
   }
+
+  public DanceClassListServiceResponse getRandomDanceCalssList(int size, long averRate) {
+
+    Page<DanceClass> danceClasses = danceClassReader.readRandomDanceClasses(size);
+    return DanceClassListServiceResponse.from(danceClasses);
+  }
 }
