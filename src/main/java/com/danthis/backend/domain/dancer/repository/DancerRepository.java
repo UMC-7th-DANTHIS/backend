@@ -15,11 +15,8 @@ public interface DancerRepository extends JpaRepository<Dancer, Long>, DancerRep
 
   boolean existsByUser(User user);
 
-  @Query("""
-        SELECT DISTINCT dancer
-        FROM Dancer dancer
-        ORDER BY rand()
-        LIMIT :size
-    """)
+  @Query(
+      value = "SELECT DISTINCT dancer FROM Dancer dancer ORDER BY rand() LIMIT :size",
+      nativeQuery = true)
   List<Dancer> getRandomDancers(Integer size);
 }

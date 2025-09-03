@@ -24,11 +24,8 @@ public interface DanceClassRepository extends JpaRepository<DanceClass, Long>,
       """)
   Page<DanceClass> findByClassNameAndHashtag(String query, Long hashtagId, Pageable pageable);
 
-  @Query("""
-          SELECT DISTINCT dc
-          FROM DanceClass dc
-          ORDER BY rand()
-          limit :size
-      """)
+  @Query(
+      value = "SELECT DISTINCT dc FROM DanceClass dc ORDER BY rand() LIMIT :size",
+      nativeQuery = true)
   Page<DanceClass> getRandomDanceClasses(Integer size);
 }
