@@ -20,6 +20,7 @@ public class PostListServiceResponse {
 
     private Long postId;
     private String title;
+    private Boolean hasPhoto;
     private LocalDateTime createdAt;
     private int commentCount;
   }
