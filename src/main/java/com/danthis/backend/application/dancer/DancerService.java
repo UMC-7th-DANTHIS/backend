@@ -23,7 +23,6 @@ import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.mapping.usergenre.UserGenre;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -169,11 +168,8 @@ public class DancerService {
 
   // TODO: averRate로 특정 평점 이상의 댄서만 추출하도록 수정 가능?
   public DancerSummaryListResponse getRandomDancer(Integer size, Long averRate) {
-    List<Dancer> dancers = dancerReader.readAllDancers();
-    Collections.shuffle(dancers);
-    List<DancerSummaryResponse> dancerResponses = dancerManager.toSummaryInfo(
-        dancers.subList(0, Math.min(size, dancers.size()))
-    );
+    List<Dancer> dancers = dancerReader.readRandomDancers(size);
+    List<DancerSummaryResponse> dancerResponses = dancerManager.toSummaryInfo(dancers);
     return DancerSummaryListResponse.from(dancerResponses);
   }
 }
