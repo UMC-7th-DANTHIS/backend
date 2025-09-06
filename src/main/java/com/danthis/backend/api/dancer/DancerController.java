@@ -116,6 +116,8 @@ public class DancerController {
   public ApiResponse<DancerSummaryListResponse> getRandomDancers(
       @RequestParam(defaultValue = "10") Integer size,
       @RequestParam(defaultValue = "1") Long averRate) {
+
+    System.out.println("랜덤 함수 실행");
     DancerSummaryListResponse response = dancerService.getRandomDancer(size, averRate);
     return ApiResponse.OK(response);
   }
