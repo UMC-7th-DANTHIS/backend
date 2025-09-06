@@ -111,7 +111,7 @@ public class DancerService {
     Dancer dancer = dancerReader.readDancerById(dancerId);
     boolean isFavorite = false;
 
-    if (dancerId != null) {
+    if (userId != null) {
       User user = userReader.readUserById(userId);
       // 이미 찜이 된 경우 true, 찜이 안되어 있으면 false 저장
       isFavorite = userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null;

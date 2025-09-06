@@ -67,7 +67,7 @@ public class DancerController {
   }
 
   @Operation(summary = "단일 댄서 정보 조회 API", description = "댄서의 정보를 조회합니다.")
-  @GetMapping("/{dancerId}")
+  @GetMapping("/info/{dancerId}")
   @AssignOrNullCurrentUserInfo
   public ApiResponse<DancerInfoResponse> getDancerInfo(
       CurrentUserInfo userInfo,
@@ -104,7 +104,6 @@ public class DancerController {
 
   @Operation(summary = "모든 댄서 정보 조회 API", description = "모든 댄서의 정보를 조회합니다.")
   @GetMapping("/all")
-  @AssignOrNullCurrentUserInfo
   public ApiResponse<DancerSummaryListResponse> getAllDancers() {
 
     DancerSummaryListResponse response = dancerService.getAllDancers();
