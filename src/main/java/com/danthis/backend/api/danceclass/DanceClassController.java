@@ -160,10 +160,13 @@ public class DanceClassController {
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassListServiceResponse> getDanceClasses(
       @RequestParam(required = false) Long genre,
+      @RequestParam(required = false) String date,
+      @RequestParam(required = false) String day,
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "9") @Min(1) int size) {
 
-    DanceClassListServiceResponse response = danceClassService.getDanceClassList(genre, page, size);
+    DanceClassListServiceResponse response = danceClassService.getDanceClassList(
+        genre, date, day, page, size);
     return ApiResponse.OK(response);
   }
 }
