@@ -152,9 +152,11 @@ public class DanceClassService {
   }
 
   @Transactional
-  public DanceClassListServiceResponse getDanceClassList(Long genreId, int page, int size) {
+  public DanceClassListServiceResponse getDanceClassList(
+      Long genreId, String date, String day, int page, int size) {
+
     PageRequest pageable = PageRequest.of(page - 1, size);
-    Page<DanceClass> danceClasses = danceClassReader.readDanceClasses(genreId, pageable);
+    Page<DanceClass> danceClasses = danceClassReader.readDanceClasses(genreId, date, day, pageable);
 
     return DanceClassListServiceResponse.from(danceClasses);
   }

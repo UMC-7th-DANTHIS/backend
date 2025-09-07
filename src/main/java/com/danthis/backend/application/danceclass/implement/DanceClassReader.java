@@ -3,6 +3,7 @@ package com.danthis.backend.application.danceclass.implement;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.danceclass.DanceClass;
+import com.danthis.backend.domain.danceclass.danceclassschedule.Week;
 import com.danthis.backend.domain.danceclass.repository.DanceClassRepository;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
@@ -14,6 +15,8 @@ import com.danthis.backend.domain.mapping.danceclassbooking.repository.DanceClas
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.danceruserchat.repository.DancerUserChatRepository;
 import com.danthis.backend.domain.user.User;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -53,10 +56,39 @@ public class DanceClassReader {
                                    () -> new BusinessException(ErrorCode.DANCE_CLASS_NOT_FOUND));
   }
 
-  public Page<DanceClass> readDanceClasses(Long genreId, PageRequest pageable) {
+  public Page<DanceClass> readDanceClasses(
+      Long genreId, String date, String day, PageRequest pageable) {
+
     if (genreId != null) {
-      return danceClassRepository.findByGenreId(genreId, pageable);
+      if (date == null && day == null) {  // 장르로 검색
+        return danceClassRepository.findByGenreId(genreId, pageable);
+      }
+
+      if (date != null &&  day == null) { // 장르 + 날짜로 검색
+        LocalDate localDate;
+        try {
+          DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+          localDate = LocalDate.parse(date, formatter);
+        }
+        catch (Exception e) {
+          throw new BusinessException(ErrorCode.INVALID_DATE_FORMAT);
+        }
+        return danceClassRepository.findByGenreIdAndDate(genreId, localDate, pageable);
+      }
+
+      if (date == null && day != null) { // 장르 + 요일로 검색
+        Week week;
+        try{
+          week = Week.valueOf(day);
+        }
+        catch (IllegalArgumentException e){
+          throw new BusinessException(ErrorCode.INVALID_DAY_FORMAT);
+        }
+        return danceClassRepository.findByGenreIdAndDay(genreId, week, pageable);
+      }
     }
+
+    // 전체 검색
     return danceClassRepository.findAll(pageable);
   }
 
