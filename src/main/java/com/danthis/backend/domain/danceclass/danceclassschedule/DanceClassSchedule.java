@@ -1,5 +1,6 @@
 package com.danthis.backend.domain.danceclass.danceclassschedule;
 
+import com.danthis.backend.domain.BaseEntity;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class DanceClassSchedule {
+public class DanceClassSchedule extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
