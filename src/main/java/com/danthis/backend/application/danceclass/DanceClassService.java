@@ -22,6 +22,7 @@ import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
+import com.danthis.backend.domain.danceclass.danceclassschedule.DanceClassSchedule;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.hashtag.Hashtag;
@@ -77,6 +78,16 @@ public class DanceClassService {
     if (request.getImages() != null) {
       List<DanceClassImage> images = danceClassMapper.mapToImages(danceClass, request.getImages());
       danceClassManager.saveDanceClassImages(images);
+    }
+
+    if (request.getDays() != null) {
+      Set<DanceClassSchedule> schedules = danceClassMapper.mapToDays(danceClass, request.getDays());
+      danceClassManager.saveDanceClassSchedules(schedules);
+    }
+
+    if (request.getDates() != null) {
+      Set<DanceClassSchedule> schedules = danceClassMapper.mapToDates(danceClass, request.getDates());
+      danceClassManager.saveDanceClassSchedules(schedules);
     }
   }
 
