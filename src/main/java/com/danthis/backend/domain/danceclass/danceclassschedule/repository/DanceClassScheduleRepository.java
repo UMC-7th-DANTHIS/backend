@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface DanceClassScheduleRepository extends JpaRepository<DanceClassSchedule, Long>,
     DanceClassScheduleRepositoryCustom {
 
+  void deleteByDanceClassId(Long id);
 }

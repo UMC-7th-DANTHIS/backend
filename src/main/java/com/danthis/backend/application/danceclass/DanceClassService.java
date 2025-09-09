@@ -5,6 +5,7 @@ import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
 import com.danthis.backend.application.danceclass.implement.mapping.DanceClassHashtagManager;
 import com.danthis.backend.application.danceclass.implement.mapping.DanceClassImageManager;
+import com.danthis.backend.application.danceclass.implement.mapping.DanceClassScheduleManager;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
 import com.danthis.backend.application.danceclass.request.DanceClassUpdateServiceRequest;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
@@ -57,6 +58,7 @@ public class DanceClassService {
   private final WishListReader wishListReader;
   private final DanceClassImageManager danceClassImageManager;
   private final DanceClassHashtagManager danceClassHashtagManager;
+  private final DanceClassScheduleManager danceClassScheduleManager;
   private final ReviewManager reviewManager;
 
   @Transactional
@@ -130,6 +132,7 @@ public class DanceClassService {
 
     danceClassImageManager.deleteImagesByDanceClass(danceClass);
     danceClassHashtagManager.deleteHashtagsByDanceClass(danceClass);
+    danceClassScheduleManager.deleteSchedulesByDanceClass(danceClass);
     danceClassManager.deleteDanceClassBookings(danceClass);
     reviewManager.deleteReviewsByDanceClass(danceClass);
 
