@@ -48,6 +48,24 @@ public class DanceClassListServiceResponse {
                                         .build();
   }
 
+  public static DanceClassListServiceResponse from(List<DanceClass> danceClasses) {
+    return DanceClassListServiceResponse.builder()
+                                        .page(1)
+                                        .totalPages(1)
+                                        .totalElements(danceClasses.size())
+                                        .danceClasses(danceClasses.stream()
+                                                                  .map(danceClass -> DanceClassSummary.builder()
+                                                                                                      .id(danceClass.getId())
+                                                                                                      .className(danceClass.getClassName())
+                                                                                                      .dancerName(danceClass.getDancer().getDancerName())
+                                                                                                      .thumbnailImage(getFixedThumbnailImage(danceClass))
+                                                                                                      .genre(danceClass.getGenre().getName())
+                                                                                                      .hashtagIds(danceClass.getHashtagIds())
+                                                                                                      .build())
+                                                                  .toList())
+                                        .build();
+  }
+
   private static String getFixedThumbnailImage(DanceClass danceClass) {
     return danceClass.getDanceClassImages().stream()
                      .sorted(Comparator.comparing(DanceClassImage::getId))

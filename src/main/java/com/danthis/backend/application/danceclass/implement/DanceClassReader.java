@@ -84,4 +84,8 @@ public class DanceClassReader {
   public Page<DanceClassBooking> readRegisteredUsersByClass(DanceClass danceClass, Pageable pageable) {
     return bookingRepository.findByDanceClass(danceClass, pageable);
   }
+
+  public List<DanceClass> readRandomDanceClasses(Integer size) {
+    return danceClassRepository.getRandomDanceClasses(size);
+  }
 }

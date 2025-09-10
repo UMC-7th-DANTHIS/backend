@@ -165,4 +165,11 @@ public class DancerService {
     List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(dancers);
     return DancerSummaryListResponse.from(dancerInfos, 0, 0, 4L);
   }
+
+  // TODO: averRate로 특정 평점 이상의 댄서만 추출하도록 수정 가능?
+  public DancerSummaryListResponse getRandomDancer(Integer size, Long averRate) {
+    List<Dancer> dancers = dancerReader.readRandomDancers(size);
+    List<DancerSummaryResponse> dancerResponses = dancerManager.toSummaryInfo(dancers);
+    return DancerSummaryListResponse.from(dancerResponses);
+  }
 }

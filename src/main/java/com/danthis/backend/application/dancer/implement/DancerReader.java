@@ -46,4 +46,8 @@ public class DancerReader {
   public List<Dancer> readDancerByGenre(Set<Long> genreList) {
     return dancerRepository.findByGenres(genreList);
   }
+
+  public List<Dancer> readRandomDancers(Integer size) {
+    return dancerRepository.getRandomDancers(size);
+  }
 }
