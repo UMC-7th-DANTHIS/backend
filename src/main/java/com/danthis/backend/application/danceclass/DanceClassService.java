@@ -116,6 +116,8 @@ public class DanceClassService {
     Set<Hashtag> hashtags = danceClassReader.readHashtagsByIds(request.getHashtags());
     danceClassHashtagManager.updateHashtags(danceClass, hashtags);
 
+    danceClassScheduleManager.updateSchedule(danceClass, request.getDays(), request.getDates());
+
     danceClassImageManager.updateImages(danceClass, request.getImages());
 
     danceClassManager.saveDanceClass(danceClass);
