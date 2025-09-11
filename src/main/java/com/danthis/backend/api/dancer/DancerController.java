@@ -90,8 +90,8 @@ public class DancerController {
   }
 
   @Operation(summary = "댄서가 생성한 댄스수업 목록 조회 API", description = "댄서가 생성한 댄스수업 목록을 조회합니다.")
-  @GetMapping("/dance-classes")
-  @AssignCurrentUserInfo
+  @GetMapping("/info/dance-classes")
+  @AssignOrNullCurrentUserInfo
   public ApiResponse<DanceClassListServiceResponse> getDancerClasses(
       CurrentUserInfo userInfo,
       @RequestParam(required = false) @Min(1) Long dancerId,
