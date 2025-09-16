@@ -69,7 +69,9 @@ public class CommunityController {
   @Operation(summary = "게시글 단일 조회", description = "게시글을 단일 조회합니다.")
   @GetMapping("/posts/{postId}")
   public ApiResponse<PostReadServiceResponse> getPost(@PathVariable Long postId) {
-    return ApiResponse.OK(postService.getPostById(postId));
+
+    PostReadServiceResponse response = postService.getPostById(postId);
+    return ApiResponse.OK(response);
   }
 
   @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회합니다.")
