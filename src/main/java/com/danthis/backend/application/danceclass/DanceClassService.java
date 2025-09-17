@@ -5,6 +5,7 @@ import com.danthis.backend.application.danceclass.implement.DanceClassMapper;
 import com.danthis.backend.application.danceclass.implement.DanceClassReader;
 import com.danthis.backend.application.danceclass.implement.mapping.DanceClassHashtagManager;
 import com.danthis.backend.application.danceclass.implement.mapping.DanceClassImageManager;
+import com.danthis.backend.application.danceclass.implement.mapping.DanceClassScheduleManager;
 import com.danthis.backend.application.danceclass.request.DanceClassCreateServiceRequest;
 import com.danthis.backend.application.danceclass.request.DanceClassUpdateServiceRequest;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
@@ -22,6 +23,7 @@ import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
+import com.danthis.backend.domain.danceclass.danceclassschedule.DanceClassSchedule;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.hashtag.Hashtag;
@@ -56,6 +58,7 @@ public class DanceClassService {
   private final WishListReader wishListReader;
   private final DanceClassImageManager danceClassImageManager;
   private final DanceClassHashtagManager danceClassHashtagManager;
+  private final DanceClassScheduleManager danceClassScheduleManager;
   private final ReviewManager reviewManager;
 
   @Transactional
@@ -77,6 +80,16 @@ public class DanceClassService {
     if (request.getImages() != null) {
       List<DanceClassImage> images = danceClassMapper.mapToImages(danceClass, request.getImages());
       danceClassManager.saveDanceClassImages(images);
+    }
+
+    if (request.getDays() != null) {
+      Set<DanceClassSchedule> schedules = danceClassMapper.mapToDays(danceClass, request.getDays());
+      danceClassManager.saveDanceClassSchedules(schedules);
+    }
+
+    if (request.getDates() != null) {
+      Set<DanceClassSchedule> schedules = danceClassMapper.mapToDates(danceClass, request.getDates());
+      danceClassManager.saveDanceClassSchedules(schedules);
     }
   }
 
@@ -103,6 +116,8 @@ public class DanceClassService {
     Set<Hashtag> hashtags = danceClassReader.readHashtagsByIds(request.getHashtags());
     danceClassHashtagManager.updateHashtags(danceClass, hashtags);
 
+    danceClassScheduleManager.updateSchedule(danceClass, request.getDays(), request.getDates());
+
     danceClassImageManager.updateImages(danceClass, request.getImages());
 
     danceClassManager.saveDanceClass(danceClass);
@@ -119,6 +134,7 @@ public class DanceClassService {
 
     danceClassImageManager.deleteImagesByDanceClass(danceClass);
     danceClassHashtagManager.deleteHashtagsByDanceClass(danceClass);
+    danceClassScheduleManager.deleteSchedulesByDanceClass(danceClass);
     danceClassManager.deleteDanceClassBookings(danceClass);
     reviewManager.deleteReviewsByDanceClass(danceClass);
 
@@ -152,9 +168,11 @@ public class DanceClassService {
   }
 
   @Transactional
-  public DanceClassListServiceResponse getDanceClassList(Long genreId, int page, int size) {
+  public DanceClassListServiceResponse getDanceClassList(
+      Long genreId, String date, String day, int page, int size) {
+
     PageRequest pageable = PageRequest.of(page - 1, size);
-    Page<DanceClass> danceClasses = danceClassReader.readDanceClasses(genreId, pageable);
+    Page<DanceClass> danceClasses = danceClassReader.readDanceClasses(genreId, date, day, pageable);
 
     return DanceClassListServiceResponse.from(danceClasses);
   }

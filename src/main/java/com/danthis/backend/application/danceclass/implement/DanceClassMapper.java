@@ -4,16 +4,22 @@ import com.danthis.backend.application.danceclass.request.DanceClassCreateServic
 import com.danthis.backend.application.danceclass.response.DanceClassReadServiceResponse;
 import com.danthis.backend.application.danceclass.response.EligibleUserListServiceResponse;
 import com.danthis.backend.application.danceclass.response.RegisteredUserListServiceResponse;
+import com.danthis.backend.common.exception.BusinessException;
+import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.classreview.classreviewimage.ClassReviewImage;
 import com.danthis.backend.domain.danceclass.DanceClass;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
+import com.danthis.backend.domain.danceclass.danceclassschedule.DanceClassSchedule;
+import com.danthis.backend.domain.danceclass.danceclassschedule.Week;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +64,45 @@ public class DanceClassMapper {
                                                .imageUrl(url)
                                                .build())
                     .toList();
+  }
+
+  public Set<DanceClassSchedule> mapToDays(DanceClass danceClass, Set<String> days) {
+
+    Set<Week> weekSet; // 요일 Enum으로 캐스팅
+    try {
+      weekSet = days.stream().map(Week::valueOf).collect(Collectors.toSet());
+    }
+    catch (Exception e) {
+      throw new BusinessException(ErrorCode.INVALID_DAY_FORMAT);
+    }
+
+    return weekSet.stream()
+               .map(day -> DanceClassSchedule.builder()
+                                             .danceClass(danceClass)
+                                             .day(day)
+                                             .date(null)
+                                             .build())
+               .collect(Collectors.toSet());
+  }
+
+  public Set<DanceClassSchedule> mapToDates(DanceClass danceClass, Set<String> dates) {
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    Set<LocalDate> dateSet; // 날짜 Enum으로 캐스팅
+    try {
+      dateSet = dates.stream().map(date -> LocalDate.parse(date, formatter)).collect(Collectors.toSet());
+    }
+    catch (Exception e) {
+      throw new BusinessException(ErrorCode.INVALID_DATE_FORMAT);
+    }
+
+    return dateSet.stream()
+                .map(date -> DanceClassSchedule.builder()
+                                               .danceClass(danceClass)
+                                               .day(null)
+                                               .date(date)
+                                               .build())
+                .collect(Collectors.toSet());
   }
 
   public DanceClassReadServiceResponse toDanceClassDetailsResponse(DanceClass danceClass) {

@@ -18,6 +18,8 @@ public class DanceClassUpdateServiceRequest {
   private String description;
   private String targetAudience;
   private Set<Long> hashtags;
+  private Set<String> days;
+  private Set<String> dates;
   private List<String> images;
   private String videoUrl;
 }

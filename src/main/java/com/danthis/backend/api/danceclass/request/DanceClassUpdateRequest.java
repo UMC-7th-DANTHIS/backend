@@ -31,6 +31,12 @@ public class DanceClassUpdateRequest {
   @Size(max = 3, message = "해시태그는 최대 3개까지 선택 가능합니다.")
   private Set<Long> hashtags;
 
+  @Size(max = 7, message = "요일 정보는 최대 7개까지 선택 가능합니다.")
+  private Set<String> days;
+
+  @Size(max = 30, message = "날짜 정보는 최대 30개까지 선택 가능합니다.")
+  private Set<String> dates;
+
   private List<String> images;
 
   private String videoUrl;
@@ -46,6 +52,8 @@ public class DanceClassUpdateRequest {
                                          .description(description)
                                          .targetAudience(targetAudience)
                                          .hashtags(hashtags)
+                                         .days(days)
+                                         .dates(dates)
                                          .images(images)
                                          .videoUrl(videoUrl)
                                          .build();
