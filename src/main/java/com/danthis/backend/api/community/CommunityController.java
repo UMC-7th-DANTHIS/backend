@@ -67,7 +67,7 @@ public class CommunityController {
   }
 
   @Operation(summary = "게시글 단일 조회", description = "게시글을 단일 조회합니다.")
-  @GetMapping("/posts/{postId}")
+  @GetMapping("/info/posts/{postId}")
   public ApiResponse<PostReadServiceResponse> getPost(@PathVariable Long postId) {
 
     PostReadServiceResponse response = postService.getPostById(postId);
@@ -75,7 +75,7 @@ public class CommunityController {
   }
 
   @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회합니다.")
-  @GetMapping("/posts")
+  @GetMapping("/info/posts")
   public ApiResponse<PostListServiceResponse> getPosts(
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
@@ -96,7 +96,7 @@ public class CommunityController {
   }
 
   @Operation(summary = "댓글 목록 조회", description = "게시글의 댓글을 조회합니다.")
-  @GetMapping("/posts/{postId}/comments")
+  @GetMapping("/info/posts/{postId}/comments")
   public ApiResponse<CommentListServiceResponse> getComments(
       @PathVariable Long postId,
       @RequestParam(defaultValue = "1") int page,

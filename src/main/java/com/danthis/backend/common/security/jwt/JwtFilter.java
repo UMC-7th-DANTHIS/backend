@@ -112,6 +112,7 @@ public class JwtFilter extends OncePerRequestFilter {
           uri.equals("/auth/reissue") ||
           uri.startsWith("/dancers/info") ||
           uri.startsWith("/dance-classes/info") ||
+          uri.startsWith("/community/info") ||
           uri.startsWith("/dancers/genres")) {
         return true;
       }
