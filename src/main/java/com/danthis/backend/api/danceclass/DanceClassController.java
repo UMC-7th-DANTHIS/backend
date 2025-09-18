@@ -116,6 +116,17 @@ public class DanceClassController {
     return ApiResponse.OK(null);
   }
 
+  @Operation(summary = "사용자의 찜 여부 조회 API", description = "찜한 댄스수업인지 여부를 조회 후 boolen 값으로 반환합니다.")
+  @GetMapping("/{classId}/favorite")
+  @AssignCurrentUserInfo
+  public ApiResponse<Boolean> isFavoriteClass(
+      @PathVariable("classId") Long classId,
+      CurrentUserInfo userInfo
+  ) {
+    Boolean response = danceClassService.isFavoriteClass(userInfo.getUserId(), classId);
+    return ApiResponse.OK(response);
+  }
+
   @Operation(summary = "댄스 수업에 등록 가능한 유저 목록 조회 API",
       description = "댄서와 채팅한 유저 중 아직 해당 수업에 등록되지 않은 유저 목록을 조회합니다.")
   @GetMapping("/{classId}/eligible-users")
