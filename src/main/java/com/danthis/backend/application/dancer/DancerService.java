@@ -22,7 +22,6 @@ import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.Null;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -173,7 +172,7 @@ public class DancerService {
     return DancerSummaryListResponse.from(dancerResponses);
   }
 
-  public Boolean isFavoriteDancer(@Null Long userId, Long dancerId) {
+  public Boolean isFavoriteDancer(Long userId, Long dancerId) {
 
     User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);

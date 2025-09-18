@@ -32,7 +32,6 @@ import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
 import com.danthis.backend.domain.mapping.wishlist.WishList;
 import com.danthis.backend.domain.user.User;
-import jakarta.validation.constraints.Null;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -297,7 +296,7 @@ public class DanceClassService {
     return DanceClassListServiceResponse.from(danceClasses);
   }
 
-  public Boolean isFavoriteClass(@Null Long userId, Long classId) {
+  public Boolean isFavoriteClass(Long userId, Long classId) {
     // userId, classId가 유효한 값인지 검사
     User user = userReader.readUserById(userId);
     DanceClass danceClass = danceClassReader.readDanceClassById(classId);
