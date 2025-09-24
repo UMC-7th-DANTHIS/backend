@@ -1,6 +1,7 @@
 package com.danthis.backend.domain.danceclass.repository;
 
 import com.danthis.backend.domain.danceclass.DanceClass;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +24,9 @@ public interface DanceClassRepository extends JpaRepository<DanceClass, Long>,
           ORDER BY dc.id ASC
       """)
   Page<DanceClass> findByClassNameAndHashtag(String query, Long hashtagId, Pageable pageable);
+
+  @Query(
+      value = "SELECT DISTINCT * FROM dance_class ORDER BY RAND() LIMIT :size",
+      nativeQuery = true)
+  List<DanceClass> getRandomDanceClasses(Integer size);
 }

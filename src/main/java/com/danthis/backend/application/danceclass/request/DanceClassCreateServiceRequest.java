@@ -15,6 +15,8 @@ public class DanceClassCreateServiceRequest {
   private Long genre;
   private String description;
   private String targetAudience;
+  private Set<String> days;
+  private Set<String> dates;
   private Set<Long> hashtags;
   private List<String> images;
   private String videoUrl;

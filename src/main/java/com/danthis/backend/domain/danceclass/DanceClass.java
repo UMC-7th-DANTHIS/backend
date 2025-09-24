@@ -3,6 +3,7 @@ package com.danthis.backend.domain.danceclass;
 import com.danthis.backend.domain.BaseEntity;
 import com.danthis.backend.domain.classreview.ClassReview;
 import com.danthis.backend.domain.danceclass.danceclassimage.DanceClassImage;
+import com.danthis.backend.domain.danceclass.danceclassschedule.DanceClassSchedule;
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
@@ -81,6 +82,9 @@ public class DanceClass extends BaseEntity {
 
   @OneToMany(mappedBy = "danceClass", fetch = FetchType.LAZY)
   private Set<WishList> wishLists;
+
+  @OneToMany(mappedBy = "danceClass", fetch = FetchType.LAZY)
+  private Set<DanceClassSchedule> danceClassSchedules;
 
   public void updateClassName(String className) {
     this.className = className;

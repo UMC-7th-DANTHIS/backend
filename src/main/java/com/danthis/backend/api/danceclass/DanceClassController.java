@@ -160,10 +160,25 @@ public class DanceClassController {
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassListServiceResponse> getDanceClasses(
       @RequestParam(required = false) Long genre,
+      @RequestParam(required = false) String date,
+      @RequestParam(required = false) String day,
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "9") @Min(1) int size) {
 
-    DanceClassListServiceResponse response = danceClassService.getDanceClassList(genre, page, size);
+    DanceClassListServiceResponse response = danceClassService.getDanceClassList(
+        genre, date, day, page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "무작위 댄스 수업 목록 조회 API", description = "무작위로 댄스 수업 목록을 조회합니다.")
+  @GetMapping("/random")
+  @AssignCurrentUserInfo
+  public ApiResponse<DanceClassListServiceResponse> getRandomDanceClasses(
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "0") long averRate) {
+
+    DanceClassListServiceResponse response = danceClassService.getRandomDanceCalssList(size,
+        averRate);
     return ApiResponse.OK(response);
   }
 }
