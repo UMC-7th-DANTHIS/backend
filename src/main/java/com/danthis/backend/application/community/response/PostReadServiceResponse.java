@@ -10,6 +10,7 @@ import lombok.Getter;
 public class PostReadServiceResponse {
 
   private Long postId;
+  private Long userId;
   private String title;
   private String author;
   private LocalDateTime createdAt;

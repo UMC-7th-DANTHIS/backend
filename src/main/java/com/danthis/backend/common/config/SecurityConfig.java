@@ -48,7 +48,11 @@ public class SecurityConfig {
                 "/auth/reissue",
                 "/exception/**",
                 "/dance-classes/all",
-                "/dancers/all"
+                "/dancers/all",
+                "/dancers/genres/*",
+                "/dancers/info/**",
+                "/dance-classes/info/**",
+                "/community/info/**"
             ).permitAll()
             .requestMatchers(HttpMethod.POST,
                 "/auth/login/kakao",

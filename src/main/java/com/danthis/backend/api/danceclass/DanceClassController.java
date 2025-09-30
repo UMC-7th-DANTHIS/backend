@@ -66,7 +66,7 @@ public class DanceClassController {
   }
 
   @Operation(summary = "댄스 수업 단일 조회 상세 설명 API", description = "댄스 수업 상세 설명 섹션을 조회합니다.")
-  @GetMapping("/{classId}")
+  @GetMapping("/info/{classId}")
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassDetails(
       @PathVariable Long classId) {
@@ -75,7 +75,7 @@ public class DanceClassController {
   }
 
   @Operation(summary = "댄스 수업 단일 조회 리뷰 목록 API", description = "댄스 수업 리뷰 목록 섹션을 조회합니다.")
-  @GetMapping("/{classId}/reviews")
+  @GetMapping("/info/{classId}/reviews")
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassReviews(
       @PathVariable Long classId,
@@ -88,7 +88,7 @@ public class DanceClassController {
   }
 
   @Operation(summary = "댄스 수업 평균 별점 조회 API", description = "댄스 수업의 전체 평균 별점을 조회합니다.")
-  @GetMapping("{classId}/rating")
+  @GetMapping("/info/{classId}/rating")
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassAverageRating(
       @PathVariable Long classId) {

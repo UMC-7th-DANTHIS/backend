@@ -92,19 +92,13 @@ public class DancerService {
 
   @Transactional
   public DancerInfoResponse getMyDancerInfo(Long userId) {
-    User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerByUserId(userId);
-
-    // 이미 찜이 된 경우 true, 찜이 안되어 있으면 false 저장
-    boolean isFavorite = userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null;
-
     return DancerInfoResponse.builder()
                              .id(dancer.getId())
                              .dancerName(dancer.getDancerName())
                              .instargramId(dancer.getInstargramId())
                              .bio(dancer.getBio())
                              .history(dancer.getHistory())
-                             .isFavorite(isFavorite)
                              .openChatUrl(dancer.getOpenChatUrl())
                              .preferredGenres(dancerGenreReader.findGenreIdByDancer(dancer))
                              .dancerImages(dancerImageReader.findImageUrlByDancer(dancer))
@@ -113,11 +107,14 @@ public class DancerService {
 
   @Transactional
   public DancerInfoResponse getDancerInfo(Long userId, Long dancerId) {
-    User user = userReader.readUserById(userId);
     Dancer dancer = dancerReader.readDancerById(dancerId);
+    boolean isFavorite = false;
 
-    // 이미 찜이 된 경우 true, 찜이 안되어 있으면 false 저장
-    boolean isFavorite = userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null;
+    if (userId != null) {
+      User user = userReader.readUserById(userId);
+      // 이미 찜이 된 경우 true, 찜이 안되어 있으면 false 저장
+      isFavorite = userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null;
+    }
 
     return DancerInfoResponse.builder()
                              .id(dancer.getId())
