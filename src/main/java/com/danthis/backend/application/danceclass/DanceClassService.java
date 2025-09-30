@@ -295,4 +295,12 @@ public class DanceClassService {
     List<DanceClass> danceClasses = danceClassReader.readRandomDanceClasses(size);
     return DanceClassListServiceResponse.from(danceClasses);
   }
+
+  public Boolean isFavoriteClass(Long userId, Long classId) {
+    // userId, classId가 유효한 값인지 검사
+    User user = userReader.readUserById(userId);
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    // 찜한 댄스수업면 true, 아니면 false 리턴
+    return wishListReader.readWishListByUserIdAndClassId(userId, classId) != null;
+  }
 }

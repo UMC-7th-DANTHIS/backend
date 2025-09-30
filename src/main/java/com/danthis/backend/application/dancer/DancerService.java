@@ -20,7 +20,6 @@ import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.dancerimage.DancerImage;
 import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
-import com.danthis.backend.domain.mapping.usergenre.UserGenre;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -171,5 +170,13 @@ public class DancerService {
     List<Dancer> dancers = dancerReader.readRandomDancers(size);
     List<DancerSummaryResponse> dancerResponses = dancerManager.toSummaryInfo(dancers);
     return DancerSummaryListResponse.from(dancerResponses);
+  }
+
+  public Boolean isFavoriteDancer(Long userId, Long dancerId) {
+
+    User user = userReader.readUserById(userId);
+    Dancer dancer = dancerReader.readDancerById(dancerId);
+    // 찜한 댄서면 true, 아니면 false 리턴
+    return userDancerReader.readUserDancerByUserAndDancer(user, dancer) != null;
   }
 }

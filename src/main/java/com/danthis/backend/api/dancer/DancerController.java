@@ -82,6 +82,17 @@ public class DancerController {
     return ApiResponse.OK(response);
   }
 
+  @Operation(summary = "사용자의 찜 여부 조회 API", description = "사용자가 찜한 댄서인지 여부를 조회 후 boolen 값으로 반환합니다.")
+  @GetMapping("/{dancerId}/favorite")
+  @AssignCurrentUserInfo
+  public ApiResponse<Boolean> isFavoriteDancer(
+      @PathVariable("dancerId") Long dancerId,
+      CurrentUserInfo userInfo) {
+
+    Boolean response = dancerService.isFavoriteDancer(userInfo.getUserId(), dancerId);
+    return ApiResponse.OK(response);
+  }
+
   @Operation(summary = "댄서가 생성한 댄스수업 목록 조회 API", description = "댄서가 생성한 댄스수업 목록을 조회합니다.")
   @GetMapping("/dance-classes")
   @AssignCurrentUserInfo
