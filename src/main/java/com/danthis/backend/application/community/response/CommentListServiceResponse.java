@@ -20,6 +20,7 @@ public class CommentListServiceResponse {
   public static class CommentSummary {
 
     private Long commentId;
+    private Long userId;
     private String userName;
     private String userProfileImage;
     private LocalDateTime createdAt;

@@ -40,7 +40,7 @@ public class ReviewController {
   }
 
   @Operation(summary = "리뷰 단일 조회 API", description = "특정 댄스 수업의 리뷰를 단일 조회합니다.")
-  @GetMapping("dance-classes/{classId}/reviews/{reviewId}")
+  @GetMapping("dance-classes/info/{classId}/reviews/{reviewId}")
   @AssignCurrentUserInfo
   public ApiResponse<ReviewReadServiceResponse> getReview(
       @PathVariable Long classId,

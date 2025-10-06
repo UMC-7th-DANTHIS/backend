@@ -29,6 +29,7 @@ public class CommentMapper {
                                                 .map(
                                                     comment -> CommentListServiceResponse.CommentSummary.builder()
                                                                                                         .commentId(comment.getId())
+                                                                                                        .userId(comment.getUser().getId())
                                                                                                         .userName(comment.getUser().getNickname())
                                                                                                         .userProfileImage(comment.getUser().getProfileImage())
                                                                                                         .createdAt(comment.getCreatedAt())

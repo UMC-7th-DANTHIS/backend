@@ -66,7 +66,7 @@ public class DanceClassController {
   }
 
   @Operation(summary = "댄스 수업 단일 조회 상세 설명 API", description = "댄스 수업 상세 설명 섹션을 조회합니다.")
-  @GetMapping("/{classId}")
+  @GetMapping("/info/{classId}")
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassDetails(
       @PathVariable Long classId) {
@@ -75,7 +75,7 @@ public class DanceClassController {
   }
 
   @Operation(summary = "댄스 수업 단일 조회 리뷰 목록 API", description = "댄스 수업 리뷰 목록 섹션을 조회합니다.")
-  @GetMapping("/{classId}/reviews")
+  @GetMapping("/info/{classId}/reviews")
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassReviews(
       @PathVariable Long classId,
@@ -88,7 +88,7 @@ public class DanceClassController {
   }
 
   @Operation(summary = "댄스 수업 평균 별점 조회 API", description = "댄스 수업의 전체 평균 별점을 조회합니다.")
-  @GetMapping("{classId}/rating")
+  @GetMapping("/info/{classId}/rating")
   @AssignCurrentUserInfo
   public ApiResponse<DanceClassReadServiceResponse> getDanceClassAverageRating(
       @PathVariable Long classId) {
@@ -114,6 +114,17 @@ public class DanceClassController {
       @PathVariable Long classId) {
     danceClassService.deleteFavoriteClass(userInfo.getUserId(), classId);
     return ApiResponse.OK(null);
+  }
+
+  @Operation(summary = "사용자의 찜 여부 조회 API", description = "찜한 댄스수업인지 여부를 조회 후 boolen 값으로 반환합니다.")
+  @GetMapping("/{classId}/favorite")
+  @AssignCurrentUserInfo
+  public ApiResponse<Boolean> isFavoriteClass(
+      @PathVariable("classId") Long classId,
+      CurrentUserInfo userInfo
+  ) {
+    Boolean response = danceClassService.isFavoriteClass(userInfo.getUserId(), classId);
+    return ApiResponse.OK(response);
   }
 
   @Operation(summary = "댄스 수업에 등록 가능한 유저 목록 조회 API",

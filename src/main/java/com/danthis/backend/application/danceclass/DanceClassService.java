@@ -202,18 +202,20 @@ public class DanceClassService {
   @Transactional
   public DanceClassListServiceResponse getDancerClasses(Long userId, Long dancerId, Integer page,
       Integer size) {
+
     PageRequest pageable = PageRequest.of(page - 1, size);
-    Dancer dancer = dancerReader.readDancerByUserId(userId);
     if (dancerId != null) {
-      dancer = dancerReader.readDancerById(dancerId);
+      Page<DanceClass> danceClasses = danceClassReader.readDancerClasses(dancerId, pageable);
+      return DanceClassListServiceResponse.from(danceClasses);
     }
 
-    if (dancer == null) {
-      throw new BusinessException(ErrorCode.DANCER_NOT_FOUND);
+    if (userId != null) {
+      Dancer dancer = dancerReader.readDancerById(userId);
+      Page<DanceClass> danceClasses = danceClassReader.readDancerClasses(dancer.getId(), pageable);
+      return DanceClassListServiceResponse.from(danceClasses);
     }
 
-    Page<DanceClass> danceClasses = danceClassReader.readDancerClasses(dancer.getId(), pageable);
-    return DanceClassListServiceResponse.from(danceClasses);
+    throw new BusinessException(ErrorCode.DANCER_NOT_FOUND);
   }
 
   @Transactional
@@ -294,5 +296,13 @@ public class DanceClassService {
 
     List<DanceClass> danceClasses = danceClassReader.readRandomDanceClasses(size);
     return DanceClassListServiceResponse.from(danceClasses);
+  }
+
+  public Boolean isFavoriteClass(Long userId, Long classId) {
+    // userId, classId가 유효한 값인지 검사
+    User user = userReader.readUserById(userId);
+    DanceClass danceClass = danceClassReader.readDanceClassById(classId);
+    // 찜한 댄스수업면 true, 아니면 false 리턴
+    return wishListReader.readWishListByUserIdAndClassId(userId, classId) != null;
   }
 }

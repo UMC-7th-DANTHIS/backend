@@ -31,6 +31,7 @@ public class PostMapper {
 
     return PostReadServiceResponse.builder()
                                   .postId(post.getId())
+                                  .userId(post.getUser().getId())
                                   .title(post.getTitle())
                                   .author(post.getUser().getNickname())
                                   .createdAt(post.getCreatedAt())
