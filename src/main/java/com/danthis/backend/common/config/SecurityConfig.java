@@ -52,7 +52,8 @@ public class SecurityConfig {
                 "/dancers/genres/*",
                 "/dancers/info/**",
                 "/dance-classes/info/**",
-                "/community/info/**"
+                "/community/info/**",
+                "/practice-rooms/info"
             ).permitAll()
             .requestMatchers(HttpMethod.POST,
                 "/auth/login/kakao",
