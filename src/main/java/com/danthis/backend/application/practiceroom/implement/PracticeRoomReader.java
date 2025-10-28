@@ -16,4 +16,8 @@ public class PracticeRoomReader {
     return practiceRoomRepository.findAllByLocation(
         longitude, latitude, radius);
   }
+
+  public List<PracticeRoom> getAllRooms() {
+    return practiceRoomRepository.findAll();
+  }
 }

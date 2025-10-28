@@ -17,13 +17,18 @@ public class PracticeRoomService {
 
   private final PracticeRoomReader practiceRoomReader;
 
-  public PracticeRoomListResponse getAllPracticeRoom(Double longitude, Double latitude,
+  public PracticeRoomListResponse getPracticeRoomsByLocation(Double longitude, Double latitude,
       Double radius) {
 
     if (radius < 0) {
       throw new BusinessException(ErrorCode.INVALID_NEGATIVE_NUMBER);
     }
     List<PracticeRoom> practiceRooms = practiceRoomReader.getRooms(longitude, latitude, radius);
+    return PracticeRoomListResponse.of(practiceRooms);
+  }
+
+  public PracticeRoomListResponse getAllPracticeRoom() {
+    List<PracticeRoom> practiceRooms = practiceRoomReader.getAllRooms();
     return PracticeRoomListResponse.of(practiceRooms);
   }
 }

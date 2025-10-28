@@ -21,14 +21,22 @@ public class PracticeRoomController {
   private final PracticeRoomService practiceRoomService;
 
   @Operation(summary = "주위 연습실 조회 API", description = "경도, 위도 기준 주위 연습실 정보를 조회합니다.")
-  @GetMapping("/info")
+  @GetMapping("/info/surround")
   @AssignOrNullCurrentUserInfo
   public ApiResponse<PracticeRoomListResponse> getPracticeRooomInfo(
       @RequestParam Double longitude,
       @RequestParam Double latitude,
       @RequestParam(defaultValue = "0.5") Double radius) {
-    PracticeRoomListResponse response = practiceRoomService.getAllPracticeRoom(
+    PracticeRoomListResponse response = practiceRoomService.getPracticeRoomsByLocation(
         longitude, latitude, radius);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "모든 연습실 조회 API")
+  @GetMapping("/info/all")
+  @AssignOrNullCurrentUserInfo
+  public ApiResponse<PracticeRoomListResponse> getAllPracticeRooomInfo() {
+    PracticeRoomListResponse response = practiceRoomService.getAllPracticeRoom();
     return ApiResponse.OK(response);
   }
 }
