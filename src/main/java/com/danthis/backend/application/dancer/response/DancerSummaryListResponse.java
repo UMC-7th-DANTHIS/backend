@@ -25,14 +25,16 @@ public class DancerSummaryListResponse {
   }
 
   public static DancerSummaryListResponse from(final List<DancerSummaryResponse> dancers) {
-    return  DancerSummaryListResponse.builder()
-                                     .dancers(dancers)
-                                     .build();
+    return DancerSummaryListResponse.builder()
+                                    .dancers(dancers)
+                                    .totalElements((long) dancers.size())
+                                    .build();
   }
 
   @Getter
   @Builder
   public static class DancerSummaryResponse {
+
     private Long id;
     private String dancerName;
     private Set<String> genres;

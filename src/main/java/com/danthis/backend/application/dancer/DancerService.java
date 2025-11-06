@@ -22,6 +22,7 @@ import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -76,7 +77,8 @@ public class DancerService {
 
     Set<Genre> genres = dancerMapper.mapToGenre(request.getPreferredGenres());
     Set<DancerGenre> dancerGenres = dancerMapper.mapToDancerGenre(dancer, genres);
-    Set<DancerImage> dancerImages = dancerMapper.mapToDancerImage(dancer, request.getDancerImages());
+    Set<DancerImage> dancerImages = dancerMapper.mapToDancerImage(
+        dancer, request.getDancerImages());
 
     dancerGenreManager.deleteByDancer(dancer);
     dancerGenreManager.saveAll(dancerGenres);
@@ -135,7 +137,8 @@ public class DancerService {
 
     List<Dancer> candidates = dancerReader.readByDancerGenre(pages.getContent());
     List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(candidates);
-    return DancerSummaryListResponse.from(dancerInfos, pages.getNumber(), pages.getTotalPages(), pages.getTotalElements());
+    return DancerSummaryListResponse.from(
+        dancerInfos, pages.getNumber(), pages.getTotalPages(), pages.getTotalElements());
   }
 
   @Transactional
@@ -152,14 +155,16 @@ public class DancerService {
   }
 
   @Transactional
-  public DancerSummaryListResponse getRecommendationDancers(Long userId) {
+  public DancerSummaryListResponse getRecommendedDancers(Long userId, Integer dancerNeeded) {
     User user = userReader.readUserById(userId);
-    Set<Long> genreList = user.getUserGenres().stream()
-                              .map(userGenre -> userGenre.getGenre().getId())
-                              .collect(Collectors.toSet());
-    List<Dancer> dancers = dancerReader.readDancerByGenre(genreList);
-    List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(dancers);
-    return DancerSummaryListResponse.from(dancerInfos, 0, 0, 4L);
+    Set<Long> userFavoriteGenres = user.getUserGenres().stream()
+                                       .map(userGenre -> userGenre.getGenre().getId())
+                                       .collect(Collectors.toSet());
+    List<Dancer> dancers = dancerReader.readDancersByGenre(userFavoriteGenres);
+    Collections.shuffle(dancers);
+    List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(
+        dancers.subList(0, dancerNeeded));
+    return DancerSummaryListResponse.from(dancerInfos);
   }
 
   // TODO: averRate로 특정 평점 이상의 댄서만 추출하도록 수정 가능?

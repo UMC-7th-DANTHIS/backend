@@ -52,7 +52,8 @@ public class DancerController {
       CurrentUserInfo userInfo,
       @RequestBody @Valid DancerUpdateRequest request) {
 
-    Long dancerId = dancerService.updateDancerInfo(userInfo.getUserId(), request.toServiceRequest());
+    Long dancerId = dancerService.updateDancerInfo(userInfo.getUserId(),
+        request.toServiceRequest());
     return ApiResponse.OK(dancerId);
   }
 
@@ -109,7 +110,8 @@ public class DancerController {
       @RequestParam(defaultValue = "1") @Min(1) Integer page,
       @RequestParam(defaultValue = "9") @Min(1) Integer size) {
 
-    DanceClassListServiceResponse response = danceClassService.getDancerClasses(userInfo.getUserId(), dancerId, page, size);
+    DanceClassListServiceResponse response = danceClassService.getDancerClasses(
+        userInfo.getUserId(), dancerId, page, size);
     return ApiResponse.OK(response);
   }
 
@@ -125,15 +127,16 @@ public class DancerController {
   @GetMapping("/recommendations")
   @AssignCurrentUserInfo
   public ApiResponse<DancerSummaryListResponse> getRecommendationDancers(
+      @RequestParam(defaultValue = "4") @Min(1) Integer dancerNeeded,
       CurrentUserInfo userInfo) {
 
-    DancerSummaryListResponse response = dancerService.getRecommendationDancers(userInfo.getUserId());
+    DancerSummaryListResponse response = dancerService.getRecommendedDancers(
+        userInfo.getUserId(), dancerNeeded);
     return ApiResponse.OK(response);
   }
 
   @Operation(summary = "무작위 댄서 추천 API", description = "모든 댄서 중 무작위로 댄서를 추출해서 반환하는 API")
   @GetMapping("/random")
-
   public ApiResponse<DancerSummaryListResponse> getRandomDancers(
       @RequestParam(defaultValue = "10") Integer size,
       @RequestParam(defaultValue = "1") Long averRate) {

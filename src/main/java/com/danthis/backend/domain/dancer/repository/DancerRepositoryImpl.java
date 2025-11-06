@@ -1,10 +1,7 @@
 package com.danthis.backend.domain.dancer.repository;
 
-import static com.danthis.backend.domain.dancer.QDancer.dancer;
-
 import com.danthis.backend.domain.dancer.Dancer;
 import com.danthis.backend.domain.dancer.QDancer;
-import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.genre.QGenre;
 import com.danthis.backend.domain.mapping.dancergenre.QDancerGenre;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -52,7 +49,6 @@ public class DancerRepositoryImpl implements DancerRepositoryCustom {
                           .join(dancer.dancerGenres, dancerGenre)
                           .join(dancerGenre.genre, genre)
                           .where(genre.id.in(genreList))
-                          .limit(4)
                           .fetch();
   }
 }
