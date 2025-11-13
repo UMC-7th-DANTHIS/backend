@@ -7,6 +7,7 @@ import com.danthis.backend.domain.danceclass.danceclassschedule.Week;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Repository;
 public class DanceClassRepositoryImpl implements DanceClassRepositoryCustom {
 
   private final JPAQueryFactory jpaQueryFactory;
-  private final QDanceClass danceClass =  QDanceClass.danceClass;
+  private final QDanceClass danceClass = QDanceClass.danceClass;
   private final QDanceClassSchedule danceClassSchedule = QDanceClassSchedule.danceClassSchedule;
 
   @Override
@@ -57,5 +58,12 @@ public class DanceClassRepositoryImpl implements DanceClassRepositoryCustom {
         .fetch();
 
     return new PageImpl<>(danceClasses, pageable, danceClasses.size());
+  }
+
+  @Override
+  public List<DanceClass> findByGenreIds(Set<Long> genreIds) {
+    return jpaQueryFactory.selectFrom(danceClass)
+                          .where(danceClass.genre.id.in(genreIds))
+                          .fetch();
   }
 }
