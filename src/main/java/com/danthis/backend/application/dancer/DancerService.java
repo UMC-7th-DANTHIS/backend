@@ -22,7 +22,9 @@ import com.danthis.backend.domain.genre.Genre;
 import com.danthis.backend.domain.mapping.dancergenre.DancerGenre;
 import com.danthis.backend.domain.user.User;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -160,10 +162,19 @@ public class DancerService {
     Set<Long> userFavoriteGenres = user.getUserGenres().stream()
                                        .map(userGenre -> userGenre.getGenre().getId())
                                        .collect(Collectors.toSet());
+    Set<Long> userFavoriteDancers = new HashSet<>(userDancerReader.findDancerIdsByUser(user));
     List<Dancer> dancers = dancerReader.readDancersByGenre(userFavoriteGenres);
-    Collections.shuffle(dancers);
+
+    // 기존에 즐겨찾기한 댄서는 제외
+    List<Dancer> recommendedDancers = new ArrayList<>(
+        dancers.stream()
+               .filter(dancer -> !userFavoriteDancers.contains(dancer.getId()))
+               .toList()
+    );
+
+    Collections.shuffle(recommendedDancers);  // 후보 댄서들 섞기
     List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(
-        dancers.subList(0, dancerNeeded));
+        recommendedDancers.subList(0, Math.min(dancerNeeded, recommendedDancers.size())));
     return DancerSummaryListResponse.from(dancerInfos);
   }
 
