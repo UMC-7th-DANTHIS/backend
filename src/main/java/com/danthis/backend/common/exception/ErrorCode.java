@@ -28,7 +28,8 @@ public enum ErrorCode {
   POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다"),
   COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다"),
   INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "올바르지 않은 날짜 형식입니다."),
-  INVALID_DAY_FORMAT(HttpStatus.BAD_REQUEST, "올바르지 않은 요일 형식입니다.");
+  INVALID_DAY_FORMAT(HttpStatus.BAD_REQUEST, "올바르지 않은 요일 형식입니다."),
+  INVALID_NEGATIVE_NUMBER(HttpStatus.BAD_REQUEST, "양수값만 사용 가능합니다.");
 
   private final HttpStatus httpStatus;
   private final String message;
