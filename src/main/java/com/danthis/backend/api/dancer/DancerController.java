@@ -127,11 +127,11 @@ public class DancerController {
   @GetMapping("/recommendations")
   @AssignCurrentUserInfo
   public ApiResponse<DancerSummaryListResponse> getRecommendationDancers(
-      @RequestParam(defaultValue = "4") @Min(1) Integer dancerNeeded,
+      @RequestParam(defaultValue = "4") @Min(1) Integer size,
       CurrentUserInfo userInfo) {
 
     DancerSummaryListResponse response = dancerService.getRecommendedDancers(
-        userInfo.getUserId(), dancerNeeded);
+        userInfo.getUserId(), size);
     return ApiResponse.OK(response);
   }
 
