@@ -30,7 +30,6 @@ import com.danthis.backend.domain.hashtag.Hashtag;
 import com.danthis.backend.domain.mapping.danceclassbooking.DanceClassBooking;
 import com.danthis.backend.domain.mapping.danceclasshashtag.DanceClassHashtag;
 import com.danthis.backend.domain.mapping.danceruserchat.DancerUserChat;
-import com.danthis.backend.domain.mapping.usergenre.UserGenre;
 import com.danthis.backend.domain.mapping.wishlist.WishList;
 import com.danthis.backend.domain.user.User;
 import java.util.ArrayList;
@@ -314,7 +313,7 @@ public class DanceClassService {
   public DanceClassListServiceResponse getRecommendedDanceCalssList(Long userId, int size) {
     User user = userReader.readUserById(userId);
     Set<Long> userFavoriteGenre = user.getUserGenres().stream()
-                                      .map(UserGenre::getId)
+                                      .map(userGenre -> userGenre.getGenre().getId())
                                       .collect(Collectors.toSet());
     List<WishList> wishLists = wishListReader.readAllWishListByUserId(userId);
     Set<Long> wishListIds = wishLists.stream().map(WishList::getId).collect(Collectors.toSet());
@@ -322,13 +321,13 @@ public class DanceClassService {
         new ArrayList<>(danceClassReader.readDanceClassesByGenres(userFavoriteGenre));
 
     List<DanceClass> recommendedClasses =
-        new ArrayList<>(danceClasses.stream().
-                                    filter(danceClass -> !wishListIds.contains(danceClass.getId()))
+        new ArrayList<>(danceClasses.stream()
+                                    .filter(danceClass -> !wishListIds.contains(danceClass.getId()))
                                     .toList());
 
     Collections.shuffle(recommendedClasses);
-    List<DanceClass> results = recommendedClasses.subList(0,
-        Math.min(size, recommendedClasses.size()));
+    List<DanceClass> results = recommendedClasses.subList(
+        0, Math.min(size, recommendedClasses.size()));
     return DanceClassListServiceResponse.from(results);
   }
 }
