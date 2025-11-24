@@ -136,7 +136,7 @@ public class DancerController {
   }
 
   @Operation(summary = "무작위 댄서 추천 API", description = "모든 댄서 중 무작위로 댄서를 추출해서 반환하는 API")
-  @GetMapping("/random")
+  @GetMapping("/info/random")
   public ApiResponse<DancerSummaryListResponse> getRandomDancers(
       @RequestParam(defaultValue = "10") Integer size,
       @RequestParam(defaultValue = "1") Long averRate) {
