@@ -17,6 +17,6 @@ public class ChatMessageDTO {
 
   private MessageType type;
   private Long chatRoomId;
-  private Long opponentId; // dancerId
+  private Long opponentId; // userId
   private String message;
 }

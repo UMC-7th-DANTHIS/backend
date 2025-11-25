@@ -45,6 +45,8 @@ public class ChatMessageService {
     ChatMessage chatMessage = chatMessageManager.saveChatMessage(sender, chatRoom, content);
 
     return ChatMessageResponseDTO.builder()
+                                 .messageId(chatMessage.getId())
+                                 .senderId(sender.getId())
                                  .chatRoomId(chatRoomId)
                                  .senderNickname(sender.getNickname())
                                  .message(content)
