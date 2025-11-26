@@ -46,4 +46,11 @@ public class WishListRepositoryImpl implements WishListRepositoryCustom {
                                                  .and(wishList.isActive.eq(true)))
                           .fetchFirst();
   }
+
+  @Override
+  public List<WishList> findAllByUserId(Long userId) {
+    return jpaQueryFactory.selectFrom(wishList)
+                          .where(wishList.user.id.eq(userId))
+                          .fetch();
+  }
 }

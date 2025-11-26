@@ -64,13 +64,12 @@ public class DanceClassReader {
         return danceClassRepository.findByGenreId(genreId, pageable);
       }
 
-      if (date != null &&  day == null) { // 장르 + 날짜로 검색
+      if (date != null && day == null) { // 장르 + 날짜로 검색
         LocalDate localDate;
         try {
           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
           localDate = LocalDate.parse(date, formatter);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           throw new BusinessException(ErrorCode.INVALID_DATE_FORMAT);
         }
         return danceClassRepository.findByGenreIdAndDate(genreId, localDate, pageable);
@@ -78,10 +77,9 @@ public class DanceClassReader {
 
       if (date == null && day != null) { // 장르 + 요일로 검색
         Week week;
-        try{
+        try {
           week = Week.valueOf(day);
-        }
-        catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
           throw new BusinessException(ErrorCode.INVALID_DAY_FORMAT);
         }
         return danceClassRepository.findByGenreIdAndDay(genreId, week, pageable);
@@ -113,11 +111,16 @@ public class DanceClassReader {
     return bookingRepository.findByDanceClassAndUser(danceClass, user).isPresent();
   }
 
-  public Page<DanceClassBooking> readRegisteredUsersByClass(DanceClass danceClass, Pageable pageable) {
+  public Page<DanceClassBooking> readRegisteredUsersByClass(DanceClass danceClass,
+      Pageable pageable) {
     return bookingRepository.findByDanceClass(danceClass, pageable);
   }
 
   public List<DanceClass> readRandomDanceClasses(Integer size) {
     return danceClassRepository.getRandomDanceClasses(size);
+  }
+
+  public List<DanceClass> readDanceClassesByGenres(Set<Long> genreIds) {
+    return danceClassRepository.findByGenreIds(genreIds);
   }
 }

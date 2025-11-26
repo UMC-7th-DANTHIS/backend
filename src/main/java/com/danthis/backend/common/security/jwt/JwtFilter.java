@@ -114,7 +114,8 @@ public class JwtFilter extends OncePerRequestFilter {
           uri.startsWith("/dance-classes/info") ||
           uri.startsWith("/community/info") ||
           uri.startsWith("/dancers/genres") ||
-          uri.startsWith("/practice-rooms/info")) {
+          uri.startsWith("/practice-rooms/info") ||
+          uri.startsWith("/search")) {
         return true;
       }
     }
