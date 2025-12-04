@@ -94,6 +94,7 @@ public class UserService {
     User user = userReader.readUserById(userId);
 
     return UserInfoResponse.builder()
+                           .userId(user.getId())
                            .nickname(user.getNickname())
                            .gender(user.getGender())
                            .email(user.getEmail())
