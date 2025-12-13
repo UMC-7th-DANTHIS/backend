@@ -1,6 +1,5 @@
 package com.danthis.backend.api;
 
-import com.danthis.backend.application.auth.implement.TokenProvider;
 import com.danthis.backend.application.chat.ChatMessageService;
 import com.danthis.backend.application.chat.implement.ChatMessageReader;
 import com.danthis.backend.application.chat.request.ChatMessageDTO;
@@ -25,7 +24,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 public class WebSocketChatHandler extends TextWebSocketHandler {
 
   private final ObjectMapper objectMapper;
-  private final TokenProvider tokenProvider;
   private final ChatMessageService chatMessageService;
   private final ChatMessageReader chatMessageReader;
 
@@ -43,11 +41,12 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
   protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     ChatMessageDTO incoming = objectMapper.readValue(message.getPayload(), ChatMessageDTO.class);
 
-    // JWT에서 userId 추출
-    String authorization = session.getHandshakeHeaders().getFirst("Authorization");
-    Long userId = tokenProvider.getUserIdFromToken(authorization.replace("Bearer ", ""));
-    User sender = chatMessageReader.readUserById(userId);
+    Long userId = (Long) session.getAttributes().get("userId");
+    if (userId == null) {
+      throw new IllegalStateException("WebSocket userId not found (handshake not authenticated).");
+    }
 
+    User sender = chatMessageReader.readUserById(userId);
     handleChatMessage(session, incoming, sender);
   }
 
@@ -123,7 +122,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-    log.info("❎ 연결 종료: {}", session.getId());
+    log.info(" 연결 종료: {}", session.getId());
 
     // 세션이 들어있는 방에서 제거
     chatRoomSessions.values().forEach(room -> room.remove(session));
