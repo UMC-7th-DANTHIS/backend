@@ -120,7 +120,8 @@ public class UserController {
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "9") @Min(1) int size) {
 
-    DanceClassListServiceResponse response = danceClassService.getUserLearningClasses(userInfo.getUserId(), page, size);
+    DanceClassListServiceResponse response = danceClassService.getUserLearningClasses(
+        userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);
   }
 
@@ -143,6 +144,15 @@ public class UserController {
       @RequestParam(defaultValue = "1") @Min(1) Integer page,
       @RequestParam(defaultValue = "5") @Min(1) Integer size) {
     UserReviewResponse response = userService.getUserReviews(userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "유저가 댄서 등록을 했는지 조회하는 API")
+  @GetMapping("/dancer-admin")
+  @AssignCurrentUserInfo
+  public ApiResponse<Boolean> isDancer(
+      CurrentUserInfo userInfo) {
+    boolean response = userService.isDancer(userInfo.getUserId());
     return ApiResponse.OK(response);
   }
 }

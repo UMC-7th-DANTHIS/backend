@@ -47,7 +47,6 @@ public class DanceClassCreateRequest {
 
   private List<String> images;
 
-  @NotBlank(message = "수업 추천 대상은 필수 입력값입니다.")
   private String videoUrl;
 
   public DanceClassCreateServiceRequest toServiceRequest() {
