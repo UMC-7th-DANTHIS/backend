@@ -148,7 +148,7 @@ public class UserController {
   }
 
   @Operation(summary = "유저가 댄서 등록을 했는지 조회하는 API")
-  @GetMapping("/isDancer")
+  @GetMapping("/dancer-admin")
   @AssignCurrentUserInfo
   public ApiResponse<Boolean> isDancer(
       CurrentUserInfo userInfo) {
