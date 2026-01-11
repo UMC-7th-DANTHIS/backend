@@ -53,4 +53,13 @@ public class ChatMessageService {
                                  .sentAt(chatMessage.getCreatedAt())
                                  .build();
   }
+
+  public Long resolveOpponentId(Long chatRoomId, Long senderId) {
+    ChatRoom chatRoom = chatMessageManager.getChatRoomById(chatRoomId);
+
+    if (chatRoom.getUser().getId().equals(senderId)) {
+      return chatRoom.getDancer().getId();
+    }
+    return chatRoom.getUser().getId();
+  }
 }

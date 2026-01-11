@@ -1,5 +1,6 @@
 package com.danthis.backend.application.chat.response;
 
+import com.danthis.backend.application.chat.request.ChatMessageDTO;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatMessageResponseDTO {
 
-  private Long messageId;
-  private Long senderId;
+  private ChatMessageDTO.MessageType type;
+
   private Long chatRoomId;
+  private Long opponentId;
+
+  private Long senderId;
   private String senderNickname;
+  private Long messageId;
   private String message;
   private LocalDateTime sentAt;
+
+  private boolean system;
 }
