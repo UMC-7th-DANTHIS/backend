@@ -146,7 +146,8 @@ public class UserService {
 
     List<Dancer> candidates = dancerReader.readDancerInUserDancer(pages.getContent());
     List<DancerSummaryResponse> dancerInfos = dancerManager.toSummaryInfo(candidates);
-    return DancerSummaryListResponse.from(dancerInfos, pages.getNumber(), pages.getTotalPages(), pages.getTotalElements());
+    return DancerSummaryListResponse.from(dancerInfos, pages.getNumber(), pages.getTotalPages(),
+        pages.getTotalElements());
   }
 
   @Transactional
@@ -163,7 +164,8 @@ public class UserService {
     Page<CommunityPost> posts = postReader.readPostsByUserId(userId, pageable);
     List<PostDto> postDtoList = postManager.toPostDtoList(posts.getContent());
 
-    return UserPostsResponse.from(postDtoList, posts.getNumber(), posts.getTotalPages(), posts.getTotalElements());
+    return UserPostsResponse.from(postDtoList, posts.getNumber(), posts.getTotalPages(),
+        posts.getTotalElements());
   }
 
   @Transactional
@@ -172,6 +174,13 @@ public class UserService {
     Page<ClassReview> reviews = reviewReader.readReviewsByUserId(userId, pageable);
     List<ReviewDto> reviewDtoList = reviewManager.toReviewDtoList(reviews.getContent());
 
-    return UserReviewResponse.from(reviewDtoList, reviews.getNumber(), reviews.getTotalPages(), reviews.getTotalElements());
+    return UserReviewResponse.from(reviewDtoList, reviews.getNumber(), reviews.getTotalPages(),
+        reviews.getTotalElements());
+  }
+
+  // 사용자가 댄서를 생성한 적이 있으면 true, 없으면 false 리턴
+  public Boolean isDancer(Long userId) {
+    Dancer dancer = dancerReader.readDancerByUserId(userId);
+    return dancer != null;
   }
 }
