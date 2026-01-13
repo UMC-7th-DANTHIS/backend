@@ -1,5 +1,7 @@
 package com.danthis.backend.application.chat.implement;
 
+import com.danthis.backend.common.exception.BusinessException;
+import com.danthis.backend.common.exception.ErrorCode;
 import com.danthis.backend.domain.chat.ChatMessage;
 import com.danthis.backend.domain.chat.ChatRoom;
 import com.danthis.backend.domain.chat.repository.ChatMessageRepository;
@@ -40,6 +42,6 @@ public class ChatMessageManager {
   // 채팅방 조회
   public ChatRoom getChatRoomById(Long chatRoomId) {
     return chatRoomRepository.findById(chatRoomId)
-                             .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found"));
+                             .orElseThrow(() -> new BusinessException(ErrorCode.CHATROOM_NOT_FOUND));
   }
 }
