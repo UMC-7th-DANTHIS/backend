@@ -42,6 +42,11 @@ public class SecurityConfig {
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         // OAuth2 로그인 설정 완전 제거
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers(
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/v3/api-docs/**"
+            ).permitAll()
             .requestMatchers(HttpMethod.GET,
                 "/",
                 "/actuator/health",
