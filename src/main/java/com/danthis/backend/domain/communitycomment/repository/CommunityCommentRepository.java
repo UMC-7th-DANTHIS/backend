@@ -10,4 +10,6 @@ public interface CommunityCommentRepository extends JpaRepository<CommunityComme
     CommunityCommentRepositoryCustom {
 
   List<CommunityComment> findByPostId(Long postId);
+
+  List<CommunityComment> findByUserId(Long userId);
 }

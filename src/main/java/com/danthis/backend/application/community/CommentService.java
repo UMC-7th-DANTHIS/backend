@@ -6,6 +6,8 @@ import com.danthis.backend.application.community.implement.CommentReader;
 import com.danthis.backend.application.community.implement.PostReader;
 import com.danthis.backend.application.community.request.CommentCreateServiceRequest;
 import com.danthis.backend.application.community.response.CommentListServiceResponse;
+import com.danthis.backend.application.community.response.MyCommentListServiceResponse;
+import com.danthis.backend.application.community.response.MyCommentListServiceResponse.MyCommentInfo;
 import com.danthis.backend.application.user.implement.UserReader;
 import com.danthis.backend.common.exception.BusinessException;
 import com.danthis.backend.common.exception.ErrorCode;
@@ -63,5 +65,24 @@ public class CommentService {
   public void deleteCommentsByPostId(Long postId) {
     List<CommunityComment> comments = commentReader.readCommentsByPostId(postId);
     comments.forEach(commentManager::deleteComment);
+  }
+
+  public MyCommentListServiceResponse getAllCommentsByUserId(Long userId, int page, int size) {
+    Page<CommunityComment> comments = commentReader.readCommentsByUserId(userId, page, size);
+    List<MyCommentInfo> userComments = comments.stream().map(comment ->
+        MyCommentInfo.builder()
+                     .postId(comment.getPost().getId())
+                     .commentId(comment.getId())
+                     .title(comment.getPost().getTitle())
+                     .content(comment.getContent())
+                     .createAt(String.valueOf(comment.getCreatedAt()))
+                     .build()).toList();
+    return MyCommentListServiceResponse.builder()
+                                       .userId(userId)
+                                       .comments(userComments)
+                                       .currentPage(comments.getNumber())
+                                       .totalPages(comments.getTotalPages())
+                                       .totalComments(comments.getTotalElements())
+                                       .build();
   }
 }

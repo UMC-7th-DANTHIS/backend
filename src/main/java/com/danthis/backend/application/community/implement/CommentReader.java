@@ -8,6 +8,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,10 +24,16 @@ public class CommentReader {
 
   public CommunityComment readCommentById(Long commentId) {
     return communityCommentRepository.findById(commentId)
-                                     .orElseThrow(() -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
+                                     .orElseThrow(
+                                         () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
   }
 
   public List<CommunityComment> readCommentsByPostId(Long postId) {
     return communityCommentRepository.findByPostId(postId);
+  }
+
+  public Page<CommunityComment> readCommentsByUserId(Long userId, Integer page, Integer size) {
+    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+    return communityCommentRepository.findByUserId(userId, pageable);
   }
 }
