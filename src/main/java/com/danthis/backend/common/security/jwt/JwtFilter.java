@@ -100,6 +100,13 @@ public class JwtFilter extends OncePerRequestFilter {
       return true;
     }
 
+    // Swagger 경로
+    if (uri.startsWith("/v3/api-docs") ||
+        uri.startsWith("/swagger-ui") ||
+        uri.equals("/swagger-ui.html")) {
+      return true;
+    }
+
     // 예외 처리 경로
     if (uri.startsWith("/exception")) {
       return true;
