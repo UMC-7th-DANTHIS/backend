@@ -74,6 +74,7 @@ public class DanceClassRepositoryImpl implements DanceClassRepositoryCustom {
         .select(danceClass.count())
         .distinct()
         .from(danceClass)
+        .join(danceClass.danceClassSchedules, danceClassSchedule)
         .where(
             danceClass.isActive.eq(true),
             danceClass.genre.id.eq(genreId),
