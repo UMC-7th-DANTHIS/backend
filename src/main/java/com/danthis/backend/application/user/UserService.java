@@ -40,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -170,7 +171,8 @@ public class UserService {
 
   @Transactional
   public UserReviewResponse getUserReviews(Long userId, Integer page, Integer size) {
-    PageRequest pageable = PageRequest.of(page - 1, size);
+    PageRequest pageable = PageRequest.of(
+        page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
     Page<ClassReview> reviews = reviewReader.readReviewsByUserId(userId, pageable);
     List<ReviewDto> reviewDtoList = reviewManager.toReviewDtoList(reviews.getContent());
 
