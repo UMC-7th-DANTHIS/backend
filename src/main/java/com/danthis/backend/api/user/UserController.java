@@ -165,7 +165,7 @@ public class UserController {
   public ApiResponse<MyCommentListServiceResponse> getAllComment(
       CurrentUserInfo userInfo,
       @RequestParam(defaultValue = "1") @Min(1) Integer page,
-      @RequestParam(defaultValue = "5") @Min(1) Integer size) {
+      @RequestParam(defaultValue = "8") @Min(1) Integer size) {
     MyCommentListServiceResponse response =
         commentService.getAllCommentsByUserId(userInfo.getUserId(), page, size);
     return ApiResponse.OK(response);

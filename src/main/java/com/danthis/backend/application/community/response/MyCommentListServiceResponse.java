@@ -20,7 +20,7 @@ public class MyCommentListServiceResponse {
 
     private Long postId;
     private Long commentId;
-    private String title;
+    //    private String title;
     private String content;
     private String createAt;
   }

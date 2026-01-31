@@ -68,12 +68,11 @@ public class CommentService {
   }
 
   public MyCommentListServiceResponse getAllCommentsByUserId(Long userId, int page, int size) {
-    Page<CommunityComment> comments = commentReader.readCommentsByUserId(userId, page, size);
+    Page<CommunityComment> comments = commentReader.readCommentsByUserId(userId, page - 1, size);
     List<MyCommentInfo> userComments = comments.stream().map(comment ->
         MyCommentInfo.builder()
                      .postId(comment.getPost().getId())
                      .commentId(comment.getId())
-                     .title(comment.getPost().getTitle())
                      .content(comment.getContent())
                      .createAt(String.valueOf(comment.getCreatedAt()))
                      .build()).toList();
