@@ -2,6 +2,8 @@ package com.danthis.backend.api.user;
 
 import com.danthis.backend.api.ApiResponse;
 import com.danthis.backend.api.user.request.UserUpdateRequest;
+import com.danthis.backend.application.community.CommentService;
+import com.danthis.backend.application.community.response.MyCommentListServiceResponse;
 import com.danthis.backend.application.danceclass.DanceClassService;
 import com.danthis.backend.application.danceclass.response.DanceClassListServiceResponse;
 import com.danthis.backend.application.dancer.response.DancerSummaryListResponse;
@@ -34,6 +36,7 @@ public class UserController {
 
   private final UserService userService;
   private final DanceClassService danceClassService;
+  private final CommentService commentService;
 
   @Operation(summary = "유저 정보 수정 API", description = "유저의 정보를 수정합니다.")
   @PutMapping
@@ -154,5 +157,18 @@ public class UserController {
       CurrentUserInfo userInfo) {
     boolean response = userService.isDancer(userInfo.getUserId());
     return ApiResponse.OK(response);
+  }
+
+  @Operation(summary = "유저가 작성한 모든 게시글의 댓글을 조회하는 API")
+  @GetMapping("/comments")
+  @AssignCurrentUserInfo
+  public ApiResponse<MyCommentListServiceResponse> getAllComment(
+      CurrentUserInfo userInfo,
+      @RequestParam(defaultValue = "1") @Min(1) Integer page,
+      @RequestParam(defaultValue = "8") @Min(1) Integer size) {
+    MyCommentListServiceResponse response =
+        commentService.getAllCommentsByUserId(userInfo.getUserId(), page, size);
+    return ApiResponse.OK(response);
+
   }
 }
