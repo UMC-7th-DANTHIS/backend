@@ -64,24 +64,16 @@ public class DanceClassReader {
         return danceClassRepository.findByGenreId(genreId, pageable);
       }
 
-      if (date != null && day == null) { // 장르 + 날짜로 검색
-        LocalDate localDate;
-        try {
-          DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-          localDate = LocalDate.parse(date, formatter);
-        } catch (Exception e) {
-          throw new BusinessException(ErrorCode.INVALID_DATE_FORMAT);
+      if (date != null) { // 장르 + 날짜 + 요일로 검색
+        LocalDate localDate = convertToLocalDate(date);
+        if (day == null) {  // 요일 정보가 없으면 날짜로만 검색
+          return danceClassRepository.findByGenreIdAndDate(genreId, localDate, pageable);
+        } else {    // 요일 정보가 있으면 함께 검색
+          Week week = convertToWeek(day);
+          return danceClassRepository.findByGenreIdAndDateOrDay(genreId, localDate, week, pageable);
         }
-        return danceClassRepository.findByGenreIdAndDate(genreId, localDate, pageable);
-      }
-
-      if (date == null && day != null) { // 장르 + 요일로 검색
-        Week week;
-        try {
-          week = Week.valueOf(day);
-        } catch (IllegalArgumentException e) {
-          throw new BusinessException(ErrorCode.INVALID_DAY_FORMAT);
-        }
+      } else { // 날짜 정보가 없다면 장르 + 요일로 검색
+        Week week = convertToWeek(day);
         return danceClassRepository.findByGenreIdAndDay(genreId, week, pageable);
       }
     }
@@ -122,5 +114,22 @@ public class DanceClassReader {
 
   public List<DanceClass> readDanceClassesByGenres(Set<Long> genreIds) {
     return danceClassRepository.findByGenreIds(genreIds);
+  }
+
+  private LocalDate convertToLocalDate(String date) {
+    try {
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      return LocalDate.parse(date, formatter);
+    } catch (Exception e) {
+      throw new BusinessException(ErrorCode.INVALID_DATE_FORMAT);
+    }
+  }
+
+  private Week convertToWeek(String day) {
+    try {
+      return Week.valueOf(day);
+    } catch (IllegalArgumentException e) {
+      throw new BusinessException(ErrorCode.INVALID_DAY_FORMAT);
+    }
   }
 }

@@ -170,7 +170,8 @@ public class UserService {
 
   @Transactional
   public UserReviewResponse getUserReviews(Long userId, Integer page, Integer size) {
-    PageRequest pageable = PageRequest.of(page - 1, size);
+    PageRequest pageable = PageRequest.of(
+        page - 1, size);
     Page<ClassReview> reviews = reviewReader.readReviewsByUserId(userId, pageable);
     List<ReviewDto> reviewDtoList = reviewManager.toReviewDtoList(reviews.getContent());
 

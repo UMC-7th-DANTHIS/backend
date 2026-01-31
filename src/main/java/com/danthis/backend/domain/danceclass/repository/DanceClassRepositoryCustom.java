@@ -15,4 +15,7 @@ public interface DanceClassRepositoryCustom {
   Page<DanceClass> findByGenreIdAndDay(Long genreId, Week day, PageRequest pageable);
 
   List<DanceClass> findByGenreIds(Set<Long> genreIds);
+
+  Page<DanceClass> findByGenreIdAndDateOrDay(Long genreId, LocalDate localDate, Week day,
+      PageRequest pageable);
 }
