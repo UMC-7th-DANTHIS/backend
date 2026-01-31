@@ -33,6 +33,7 @@ public class ClassReviewRepositoryImpl implements ClassReviewRepositoryCustom {
     List<ClassReview> reviews = jpaQueryFactory.selectFrom(classReview)
                                                .where(classReview.user.id.eq(userId).and(
                                                    classReview.isActive.eq(true)))
+                                               .orderBy(classReview.createdAt.desc())
                                                .offset(pageable.getOffset())
                                                .limit(pageable.getPageSize())
                                                .fetch();
